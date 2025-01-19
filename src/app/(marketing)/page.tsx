@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import ProductGrid from "./product/ProductGrid"
 
 export default function Home() {
+
   return (
     <main className="flex-1">
       <div className="container flex flex-col items-center justify-center min-h-screen px-4 py-16 mx-auto sm:py-24">
@@ -20,6 +22,9 @@ export default function Home() {
           <Button variant="outline" size="lg">
             Log In
           </Button>
+        </div>
+        <div>
+          <ProductGrid />
         </div>
       </div>
     </main>
