@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import ProductGrid from "./product/ProductGrid"
+import ProductGrid from "@/app/_components/productGrid"
 
 export default function Home() {
 
@@ -15,12 +15,14 @@ export default function Home() {
         </p>
         <div className="flex gap-4 mt-10">
           <Button asChild size="lg">
-            <Link href="/dashboard">
+            <Link href="/store">
               Create Account
             </Link>
           </Button>
           <Button variant="outline" size="lg">
-            Log In
+          <Link href="/store">
+              Log in
+            </Link>
           </Button>
         </div>
         <div>
