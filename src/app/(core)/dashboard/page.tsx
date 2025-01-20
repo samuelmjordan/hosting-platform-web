@@ -1,4 +1,3 @@
-import ProductGrid from "@/app/_components/productGrid"
 
 export default function Dashboard() {
   return (
