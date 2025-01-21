@@ -4,3 +4,10 @@ export interface Product {
     ram: number;
     cpu: number;
 }
+
+export interface Region {
+    id: bigint;
+    continent: string;
+    continentCode: string;
+    city: string;
+}

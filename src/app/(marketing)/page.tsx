@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import ProductGrid from "@/app/_components/productGrid"
+import Store from "@/app/_components/store"
 
 export default function Home() {
 
@@ -8,12 +8,12 @@ export default function Home() {
     <main className="flex-1">
       <div className="container flex flex-col items-center justify-center min-h-screen px-4 py-16 mx-auto sm:py-24">
         <h1 className="text-6xl font-extrabold tracking-tight text-center sm:text-8xl lg:text-9xl">
-          Your Brand
+          AxolHost
         </h1>
         <p className="max-w-3xl mt-6 text-xl text-center text-muted-foreground">
-          A modern platform for building the future. Fast, reliable, and scalable solutions for your business.
+          Staright-forward Minecraft Servers.
         </p>
-        <div className="flex gap-4 mt-10">
+        <div className="flex gap-4 my-10">
           <Button asChild size="lg">
             <Link href="/store">
               Create Account
@@ -26,7 +26,7 @@ export default function Home() {
           </Button>
         </div>
         <div>
-          <ProductGrid />
+          <Store />
         </div>
       </div>
     </main>
