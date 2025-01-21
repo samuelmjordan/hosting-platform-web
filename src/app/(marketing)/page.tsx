@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import Store from "@/app/_components/store"
+import Store from "@/app/_components/storeComponent/storeComponent"
 
 export default function Home() {
 
