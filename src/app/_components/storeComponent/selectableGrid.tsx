@@ -80,38 +80,4 @@ function SelectableGrid<T>({
   );
 }
 
-// Example usage:
-interface Product {
-  id: BigInt;
-  title: string;
-  ram: number;
-  cpu: number;
-}
-
-const ProductGrid: React.FC = () => {
-  const products: Product[] = [
-    { id: BigInt(1), title: "Wooden Sword", ram: 2, cpu: 0.5 },
-    { id: BigInt(2), title: "Stone Pickaxe", ram: 4, cpu: 1 }
-  ];
-
-  return (
-    <SelectableGrid<Product>
-      items={products}
-      getId={(product) => product.id.toString()}
-      renderTitle={(product) => product.title}
-      renderContent={(product) => (
-        <div className="flex flex-col space-y-4">
-          <div className="flex items-center gap-2">
-            <span>{product.ram} GB RAM</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span>{product.cpu} Core CPU</span>
-          </div>
-        </div>
-      )}
-      onSelect={(product) => console.log('Selected:', product)}
-    />
-  );
-};
-
 export default SelectableGrid;
