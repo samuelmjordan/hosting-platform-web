@@ -3,15 +3,14 @@
 import React, { useState } from 'react';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { UserButton } from '@clerk/nextjs';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const menuItems = [
-    { label: 'Home', href: '/' },
     { label: 'Store', href: '/store' },
-    { label: 'Dashboard', href: '/dashboard' },
-    { label: 'FAQ', href: '/faq' },
+    { label: 'Dashboard', href: '/dashboard' }
   ];
 
   return (
@@ -34,6 +33,7 @@ const Navbar = () => {
                 {item.label}
               </a>
             ))}
+            <UserButton />
           </div>
 
           {/* Mobile menu button */}

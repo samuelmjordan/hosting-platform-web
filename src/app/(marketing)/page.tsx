@@ -1,8 +1,15 @@
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
 import Store from "@/app/_components/storeComponent/storeComponent"
+import { SignInButton, SignUpButton } from "@clerk/nextjs"
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+export default async function Home() {
+  const { userId } = await auth();
+  
+  if (userId) {
+    redirect('/store');
+  }
 
   return (
     <main className="flex-1">
@@ -14,16 +21,16 @@ export default function Home() {
           Staright-forward Minecraft Servers.
         </p>
         <div className="flex gap-4 my-10">
-          <Button asChild size="lg">
-            <Link href="/store">
+          <SignUpButton mode="modal">
+            <Button size="lg">
               Create Account
-            </Link>
-          </Button>
-          <Button variant="outline" size="lg">
-          <Link href="/store">
-              Log in
-            </Link>
-          </Button>
+            </Button>
+          </SignUpButton>
+          <SignInButton mode="modal">
+            <Button variant="outline" size="lg">
+              Sign in
+            </Button>
+          </SignInButton>
         </div>
         <div>
           <Store />
