@@ -3,14 +3,14 @@ import { StoreClient } from '@/app/_components/storeComponent/storeClient';
 
 const getProducts = async (): Promise<Product[]> => {
     return [
-        { id: BigInt(1), title: "Wooden Sword", ram: 2, cpu: 0.5 },
-        { id: BigInt(2), title: "Stone Pickaxe", ram: 4, cpu: 1 },
-        { id: BigInt(3), title: "Iron Chestplate", ram: 6, cpu: 1.5 },
-        { id: BigInt(4), title: "Diamond Boots", ram: 8, cpu: 2 },
-        { id: BigInt(5), title: "Crying Obsidian", ram: 12, cpu: 3 },
-        { id: BigInt(6), title: "Golden Apple", ram: 16, cpu: 4 },
-        { id: BigInt(7), title: "Netherite Ingot", ram: 24, cpu: 6 },
-        { id: BigInt(8), title: "Nether Star", ram: 32, cpu: 8 },
+        { id: BigInt(1), title: "Wooden Sword", ram: 2, cpu: 0.5, link: "https://buy.stripe.com/test_7sI4jZgUh3Gb1uo3cc" },
+        { id: BigInt(2), title: "Stone Pickaxe", ram: 4, cpu: 1, link: "https://buy.stripe.com/test_7sI4jZgUh3Gb1uo3cc" },
+        { id: BigInt(3), title: "Iron Chestplate", ram: 6, cpu: 1.5, link: "https://buy.stripe.com/test_7sI4jZgUh3Gb1uo3cc" },
+        { id: BigInt(4), title: "Diamond Boots", ram: 8, cpu: 2, link: "https://buy.stripe.com/test_7sI4jZgUh3Gb1uo3cc" },
+        { id: BigInt(5), title: "Crying Obsidian", ram: 12, cpu: 3, link: "https://buy.stripe.com/test_7sI4jZgUh3Gb1uo3cc" },
+        { id: BigInt(6), title: "Golden Apple", ram: 16, cpu: 4, link: "https://buy.stripe.com/test_7sI4jZgUh3Gb1uo3cc" },
+        { id: BigInt(7), title: "Netherite Ingot", ram: 24, cpu: 6, link: "https://buy.stripe.com/test_7sI4jZgUh3Gb1uo3cc" },
+        { id: BigInt(8), title: "Nether Star", ram: 32, cpu: 8, link: "https://buy.stripe.com/test_7sI4jZgUh3Gb1uo3cc" },
     ];
 };
 

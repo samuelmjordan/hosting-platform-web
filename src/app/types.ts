@@ -3,6 +3,7 @@ export interface Product {
     title: string;
     ram: number;
     cpu: number;
+    link: string;
 }
 
 export interface Region {
