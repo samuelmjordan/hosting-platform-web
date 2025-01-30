@@ -12,3 +12,9 @@ export interface Region {
     continentCode: string;
     city: string;
 }
+
+export interface Server {
+  id: bigint
+  title: string
+  status: "pending" | "processing" | "success" | "failed"
+}
