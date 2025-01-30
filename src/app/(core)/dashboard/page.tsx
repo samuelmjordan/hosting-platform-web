@@ -3,7 +3,7 @@ import { Server } from "@/app/types"
 import { DashboardTable } from "@/app/_components/dahboardTable"
 import { Card } from "@/components/ui/card"
 
-export const columns: ColumnDef<Server>[] = [
+const columns: ColumnDef<Server>[] = [
   {
     accessorKey: "id",
     header: "Id",
