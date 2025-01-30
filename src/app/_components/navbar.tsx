@@ -15,11 +15,20 @@ const Navbar = () => {
 
   return (
     <nav className="w-full border-b bg-white">
-      <div className="mx-auto max-w-7xl px-4">
+      <div className="w-full px-8">
         <div className="relative flex h-16 items-center justify-between">
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <span className="text-xl font-bold">Logo</span>
+          <div className="flex-shrink-0 relative -mb-8">
+            <div className="flex items-center relative">
+              <img 
+                src="logo.svg" 
+                alt="Axolhost" 
+                className="h-24"
+              />
+              <div className="absolute left-24 transform -translate-y-4"> {/* Changed to absolute positioning */}
+                <span className="text-xl font-bold">Axolhost</span>
+              </div>
+            </div>
           </div>
 
           {/* Desktop menu */}
