@@ -14,7 +14,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="w-full border-b bg-white">
+    <nav className="w-full border-b bg-white sticky top-0 z-50">
       <div className="w-full px-8">
         <div className="relative flex h-16 items-center justify-between">
           {/* Logo */}
@@ -25,7 +25,7 @@ const Navbar = () => {
                 alt="Axolhost" 
                 className="h-24"
               />
-              <div className="absolute left-24 transform -translate-y-4"> {/* Changed to absolute positioning */}
+              <div className="absolute left-24 transform -translate-y-4">
                 <span className="text-xl font-bold">Axolhost</span>
               </div>
             </div>
