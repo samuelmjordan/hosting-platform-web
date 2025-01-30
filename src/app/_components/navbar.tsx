@@ -1,12 +1,17 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { UserButton } from '@clerk/nextjs';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const menuItems = [
     { label: 'Store', href: '/store' },
@@ -45,34 +50,31 @@ const Navbar = () => {
             <UserButton />
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              <Menu className="h-6 w-6" />
-            </Button>
+          {/* Mobile menu */}
+          <div className="md:hidden flex items-center gap-2">
+            <Collapsible>
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" size="icon" className="hover:bg-gray-100 transition-colors">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="absolute right-0 mt-4 w-48 bg-white rounded-lg shadow-lg border border-gray-100 z-50">
+                <div className="flex flex-col py-2">
+                  {menuItems.map((item) => (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                    >
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+            <UserButton />
           </div>
 
-          {/* Mobile menu dropdown */}
-          {isMenuOpen && (
-            <div className="absolute right-0 top-16 w-full bg-white border-b md:hidden">
-              <div className="flex flex-col space-y-1 px-4 py-2">
-                {menuItems.map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {item.label}
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </nav>
