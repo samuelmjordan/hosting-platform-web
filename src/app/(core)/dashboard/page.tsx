@@ -1,53 +1,106 @@
-import { ColumnDef } from "@tanstack/react-table"
 import { Server } from "@/app/types"
 import { DashboardTable } from "@/app/_components/dahboardTable"
 import { Card } from "@/components/ui/card"
+import { getProducts, getRegions } from "@/app/_components/storeComponent/storeComponent"
 
-const columns: ColumnDef<Server>[] = [
-  {
-    accessorKey: "id",
-    header: "Id",
-  },
-  {
-    accessorKey: "title",
-    header: "Title",
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-  },
-]
+const products = await getProducts();
+const regions = await getRegions();
 
 async function getServers(): Promise<Server[]> {
   return [
     {
       id: BigInt(1),
       title: "myServer",
-      status: "pending"
+      description: "it a good server",
+      status: "Offline",
+      product: products.at(0)!,
+      region: regions.at(0)!
     },
     {
       id: BigInt(2),
       title: "Hypixel",
-      status: "processing"
+      description: "Hunger games lobbies on this server",
+      status: "Online",
+      product: products.at(1)!,
+      region: regions.at(1)!
     },
     {
       id: BigInt(3),
       title: "hardcore",
-      status: "success"
+      description: "this is a hardcore server",
+      status: "Pending",
+      product: products.at(2)!,
+      region: regions.at(2)!
+    },
+    {
+      id: BigInt(4),
+      title: "SkyBlock",
+      description: "Economy-focused skyblock server with custom plugins",
+      status: "Online",
+      product: products.at(0)!,
+      region: regions.at(1)!
+    },
+    {
+      id: BigInt(5),
+      title: "CreativeBuild",
+      description: "Creative mode server for builders and artists",
+      status: "Online",
+      product: products.at(1)!,
+      region: regions.at(2)!
+    },
+    {
+      id: BigInt(6),
+      title: "SurvivalPlus",
+      description: "Enhanced survival experience with custom mechanics",
+      status: "Pending",
+      product: products.at(2)!,
+      region: regions.at(0)!
+    },
+    {
+      id: BigInt(7),
+      title: "PvPArena",
+      description: "Competitive PvP matches and tournaments",
+      status: "Online",
+      product: products.at(1)!,
+      region: regions.at(1)!
+    },
+    {
+      id: BigInt(8),
+      title: "RPGRealm",
+      description: "Immersive RPG experience with custom quests",
+      status: "Offline",
+      product: products.at(2)!,
+      region: regions.at(2)!
+    },
+    {
+      id: BigInt(9),
+      title: "MiniGames",
+      description: "Collection of various mini-games and party games",
+      status: "Online",
+      product: products.at(0)!,
+      region: regions.at(0)!
+    },
+    {
+      id: BigInt(10),
+      title: "VanillaPlus",
+      description: "Slightly enhanced vanilla experience",
+      status: "Pending",
+      product: products.at(1)!,
+      region: regions.at(1)!
     }
   ]
 }
 
 export default async function Dashboard() {
-  const data = await getServers()
+  const servers = await getServers()
 
   return (
-    <div className="container min-h-screen mx-auto sm:py-24">
-        <h1 className="text-6xl font-extrabold tracking-tight text-center sm:text-8xl lg:text-9xl mb-6">
-          Dashboard
-        </h1>
-      <Card>
-        <DashboardTable columns={columns} data={data}/>
+    <div className="container mx-auto py-6">
+      <h1 className="text-6xl font-extrabold tracking-tight text-center sm:text-8xl lg:text-9xl mb-6">
+        Dashboard
+      </h1>
+      <Card className="mt-6">
+        <DashboardTable servers={servers}/>
       </Card>
     </div>
   )

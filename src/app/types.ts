@@ -16,5 +16,8 @@ export interface Region {
 export interface Server {
   id: bigint
   title: string
-  status: "pending" | "processing" | "success" | "failed"
+  description: string
+  status: "Online" | "Offline" | "Pending"
+  product: Product
+  region: Region
 }

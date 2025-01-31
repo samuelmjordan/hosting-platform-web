@@ -1,80 +1,68 @@
 "use client"
- 
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
- 
+
+import { Server } from "@/app/types"
 import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { EllipsisVertical } from 'lucide-react';
+
+const getStatusStyles = (status: string) => {
+  switch (status.toLowerCase()) {
+    case "online":
+      console.log("here");
+      return 'bg-green-200';
+    case "offline":
+      return 'bg-red-200';
+    case "pending":
+      return 'bg-yellow-200';
+    default:
+      return 'bg-gray-200';
+  }
+};
+
  
-interface DashboardTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+interface DashboardTableProps {
+  servers: Server[]
 }
  
-export function DashboardTable<TData, TValue>({
-    columns,
-    data,
-  }: DashboardTableProps<TData, TValue>) {
-    const table = useReactTable({
-      data,
-      columns,
-      getCoreRowModel: getCoreRowModel(),
-    })
-   
+export function DashboardTable({
+    servers,
+  }: DashboardTableProps) {
     return (
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
+      <div>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader className="sticky bg-background z-40">
+            </TableHeader>
+            <TableBody>
+              {servers.map((server) => 
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                <TableCell>
+                  <div>
+                    <h1 className="text-2xl font-bold mb-3">{server.title}</h1>
+                    <p className="text-gray-600 mb-4">{server.description}</p>
+                    <div className="flex items-center gap-3">
+                      <span className={`inline-flex px-3 py-1 text-sm rounded-full ${getStatusStyles(server.status)} font-semibold`}>
+                        {server.status}
+                      </span>
+                      <span className="text-sm text-gray-600">Last online 2 hours ago</span>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell className="text-right">
+                  <button className="p-2 hover:bg-gray-100 rounded-full">
+                    <EllipsisVertical size={20} />
+                  </button>
                 </TableCell>
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     )
   }
