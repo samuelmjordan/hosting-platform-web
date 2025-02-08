@@ -70,7 +70,7 @@ export const StoreClient: React.FC<StoreClientProps> = ({ products, regions }) =
                 cancel: `${baseUrl}${cancel}`
             };
 
-            const response = await fetch(`${API_URL}/api/stripe/checkoutsss`, {
+            const response = await fetch(`${API_URL}/api/stripe/checkout`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
