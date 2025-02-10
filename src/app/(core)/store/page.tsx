@@ -2,10 +2,10 @@ import { StoreComponent } from '@/app/_components/store/storeComponent';
 import { pricesAPI, regionsAPI, activeProduct } from '@/app/_services/api';
 
 export default async function StorePage() {
-  const [products, regions] = await Promise.all([
-    pricesAPI.fetchProductPrices({productId: activeProduct}),
+  const [prices, regions] = await Promise.all([
+    pricesAPI.fetchProductPrices(activeProduct),
     regionsAPI.fetchProductRegions(),
   ]);
 
-  return <StoreComponent products={products} regions={regions} />;
+  return <StoreComponent prices={prices} regions={regions} />;
 }

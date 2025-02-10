@@ -3,28 +3,28 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@clerk/nextjs';
-import { Product, Region } from '@/app/types';
+import { Price, Region } from '@/app/types';
 import { useStore } from '@/app/_hooks/useStore';
 import { checkoutAPI } from '@/app/_services/api';
-import { ProductGrid } from '@/app/_components/store/productGrid';
+import { PriceGrid } from '@/app/_components/store/priceGrid';
 import { RegionGrid } from '@/app/_components/store/regionGrid';
 import { StoreCheckout } from '@/app/_components/store/storeCheckout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface StoreProps {
-  products: Product[];
+  prices: Price[];
   regions: Region[];
 }
 
-export const StoreComponent: React.FC<StoreProps> = ({ products, regions }) => {
+export const StoreComponent: React.FC<StoreProps> = ({ prices, regions }) => {
   const router = useRouter();
   const { userId } = useAuth();
-  const { product, region, setProduct, setRegion } = useStore();
+  const { price, region, setPrice, setRegion } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleCheckout = async () => {
-    if (!product || !region) {
+    if (!price || !region) {
       setError('Please select both a product and region before proceeding');
       return;
     }
@@ -34,7 +34,7 @@ export const StoreComponent: React.FC<StoreProps> = ({ products, regions }) => {
   
     try {
       const checkoutUrl = await checkoutAPI.createCheckoutSession(
-        "price_1QpeRaLXiVvrT9k7sxzqqWa2"
+        price.priceId
       );
       
       router.push(checkoutUrl);
@@ -53,10 +53,10 @@ export const StoreComponent: React.FC<StoreProps> = ({ products, regions }) => {
           <CardTitle>Select Server Package</CardTitle>
         </CardHeader>
         <CardContent>
-          <ProductGrid
-            products={products}
-            selectedId={product?.id ?? null}
-            onSelect={setProduct}
+          <PriceGrid
+            prices={prices}
+            selectedId={price?.priceId ?? null}
+            onSelect={setPrice}
           />
         </CardContent>
       </Card>
@@ -79,7 +79,7 @@ export const StoreComponent: React.FC<StoreProps> = ({ products, regions }) => {
           <StoreCheckout
             isLoading={isLoading}
             error={error}
-            disabled={!product || !region || !userId}
+            disabled={!price || !region || !userId}
             onCheckout={handleCheckout}
           />
         </CardContent>

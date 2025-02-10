@@ -1,4 +1,4 @@
-import { Product, Region } from '@/app/types';
+import { Price, Region } from '@/app/types';
 
 export class APIError extends Error {
   constructor(message: string, public code?: string) {
@@ -27,15 +27,13 @@ export const checkoutAPI = {
 
 export const activeProduct: string = "prod_RiiVxhDuwyX0qD";
 export const pricesAPI = {
-    async fetchProductPrices(params: {
-      productId: string;
-    }): Promise<Product[]> {
-        return [
-            { id: "3c5f544a-e75b-4a5e-9607-cb65686af07a" + params.productId, title: "Wooden Sword", ram: 2, cpu: 0.5, priceId: "price_1QpeRaLXiVvrT9k7sxzqqWa2", priceAmount: 10},
-            { id: "3c5f544a-e75b-4a5e-9607-cb65686af07b", title: "Stone Pickaxe", ram: 4, cpu: 1, priceId: "price_1QpeRaLXiVvrT9k7sxzqqWa2", priceAmount: 10 },
-            { id: "3c5f544a-e75b-4a5e-9607-cb65686af07c", title: "Iron Chestplate", ram: 6, cpu: 1.5, priceId: "price_1QpeRaLXiVvrT9k7sxzqqWa2", priceAmount: 10}
-        ];
-    }
+  async fetchProductPrices(productId: string): Promise<Price[]> {
+    return [
+      { priceId: "3c5f544a-e75b-4a5e-9607-cb65686af07a", productId: "Wooden Sword", specId: "price_1QpeRaLXiVvrT9k7sxzqqWa2", active: true, currency: "usd", minorAmount: 10},
+      { priceId: "3c5f544a-e75b-4a5e-9607-cb65686af07b", productId: "Wooden Sword", specId: "price_1QpeRaLXiVvrT9k7sxzqqWa2", active: true, currency: "usd", minorAmount: 100},
+      { priceId: "3c5f544a-e75b-4a5e-9607-cb65686af07c", productId: "Wooden Sword", specId: "price_1QpeRaLXiVvrT9k7sxzqqWa2", active: true, currency: "usd", minorAmount: 50}
+    ];
+  }
 };
 
 export const regionsAPI = {

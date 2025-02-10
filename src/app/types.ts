@@ -1,10 +1,19 @@
-export interface Product {
+export interface Specification {
   id: string;
   title: string;
   ram: number;
   cpu: number;
   priceId: string;
   priceAmount: number;
+}
+
+export interface Price {
+  priceId: string;
+  productId: string;
+  specId: string;
+  active: boolean;
+  currency: string;
+  minorAmount: number;
 }
 
 export interface Region {
@@ -15,7 +24,7 @@ export interface Region {
 }
 
 export interface StoreSelection {
-  product: Product | null;
+  price: Price | null;
   region: Region | null;
 }
 
@@ -24,6 +33,6 @@ export interface Server {
   title: string
   description: string
   status: "Online" | "Offline" | "Pending"
-  product: Product
+  price: Price
   region: Region
 }

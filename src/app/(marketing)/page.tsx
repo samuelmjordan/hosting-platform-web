@@ -3,12 +3,12 @@ import { StoreComponent } from '@/app/_components/store/storeComponent';
 import { SignInButton, SignUpButton } from "@clerk/nextjs"
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { pricesAPI, regionsAPI } from '@/app/_services/api';
+import { activeProduct, pricesAPI, regionsAPI } from '@/app/_services/api';
 
 export default async function Home() {
   const { userId } = await auth();
-  const [products, regions] = await Promise.all([
-    pricesAPI.fetchProductPrices({productId: "test"}),
+  const [prices, regions] = await Promise.all([
+    pricesAPI.fetchProductPrices(activeProduct),
     regionsAPI.fetchProductRegions(),
   ]);
   
@@ -38,7 +38,7 @@ export default async function Home() {
           </SignInButton>
         </div>
         <div>
-          <StoreComponent products={products} regions={regions} />
+          <StoreComponent prices={prices} regions={regions} />
         </div>
       </div>
     </main>

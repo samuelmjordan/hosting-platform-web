@@ -1,37 +1,37 @@
 import React from 'react';
-import { Product } from '@/app/types';
+import { Price } from '@/app/types';
 import SelectableGrid from "@/app/_components/store/selectableGrid";
 import { Cpu, MemoryStick } from 'lucide-react';
 
-interface ProductGridProps {
-  products: Product[];
+interface PriceGridProps {
+  prices: Price[];
   selectedId: string | null;
-  onSelect: (product: Product) => void;
+  onSelect: (price: Price) => void;
 }
 
-export const ProductGrid: React.FC<ProductGridProps> = ({
-  products,
+export const PriceGrid: React.FC<PriceGridProps> = ({
+  prices: prices,
   selectedId,
   onSelect,
 }) => (
   <SelectableGrid
-    items={products}
-    getId={(product) => product.id}
+    items={prices}
+    getId={(price) => price.priceId}
     selectedId={selectedId}
     onSelect={onSelect}
-    renderTitle={(product) => product.title}
-    renderContent={(product) => (
+    renderTitle={(price) => "Title"}
+    renderContent={(price) => (
       <div className="flex flex-col space-y-4">
         <div className="flex items-center gap-2">
           <MemoryStick className="h-4 w-4" />
-          <span>{product.ram} GB RAM</span>
+          <span>{"100"} GB RAM</span>
         </div>
         <div className="flex items-center gap-2">
           <Cpu className="h-4 w-4" />
-          <span>{product.cpu} Core CPU</span>
+          <span>{"100"} Core CPU</span>
         </div>
         <div className="text-lg font-semibold">
-          ${product.priceAmount}/month
+          {price.minorAmount}{price.currency}/month
         </div>
       </div>
     )}

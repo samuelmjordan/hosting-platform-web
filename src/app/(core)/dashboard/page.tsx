@@ -3,7 +3,7 @@ import { DashboardTable } from "@/app/_components/dahboardTable"
 import { Card } from "@/components/ui/card"
 import { pricesAPI, regionsAPI, activeProduct } from '@/app/_services/api';
 
-const products = await pricesAPI.fetchProductPrices({productId: activeProduct});
+const prices = await pricesAPI.fetchProductPrices(activeProduct);
 const regions = await regionsAPI.fetchProductRegions();
 
 async function getServers(): Promise<Server[]> {
@@ -13,7 +13,7 @@ async function getServers(): Promise<Server[]> {
       title: "myServer",
       description: "it a good server",
       status: "Offline",
-      product: products.at(0)!,
+      price: prices.at(0)!,
       region: regions.at(0)!
     },
     {
@@ -21,7 +21,7 @@ async function getServers(): Promise<Server[]> {
       title: "Hypixel",
       description: "Hunger games lobbies on this server",
       status: "Online",
-      product: products.at(1)!,
+      price: prices.at(1)!,
       region: regions.at(1)!
     },
     {
@@ -29,7 +29,7 @@ async function getServers(): Promise<Server[]> {
       title: "hardcore",
       description: "this is a hardcore server",
       status: "Pending",
-      product: products.at(2)!,
+      price: prices.at(2)!,
       region: regions.at(2)!
     },
     {
@@ -37,7 +37,7 @@ async function getServers(): Promise<Server[]> {
       title: "SkyBlock",
       description: "Economy-focused skyblock server with custom plugins",
       status: "Online",
-      product: products.at(0)!,
+      price: prices.at(0)!,
       region: regions.at(1)!
     },
     {
@@ -45,7 +45,7 @@ async function getServers(): Promise<Server[]> {
       title: "CreativeBuild",
       description: "Creative mode server for builders and artists",
       status: "Online",
-      product: products.at(1)!,
+      price: prices.at(1)!,
       region: regions.at(2)!
     },
     {
@@ -53,7 +53,7 @@ async function getServers(): Promise<Server[]> {
       title: "SurvivalPlus",
       description: "Enhanced survival experience with custom mechanics",
       status: "Pending",
-      product: products.at(2)!,
+      price: prices.at(2)!,
       region: regions.at(0)!
     },
     {
@@ -61,7 +61,7 @@ async function getServers(): Promise<Server[]> {
       title: "PvPArena",
       description: "Competitive PvP matches and tournaments",
       status: "Online",
-      product: products.at(1)!,
+      price: prices.at(1)!,
       region: regions.at(1)!
     },
     {
@@ -69,7 +69,7 @@ async function getServers(): Promise<Server[]> {
       title: "RPGRealm",
       description: "Immersive RPG experience with custom quests",
       status: "Offline",
-      product: products.at(2)!,
+      price: prices.at(2)!,
       region: regions.at(2)!
     },
     {
@@ -77,7 +77,7 @@ async function getServers(): Promise<Server[]> {
       title: "MiniGames",
       description: "Collection of various mini-games and party games",
       status: "Online",
-      product: products.at(0)!,
+      price: prices.at(0)!,
       region: regions.at(0)!
     },
     {
@@ -85,7 +85,7 @@ async function getServers(): Promise<Server[]> {
       title: "VanillaPlus",
       description: "Slightly enhanced vanilla experience",
       status: "Pending",
-      product: products.at(1)!,
+      price: prices.at(1)!,
       region: regions.at(1)!
     }
   ]
