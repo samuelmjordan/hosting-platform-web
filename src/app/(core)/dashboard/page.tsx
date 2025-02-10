@@ -1,10 +1,10 @@
 import { Server } from "@/app/types"
 import { DashboardTable } from "@/app/_components/dahboardTable"
 import { Card } from "@/components/ui/card"
-import { getProducts, getRegions } from "@/app/_components/storeComponent/storeComponent"
+import { pricesAPI, regionsAPI, activeProduct } from '@/app/_services/api';
 
-const products = await getProducts();
-const regions = await getRegions();
+const products = await pricesAPI.fetchProductPrices({productId: activeProduct});
+const regions = await regionsAPI.fetchProductRegions();
 
 async function getServers(): Promise<Server[]> {
   return [

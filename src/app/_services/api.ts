@@ -32,6 +32,7 @@ export const checkoutAPI = {
   
 };
 
+export const activeProduct: string = "prod_RiiVxhDuwyX0qD";
 export const pricesAPI = {
     async fetchProductPrices(params: {
       productId: string;

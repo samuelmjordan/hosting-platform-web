@@ -1,9 +1,9 @@
 import { StoreComponent } from '@/app/_components/store/storeComponent';
-import { pricesAPI, regionsAPI } from '@/app/_services/api';
+import { pricesAPI, regionsAPI, activeProduct } from '@/app/_services/api';
 
 export default async function StorePage() {
   const [products, regions] = await Promise.all([
-    pricesAPI.fetchProductPrices({productId: "test"}),
+    pricesAPI.fetchProductPrices({productId: activeProduct}),
     regionsAPI.fetchProductRegions(),
   ]);
 
