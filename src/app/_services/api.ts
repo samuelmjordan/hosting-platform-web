@@ -26,13 +26,45 @@ export const checkoutAPI = {
 };
 
 export const activeProduct: string = "prod_RiiVxhDuwyX0qD";
+
 export const pricesAPI = {
   async fetchProductPrices(productId: string): Promise<Price[]> {
-    return [
-      { priceId: "3c5f544a-e75b-4a5e-9607-cb65686af07a", productId: "Wooden Sword", specId: "price_1QpeRaLXiVvrT9k7sxzqqWa2", active: true, currency: "usd", minorAmount: 10},
-      { priceId: "3c5f544a-e75b-4a5e-9607-cb65686af07b", productId: "Wooden Sword", specId: "price_1QpeRaLXiVvrT9k7sxzqqWa2", active: true, currency: "usd", minorAmount: 100},
-      { priceId: "3c5f544a-e75b-4a5e-9607-cb65686af07c", productId: "Wooden Sword", specId: "price_1QpeRaLXiVvrT9k7sxzqqWa2", active: true, currency: "usd", minorAmount: 50}
-    ];
+    // Make a GET request to the Spring API endpoint
+    const response = await fetch(`/api/product/${productId}/prices`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+
+    // Handle non-200 responses by throwing an APIError
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new APIError(
+        errorData.message || `Failed to fetch prices for product ${productId}`,
+        response.status.toString()
+      );
+    }
+
+    // Parse the response data
+    const priceEntities = await response.json();
+
+    // Transform the Spring API response to match the Price interface
+    return priceEntities.map((entity: {
+      priceId: string;
+      productId: string;
+      specId: string;
+      active: boolean;
+      currency: string;
+      minorAmount: number;
+    }) => ({
+      priceId: entity.priceId,
+      productId: entity.productId,
+      specId: entity.specId,
+      active: entity.active,
+      currency: entity.currency.toLowerCase(), // Ensure currency is lowercase to match existing data
+      minorAmount: entity.minorAmount
+    }));
   }
 };
 
