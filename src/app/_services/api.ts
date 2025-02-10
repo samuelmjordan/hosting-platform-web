@@ -10,26 +10,21 @@ export class APIError extends Error {
 }
 
 export const checkoutAPI = {
-  async createCheckoutSession(params: {
-    priceId: string;
-    userId: string;
-    success: string;
-    cancel: string;
-  }): Promise<string> {
-    const response = await fetch(`${API_URL}/api/stripe/checkout`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new APIError(error.message || 'Checkout failed', error.code);
-    }
-
-    return response.text();
-  }
+    async createCheckoutSession(priceId: string): Promise<string> {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priceId })
+      });
   
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Checkout failed');
+      }
+  
+      const data = await response.json();
+      return data.url;
+    }
 };
 
 export const activeProduct: string = "prod_RiiVxhDuwyX0qD";

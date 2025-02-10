@@ -24,26 +24,23 @@ export const StoreComponent: React.FC<StoreProps> = ({ products, regions }) => {
   const [error, setError] = useState<string | null>(null);
 
   const handleCheckout = async () => {
-    if (!userId || !product || !region) {
-      setError('Please select a product and region before proceeding');
+    if (!product || !region) {
+      setError('Please select both a product and region before proceeding');
       return;
     }
-
+  
     setIsLoading(true);
     setError(null);
-
+  
     try {
-      const baseUrl = process.env.BASE_URL;
-      const checkoutUrl = await checkoutAPI.createCheckoutSession({
-        priceId: product.priceId,
-        userId,
-        success: `${baseUrl}/return`,
-        cancel: `${baseUrl}/return`,
-      });
+      const checkoutUrl = await checkoutAPI.createCheckoutSession(
+        "price_1QpeRaLXiVvrT9k7sxzqqWa2"
+      );
       
       router.push(checkoutUrl);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Checkout failed');
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+      setError(error instanceof Error ? error.message : 'Failed to create checkout session');
     } finally {
       setIsLoading(false);
     }
