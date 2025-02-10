@@ -1,16 +1,22 @@
 export interface Product {
-    id: bigint;
-    title: string;
-    ram: number;
-    cpu: number;
-    link: string;
+  id: string;
+  title: string;
+  ram: number;
+  cpu: number;
+  priceId: string;
+  priceAmount: number;
 }
 
 export interface Region {
-    id: bigint;
-    continent: string;
-    continentCode: string;
-    city: string;
+  id: string;
+  continent: string;
+  continentCode: string;
+  city: string;
+}
+
+export interface StoreSelection {
+  product: Product | null;
+  region: Region | null;
 }
 
 export interface Server {

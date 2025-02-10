@@ -1,11 +1,16 @@
 import { Button } from "@/components/ui/button"
-import Store from "@/app/_components/storeComponent/storeComponent"
+import { StoreComponent } from '@/app/_components/store/storeComponent';
 import { SignInButton, SignUpButton } from "@clerk/nextjs"
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { pricesAPI, regionsAPI } from '@/app/_services/api';
 
 export default async function Home() {
   const { userId } = await auth();
+  const [products, regions] = await Promise.all([
+    pricesAPI.fetchProductPrices({productId: "test"}),
+    regionsAPI.fetchProductRegions(),
+  ]);
   
   if (userId) {
     redirect('/store');
@@ -33,7 +38,7 @@ export default async function Home() {
           </SignInButton>
         </div>
         <div>
-          <Store />
+          <StoreComponent products={products} regions={regions} />
         </div>
       </div>
     </main>
