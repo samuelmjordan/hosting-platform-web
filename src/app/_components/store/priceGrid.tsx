@@ -19,7 +19,7 @@ export const PriceGrid: React.FC<PriceGridProps> = ({
     getId={(price) => price.priceId}
     selectedId={selectedId}
     onSelect={onSelect}
-    renderTitle={(price) => "Title"}
+    renderTitle={(price) => "Title" + price.currency}
     renderContent={(price) => (
       <div className="flex flex-col space-y-4">
         <div className="flex items-center gap-2">
