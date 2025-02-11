@@ -1,26 +1,16 @@
-export async function startCheckout(priceId: string, userId: string): Promise<string> {
-
-    const checkoutData = {
-        priceId,
-        userId,
-        success: `${process.env.NEXT_PUBLIC_BASE_URL}/return`,
-        cancel: `${process.env.NEXT_PUBLIC_BASE_URL}/return`
-    };
-
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/stripe/checkout`, {
+export async function startCheckout(priceId: string): Promise<string> {
+    const response = await fetch('/api/checkout', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(checkoutData)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ priceId })
     });
-  
+
     if (!response.ok) {
-      if (response.status === 404) {
-        throw new Error('Prices not found for this product');
-      }
-      throw new Error('Failed to fetch prices');
+        console.log(response);
+        const error = await response.text();
+        throw new Error(error || 'Checkout failed');
     }
-  
-    return response.text();
-  }
+
+    const data = await response.json();
+    return data.url;
+};

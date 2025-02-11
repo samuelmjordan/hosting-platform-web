@@ -38,7 +38,7 @@ export const StoreComponent: React.FC<StoreProps> = ({ prices, regions }) => {
     setError(null);
   
     try {
-      const checkoutUrl = await startCheckout(price.priceId, userId);
+      const checkoutUrl = await startCheckout(price.priceId);
       console.log(checkoutUrl);
       router.push(checkoutUrl);
     } catch (error) {
