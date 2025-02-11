@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button";
-
 const Footer = () => {
     const footerItems = [
         { label: 'Help', href: '/help' },
