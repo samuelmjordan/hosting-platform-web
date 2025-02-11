@@ -1,5 +1,3 @@
-"use client"
-
 import { Server } from "@/app/types"
 import {
   Table,
@@ -23,7 +21,6 @@ const getStatusStyles = (status: string) => {
   }
 };
 
- 
 interface DashboardTableProps {
   servers: Server[]
 }
@@ -38,6 +35,11 @@ export function DashboardTable({
             <TableHeader className="sticky bg-background z-40">
             </TableHeader>
             <TableBody>
+              <TableRow key="header">
+                <TableCell>
+                  <h1 className="text-2xl font-bold mb-3">Server Dashboard</h1>
+                </TableCell>
+              </TableRow>
               {servers.map((server) => 
               <TableRow key={server.id}>
                 <TableCell>

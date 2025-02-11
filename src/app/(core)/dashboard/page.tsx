@@ -1,11 +1,18 @@
 import { Server } from "@/app/types"
 import { DashboardTable } from "@/app/_components/dahboardTable"
 import { Card } from "@/components/ui/card"
-import { regionsAPI } from '@/app/_services/regionApi';
-import { pricesAPI, activeProduct } from '@/app/_services/priceApi';
 
-const prices = await pricesAPI.fetchProductPrices(activeProduct);
-const regions = await regionsAPI.fetchProductRegions();
+const prices = [
+  { priceId: "3c5f544a-e75b-4a5e-9607-cb65686af07a", productId: "3c5f544a-e75b-4a5e-9607-cb65686af07a", specId: "price_1QpeRaLXiVvrT9k7sxzqqWa2", active: true, currency: "usd", minorAmount: 10},
+  { priceId: "3c5f544a-e75b-4a5e-9607-cb65686af07b", productId: "3c5f544a-e75b-4a5e-9607-cb65686af07a", specId: "price_1QpeRaLXiVvrT9k7sxzqqWa2", active: true, currency: "usd", minorAmount: 100},
+  { priceId: "3c5f544a-e75b-4a5e-9607-cb65686af07c", productId: "3c5f544a-e75b-4a5e-9607-cb65686af07a", specId: "price_1QpeRaLXiVvrT9k7sxzqqWa2", active: true, currency: "usd", minorAmount: 50}
+];
+const regions = [
+  { id: "3c5f544a-e75b-4a5e-9607-cb65686af07a", continent: "North America", continentCode: "NA", city: "Chicago" },
+  { id: "3c5f544a-e75b-4a5e-9607-cb65686af07b", continent: "Western Europe", continentCode: "EUW", city: "Frankfurt" },
+  { id: "3c5f544a-e75b-4a5e-9607-cb65686af07c", continent: "Eastern Europe", continentCode: "EUE", city: "Helsinki" },
+  { id: "3c5f544a-e75b-4a5e-9607-cb65686af07d", continent: "Southeast Asia", continentCode: "SEA", city: "Singapore" },
+];
 
 async function getServers(): Promise<Server[]> {
   return [
@@ -97,9 +104,6 @@ export default async function Dashboard() {
 
   return (
     <div className="container mx-auto py-6">
-      <h1 className="text-6xl font-extrabold tracking-tight text-center sm:text-8xl lg:text-9xl mb-6">
-        Dashboard
-      </h1>
       <Card className="mt-6">
         <DashboardTable servers={servers}/>
       </Card>

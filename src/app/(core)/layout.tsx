@@ -1,4 +1,5 @@
 import Navbar from "@/app/_components/navbar"
+import Footer from "../_components/footer"
 
 export default function RootLayout({
   children,
@@ -6,13 +7,16 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <div>
-      <div className="fixed top-0 left-0 right-0 h-16 bg-background z-50 border-b">
+    <div className="flex flex-col min-h-screen">
+      <div>
         <Navbar />
       </div>
-      <main className="pt-16">
+      <main className="flex-1">
         {children}
       </main>
+      <div>
+        <Footer />
+      </div>
     </div>
   )
 }
