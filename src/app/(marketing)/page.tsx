@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { Button } from "@/components/ui/button"
 import { SignInButton, SignUpButton } from "@clerk/nextjs"
 import { auth } from "@clerk/nextjs/server";

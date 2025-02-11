@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { Server } from "@/app/types"
 import { DashboardTable } from "@/app/_components/dashboard/dahboardTable"
 import { Card } from "@/components/ui/card"

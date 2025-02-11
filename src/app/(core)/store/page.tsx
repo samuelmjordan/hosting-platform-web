@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { StoreComponent } from "@/app/_components/store/storeComponent";
 import { fetchPrices } from "@/app/_services/priceService";
 import { fetchRegions } from "@/app/_services/regionService";
