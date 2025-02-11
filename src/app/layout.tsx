@@ -1,8 +1,6 @@
 import type { Metadata } from "next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
 import { ClerkProvider } from '@clerk/nextjs'
 import './globals.css'
-import { Suspense } from "react"
 
 export const metadata: Metadata = {
   title: {
@@ -19,13 +17,10 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html>
         <head />
-        <body className="m-0">
-          <Suspense fallback={null}>
-            <SpeedInsights />
-            {children}
-          </Suspense>
+        <body>
+          {children}
         </body>
       </html>
     </ClerkProvider>
