@@ -1,7 +1,8 @@
 import { Server } from "@/app/types"
 import { DashboardTable } from "@/app/_components/dahboardTable"
 import { Card } from "@/components/ui/card"
-import { pricesAPI, regionsAPI, activeProduct } from '@/app/_services/api';
+import { regionsAPI } from '@/app/_services/regionApi';
+import { pricesAPI, activeProduct } from '@/app/_services/priceApi';
 
 const prices = await pricesAPI.fetchProductPrices(activeProduct);
 const regions = await regionsAPI.fetchProductRegions();

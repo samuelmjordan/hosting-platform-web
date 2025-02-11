@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@clerk/nextjs';
 import { Price, Region } from '@/app/types';
 import { useStore } from '@/app/_hooks/useStore';
-import { checkoutAPI } from '@/app/_services/api';
+import { checkoutAPI } from '@/app/_services/checkoutApi';
 import { PriceGrid } from '@/app/_components/store/priceGrid';
 import { RegionGrid } from '@/app/_components/store/regionGrid';
 import { StoreCheckout } from '@/app/_components/store/storeCheckout';

@@ -3,7 +3,8 @@ import { StoreComponent } from '@/app/_components/store/storeComponent';
 import { SignInButton, SignUpButton } from "@clerk/nextjs"
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { activeProduct, pricesAPI, regionsAPI } from '@/app/_services/api';
+import { regionsAPI } from '@/app/_services/regionApi';
+import { pricesAPI, activeProduct } from '@/app/_services/priceApi';
 
 export default async function Home() {
   const { userId } = await auth();
