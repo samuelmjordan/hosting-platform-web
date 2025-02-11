@@ -1,5 +1,5 @@
 import { Server } from "@/app/types"
-import { DashboardTable } from "@/app/_components/dahboardTable"
+import { DashboardTable } from "@/app/_components/dashboard/dahboardTable"
 import { Card } from "@/components/ui/card"
 
 const prices = [
