@@ -20,12 +20,12 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({
   onCurrencySelect, 
   initialCurrency = 'USD' 
 }) => {
-  const [state, setState] = React.useState<CurrencyState>({
+  const [state, setState] = useState<CurrencyState>({
     detected: initialCurrency,
     selected: initialCurrency
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     const detectUserCurrency = (): SupportedCurrency => {
       const userLocale = navigator.language;
       

@@ -1,20 +1,13 @@
 export const dynamic = 'force-dynamic';
 
-import { Server } from "@/app/types"
+import { Plan, Region, Server } from "@/app/types"
 import { DashboardTable } from "@/app/_components/dashboard/dahboardTable"
 import { Card } from "@/components/ui/card"
+import { fetchPlans } from "@/app/_services/planService";
+import { fetchRegions } from "@/app/_services/regionService";
 
-const prices = [
-  { priceId: "3c5f544a-e75b-4a5e-9607-cb65686af07a", productId: "3c5f544a-e75b-4a5e-9607-cb65686af07a", specId: "price_1QpeRaLXiVvrT9k7sxzqqWa2", active: true, currency: "usd", minorAmount: 10},
-  { priceId: "3c5f544a-e75b-4a5e-9607-cb65686af07b", productId: "3c5f544a-e75b-4a5e-9607-cb65686af07a", specId: "price_1QpeRaLXiVvrT9k7sxzqqWa2", active: true, currency: "usd", minorAmount: 100},
-  { priceId: "3c5f544a-e75b-4a5e-9607-cb65686af07c", productId: "3c5f544a-e75b-4a5e-9607-cb65686af07a", specId: "price_1QpeRaLXiVvrT9k7sxzqqWa2", active: true, currency: "usd", minorAmount: 50}
-];
-const regions = [
-  { id: "3c5f544a-e75b-4a5e-9607-cb65686af07a", continent: "North America", continentCode: "NA", city: "Chicago" },
-  { id: "3c5f544a-e75b-4a5e-9607-cb65686af07b", continent: "Western Europe", continentCode: "EUW", city: "Frankfurt" },
-  { id: "3c5f544a-e75b-4a5e-9607-cb65686af07c", continent: "Eastern Europe", continentCode: "EUE", city: "Helsinki" },
-  { id: "3c5f544a-e75b-4a5e-9607-cb65686af07d", continent: "Southeast Asia", continentCode: "SEA", city: "Singapore" },
-];
+  const plans: Plan[] = await fetchPlans("prod_RiiVxhDuwyX0qD");
+  const regions: Region[] = await fetchRegions();
 
 async function getServers(): Promise<Server[]> {
   return [
@@ -23,7 +16,7 @@ async function getServers(): Promise<Server[]> {
       title: "myServer",
       description: "it a good server",
       status: "Offline",
-      price: prices.at(0)!,
+      plan: plans.at(0)!,
       region: regions.at(0)!
     },
     {
@@ -31,7 +24,7 @@ async function getServers(): Promise<Server[]> {
       title: "Hypixel",
       description: "Hunger games lobbies on this server",
       status: "Online",
-      price: prices.at(1)!,
+      plan: plans.at(1)!,
       region: regions.at(1)!
     },
     {
@@ -39,7 +32,7 @@ async function getServers(): Promise<Server[]> {
       title: "hardcore",
       description: "this is a hardcore server",
       status: "Pending",
-      price: prices.at(2)!,
+      plan: plans.at(2)!,
       region: regions.at(2)!
     },
     {
@@ -47,7 +40,7 @@ async function getServers(): Promise<Server[]> {
       title: "SkyBlock",
       description: "Economy-focused skyblock server with custom plugins",
       status: "Online",
-      price: prices.at(0)!,
+      plan: plans.at(0)!,
       region: regions.at(1)!
     },
     {
@@ -55,7 +48,7 @@ async function getServers(): Promise<Server[]> {
       title: "CreativeBuild",
       description: "Creative mode server for builders and artists",
       status: "Online",
-      price: prices.at(1)!,
+      plan: plans.at(1)!,
       region: regions.at(2)!
     },
     {
@@ -63,7 +56,7 @@ async function getServers(): Promise<Server[]> {
       title: "SurvivalPlus",
       description: "Enhanced survival experience with custom mechanics",
       status: "Pending",
-      price: prices.at(2)!,
+      plan: plans.at(2)!,
       region: regions.at(0)!
     },
     {
@@ -71,7 +64,7 @@ async function getServers(): Promise<Server[]> {
       title: "PvPArena",
       description: "Competitive PvP matches and tournaments",
       status: "Online",
-      price: prices.at(1)!,
+      plan: plans.at(1)!,
       region: regions.at(1)!
     },
     {
@@ -79,7 +72,7 @@ async function getServers(): Promise<Server[]> {
       title: "RPGRealm",
       description: "Immersive RPG experience with custom quests",
       status: "Offline",
-      price: prices.at(2)!,
+      plan: plans.at(2)!,
       region: regions.at(2)!
     },
     {
@@ -87,7 +80,7 @@ async function getServers(): Promise<Server[]> {
       title: "MiniGames",
       description: "Collection of various mini-games and party games",
       status: "Online",
-      price: prices.at(0)!,
+      plan: plans.at(0)!,
       region: regions.at(0)!
     },
     {
@@ -95,7 +88,7 @@ async function getServers(): Promise<Server[]> {
       title: "VanillaPlus",
       description: "Slightly enhanced vanilla experience",
       status: "Pending",
-      price: prices.at(1)!,
+      plan: plans.at(1)!,
       region: regions.at(1)!
     }
   ]

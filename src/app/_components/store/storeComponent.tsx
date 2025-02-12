@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@clerk/nextjs';
-import { Price, Region } from '@/app/types';
+import { Plan, Region } from '@/app/types';
 import { PriceGrid } from '@/app/_components/store/priceGrid';
 import { RegionGrid } from '@/app/_components/store/regionGrid';
 import { StoreCheckout } from '@/app/_components/store/storeCheckout';
@@ -13,20 +13,19 @@ import { startCheckout } from '@/app/_services/checkoutService';
 type SupportedCurrency = 'USD' | 'EUR' | 'GBP';
 
 interface StoreProps {
-  prices: Price[];
+  plans: Plan[];
   regions: Region[];
 }
 
-export const StoreComponent: React.FC<StoreProps> = ({ prices, regions }) => {
+export const StoreComponent: React.FC<StoreProps> = ({ plans: plans, regions }) => {
   const router = useRouter();
   const { userId } = useAuth();
-  const [price, setPrice] = useState<Price | null>(null);
+  const [plan, setPlan] = useState<Plan | null>(null);
   const [region, setRegion] = useState<Region | null>(null);
   const [currency, setCurrency] = useState<SupportedCurrency>('USD');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // detect user's currency on mount
   React.useEffect(() => {
     const userLocale = navigator.language;
     try {
@@ -47,7 +46,7 @@ export const StoreComponent: React.FC<StoreProps> = ({ prices, regions }) => {
   }, []);
 
   const handleCheckout = async () => {
-    if (!price || !region) {
+    if (!plan || !region) {
       setError('Please select both a product and region before proceeding');
       return;
     }
@@ -61,7 +60,7 @@ export const StoreComponent: React.FC<StoreProps> = ({ prices, regions }) => {
     setError(null);
   
     try {
-      const checkoutUrl = await startCheckout(price.priceId);
+      const checkoutUrl = await startCheckout(plan.price.priceId);
       console.log(checkoutUrl);
       router.push(checkoutUrl);
     } catch (error) {
@@ -94,10 +93,10 @@ export const StoreComponent: React.FC<StoreProps> = ({ prices, regions }) => {
           </CardHeader>
         <CardContent>
           <PriceGrid
-            prices={prices}
-            selectedId={price?.priceId ?? null}
+            plans={plans}
+            selectedId={plan?.price.priceId ?? null}
             currency={currency}
-            onSelect={setPrice}
+            onSelect={setPlan}
           />
         </CardContent>
       </Card>
@@ -120,7 +119,7 @@ export const StoreComponent: React.FC<StoreProps> = ({ prices, regions }) => {
           <StoreCheckout
             isLoading={isLoading}
             error={error}
-            disabled={!price || !region || !userId}
+            disabled={!plan || !region || !userId}
             onCheckout={handleCheckout}
           />
         </CardContent>

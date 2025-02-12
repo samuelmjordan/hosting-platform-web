@@ -14,6 +14,11 @@ export interface Price {
   minorAmount: number;
 }
 
+export interface Plan {
+  price: Price,
+  spec: Specification
+}
+
 export interface Region {
   regionId: string;
   continent: string;
@@ -31,7 +36,7 @@ export interface Server {
   title: string
   description: string
   status: "Online" | "Offline" | "Pending"
-  price: Price
+  plan: Plan
   region: Region
 }
 
