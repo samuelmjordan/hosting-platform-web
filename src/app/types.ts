@@ -1,10 +1,8 @@
 export interface Specification {
-  id: string;
+  specId: string;
   title: string;
   ram: number;
   cpu: number;
-  priceId: string;
-  priceAmount: number;
 }
 
 export interface Price {
@@ -12,12 +10,12 @@ export interface Price {
   productId: string;
   specId: string;
   active: boolean;
-  currency: string;
+  currency: SupportedCurrency;
   minorAmount: number;
 }
 
 export interface Region {
-  id: string;
+  regionId: string;
   continent: string;
   continentCode: string;
   city: string;
@@ -36,3 +34,5 @@ export interface Server {
   price: Price
   region: Region
 }
+
+export type SupportedCurrency = 'USD' | 'EUR' | 'GBP';
