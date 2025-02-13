@@ -7,7 +7,7 @@ import { Plan, Region, SupportedCurrency } from '@/app/types';
 import { PriceGrid } from '@/app/_components/store/priceGrid';
 import { RegionGrid } from '@/app/_components/store/regionGrid';
 import { StoreCheckout } from '@/app/_components/store/storeCheckout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent} from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { startCheckout } from '@/app/_services/checkoutService';
 import { fetchUserCurrency } from '@/app/_services/currencyService';
