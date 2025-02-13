@@ -40,4 +40,4 @@ export interface Server {
   region: Region
 }
 
-export type SupportedCurrency = 'USD' | 'EUR' | 'GBP';
+export type SupportedCurrency = 'USD' | 'EUR' | 'GBP' | 'XXX';

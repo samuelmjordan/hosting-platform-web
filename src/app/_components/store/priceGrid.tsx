@@ -2,23 +2,25 @@ import React from 'react';
 import { Plan, SupportedCurrency } from '@/app/types';
 import SelectableGrid from "@/app/_components/store/selectableGrid";
 import { Cpu, MemoryStick } from 'lucide-react';
-import { formatCurrency } from '../currencySelector';
+
+interface CurrencyAmount {
+  type: SupportedCurrency;
+  value: number;
+}
 
 interface PriceGridProps {
   plans: Plan[];
   selectedId: string | null;
-  currency: SupportedCurrency
   onSelect: (plan: Plan) => void;
 }
 
 export const PriceGrid: React.FC<PriceGridProps> = ({
   plans: plans,
   selectedId,
-  currency,
   onSelect,
 }) => (
   <SelectableGrid
-    items={plans.filter((plan) => plan.price.currency == currency)}
+    items={plans}
     getId={(plan) => plan.price.priceId}
     selectedId={selectedId}
     onSelect={onSelect}
@@ -40,3 +42,10 @@ export const PriceGrid: React.FC<PriceGridProps> = ({
     )}
   />
 );
+
+const formatCurrency = (amount: CurrencyAmount): string => {
+  return new Intl.NumberFormat(navigator.language, {
+    style: 'currency',
+    currency: amount.type
+  }).format(amount.value / 100);
+};

@@ -17,4 +17,4 @@ export async function fetchPrices(productId: string): Promise<Price[]> {
     }
   
     return response.json();
-  }
+}
