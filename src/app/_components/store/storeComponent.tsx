@@ -93,7 +93,7 @@ export const StoreComponent: React.FC<StoreProps> = ({ plans: plans, regions }) 
               <div className="flex items-center">
                 {isLockedCurrency ? (
                   <TooltipProvider>
-                    <Tooltip>
+                    <Tooltip delayDuration={100}>
                       <TooltipTrigger asChild>
                         <select 
                           value={currency}
