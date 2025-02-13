@@ -46,7 +46,7 @@ function SelectableGrid<T>({
         return (
           <div
             key={id}
-            className="group cursor-pointer"
+            className="group cursor-pointer relative isolate"
             onClick={() => handleSelect(item)}
             role="radio"
             aria-checked={isSelected}
@@ -58,10 +58,10 @@ function SelectableGrid<T>({
             }}
           >
             <Card 
-              className={`w-full h-full flex flex-col transition-all duration-200 ${
+              className={`w-full h-full flex flex-col transition-transform duration-200 transform-gpu will-change-transform ${
                 isSelected 
-                  ? 'border-primary border-2 shadow-lg scale-105' 
-                  : 'hover:scale-105 hover:border-primary'
+                  ? 'border-primary border-2 shadow-lg scale-[1.02]' 
+                  : 'hover:scale-[1.02] hover:border-primary'
               }`}
             >
               <CardHeader>

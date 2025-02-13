@@ -83,80 +83,73 @@ export const StoreComponent: React.FC<StoreProps> = ({ plans: plans, regions }) 
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
-      <Card>
-        <CardHeader>
-          <div className="flex justify-between items-center">
-            <CardTitle>Select Server Package</CardTitle>
-            <div className="flex items-center gap-2">
-              {isLockedCurrency ? (
-                <TooltipProvider>
-                  <Tooltip delayDuration={100}>
-                    <TooltipTrigger asChild>
-                      <div>
+    <div className="max-w-7xl mx-auto px-6 py-12">
+      <Card className="bg-white shadow-md rounded-lg">
+        <CardContent className="p-8 space-y-12">
+          {/* Plans Section */}
+          <section>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-semibold text-gray-900">Select Server Package</h2>
+              <div className="flex items-center">
+                {isLockedCurrency ? (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
                         <select 
                           value={currency}
                           disabled
-                          className="px-3 py-1 border rounded shadow-sm text-sm bg-white opacity-50 cursor-not-allowed"
+                          className="px-4 py-2 border rounded-md shadow-sm text-sm bg-gray-50 opacity-50 cursor-not-allowed"
                         >
                           <option value="USD">$ USD</option>
                           <option value="EUR">€ EUR</option>
                           <option value="GBP">£ GBP</option>
                         </select>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>Your account currency is locked.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ) : (
-                <select 
-                  value={currency}
-                  onChange={(e) => setCurrency(e.target.value as SupportedCurrency)}
-                  className="px-3 py-1 border rounded shadow-sm text-sm bg-white"
-                >
-                  <option value="USD">$ USD</option>
-                  <option value="EUR">€ EUR</option>
-                  <option value="GBP">£ GBP</option>
-                </select>
-              )}
+                      </TooltipTrigger>
+                      <TooltipContent side="left">
+                        <p className="text-sm">Your account currency is locked</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ) : (
+                  <select 
+                    value={currency}
+                    onChange={(e) => setCurrency(e.target.value as SupportedCurrency)}
+                    className="px-4 py-2 border rounded-md shadow-sm text-sm bg-white hover:bg-gray-50 transition-colors"
+                  >
+                    <option value="USD">$ USD</option>
+                    <option value="EUR">€ EUR</option>
+                    <option value="GBP">£ GBP</option>
+                  </select>
+                )}
+              </div>
             </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <PriceGrid
-            plans={plans.filter((plan) => {
-              console.log(plan.price.currency + " == " + currency)
-              return plan.price.currency == currency
-            })}
-            selectedId={plan?.price.priceId ?? null}
-            onSelect={setPlan}
-          />
-        </CardContent>
-      </Card>
+            
+            <PriceGrid
+              plans={plans.filter(plan => plan.price.currency === currency)}
+              selectedId={plan?.price.priceId ?? null}
+              onSelect={setPlan}
+            />
+          </section>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Select Region</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <RegionGrid
-            regions={regions}
-            selectedId={region?.regionId ?? null}
-            onSelect={setRegion}
-          />
-        </CardContent>
-      </Card>
+          {/* Regions Section */}
+          <section className="pt-4">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-6">Select Region</h2>
+            <RegionGrid
+              regions={regions}
+              selectedId={region?.regionId ?? null}
+              onSelect={setRegion}
+            />
+          </section>
 
-      <Card>
-        <CardContent className="pt-6">
-          <StoreCheckout
-            isLoading={isLoading}
-            error={error}
-            disabled={!plan || !region || !userId}
-            onCheckout={handleCheckout}
-          />
+          {/* Checkout Section */}
+          <section className="pt-6">
+            <StoreCheckout
+              isLoading={isLoading}
+              error={error}
+              disabled={!plan || !region || !userId}
+              onCheckout={handleCheckout}
+            />
+          </section>
         </CardContent>
       </Card>
     </div>

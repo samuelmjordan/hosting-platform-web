@@ -28,7 +28,7 @@ export const StoreCheckout: React.FC<StoreCheckoutProps> = ({
           Processing...
         </>
       ) : (
-        'Proceed to Checkout'
+        'Checkout'
       )}
     </Button>
     
