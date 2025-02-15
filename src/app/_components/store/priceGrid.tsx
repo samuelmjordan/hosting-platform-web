@@ -24,16 +24,16 @@ export const PriceGrid: React.FC<PriceGridProps> = ({
     getId={(plan) => plan.price.priceId}
     selectedId={selectedId}
     onSelect={onSelect}
-    renderTitle={(plan) => plan.spec.title}
+    renderTitle={(plan) => plan.specification.title}
     renderContent={(plan) => (
       <div className="flex flex-col space-y-4">
         <div className="flex items-center gap-2">
           <MemoryStick className="h-4 w-4" />
-          <span>{plan.spec.ram} GB RAM</span>
+          <span>{plan.specification.ram_gb} GB RAM</span>
         </div>
         <div className="flex items-center gap-2">
           <Cpu className="h-4 w-4" />
-          <span>{plan.spec.cpu} Core CPU</span>
+          <span>{plan.specification.cpu} Core CPU</span>
         </div>
         <div className="text-lg font-semibold">
           {formatCurrency({type: plan.price.currency, value: plan.price.minorAmount})}/month

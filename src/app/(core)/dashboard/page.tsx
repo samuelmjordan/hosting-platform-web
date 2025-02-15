@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card"
 import { fetchPlans } from "@/app/_services/planService";
 import { fetchRegions } from "@/app/_services/regionService";
 
-const plans: Plan[] = await fetchPlans("prod_RiiVxhDuwyX0qD");
+const plans: Plan[] = await fetchPlans('JAVA_SERVER');
 const regions: Region[] = await fetchRegions();
 
 async function getServers(): Promise<Server[]> {

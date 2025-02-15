@@ -1,15 +1,18 @@
-import { Plan, Price, Specification } from "@/app/types";
-import { fetchPrices } from "@/app/_services/priceService";
-import { fetchSpecifications } from "./specificationService";
+import { Plan, SpecificationType } from "@/app/types";
 
-export async function fetchPlans(productId: string): Promise<Plan[]> {
-    const prices: Price[] = await fetchPrices(productId);
-    const specifications: Specification[] = await fetchSpecifications();
+export async function fetchPlans(specificationType: SpecificationType): Promise<Plan[]> {
+  const response = await fetch(`${process.env.API_URL}/api/plan/${specificationType}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  });
 
-    return prices
-    .map((price) => {
-      const spec = specifications.find(spec => spec.specId === price.specId);
-      return spec ? { price, spec } : null;
-    })
-    .filter((pkg): pkg is Plan => pkg !== null);
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error('Plans not found for this type');
+    }
+    throw new Error('Failed to fetch plans');
+  }
+
+  return response.json();
 }

@@ -1,14 +1,16 @@
 export interface Specification {
-  specId: string;
+  type: SpecificationType;
+  specificationId: string;
   title: string;
-  ram: number;
+  caption: string;
+  ram_gb: number;
   cpu: number;
+  ssd_gb: number;
 }
 
 export interface Price {
   priceId: string;
   productId: string;
-  specId: string;
   active: boolean;
   currency: SupportedCurrency;
   minorAmount: number;
@@ -16,7 +18,7 @@ export interface Price {
 
 export interface Plan {
   price: Price,
-  spec: Specification
+  specification: Specification
 }
 
 export interface Region {
@@ -41,3 +43,5 @@ export interface Server {
 }
 
 export type SupportedCurrency = 'USD' | 'EUR' | 'GBP' | 'XXX';
+
+export type SpecificationType = 'JAVA_SERVER' | 'BEDROCK_SERVER';
