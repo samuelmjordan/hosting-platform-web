@@ -44,4 +44,4 @@ export interface Server {
 
 export type SupportedCurrency = 'USD' | 'EUR' | 'GBP' | 'XXX';
 
-export type SpecificationType = 'JAVA_SERVER' | 'BEDROCK_SERVER';
+export type SpecificationType = 'GAME_SERVER' | 'ACCOUNT_TIER';

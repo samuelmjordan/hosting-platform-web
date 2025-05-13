@@ -6,7 +6,7 @@ import { fetchRegions } from "@/app/_services/regionService";
 import { Plan, Region } from "@/app/types";
 
 export default async function StorePage() {
-  const plans: Plan[] = await fetchPlans('JAVA_SERVER');
+  const plans: Plan[] = await fetchPlans('GAME_SERVER');
   const regions: Region[] = await fetchRegions();
 
   return (
