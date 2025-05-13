@@ -34,7 +34,7 @@ export const StoreComponent: React.FC<StoreProps> = ({ plans: plans, regions }) 
         if (userCurrency !== 'XXX') {
           setCurrency(userCurrency);
           setIsLockedCurrency(true);
-        } else {
+        } else if (typeof navigator !== 'undefined') {
           const userLocale = navigator.language;
           const formatter = new Intl.NumberFormat(userLocale, {
             style: 'currency',
@@ -43,7 +43,7 @@ export const StoreComponent: React.FC<StoreProps> = ({ plans: plans, regions }) 
           const detectedCurrency = formatter.formatToParts(0)
             .find(part => part.type === 'currency')
             ?.value as SupportedCurrency;
-          
+  
           if (['USD', 'EUR', 'GBP'].includes(detectedCurrency)) {
             setCurrency(detectedCurrency);
           }
@@ -52,7 +52,7 @@ export const StoreComponent: React.FC<StoreProps> = ({ plans: plans, regions }) 
         console.warn('Currency fetch failed:', error);
       }
     };
-
+  
     initCurrency();
   }, []);
 
