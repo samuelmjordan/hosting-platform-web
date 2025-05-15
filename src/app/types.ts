@@ -23,6 +23,7 @@ export interface Plan {
 
 export interface Region {
   region_id: string;
+  region_code: string;
   continent: string;
   continent_code: string;
   city: string;

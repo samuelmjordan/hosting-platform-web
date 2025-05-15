@@ -71,7 +71,7 @@ export const StoreComponent: React.FC<StoreProps> = ({ plans: plans, regions }) 
     setError(null);
   
     try {
-      const checkoutUrl = await startCheckout(plan.price.price_id);
+      const checkoutUrl = await startCheckout(plan.price.price_id, region.region_code);
       console.log(checkoutUrl);
       router.push(checkoutUrl);
     } catch (error) {

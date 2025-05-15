@@ -10,11 +10,12 @@ export async function POST(request: Request) {
   try {
     const { userId } = await auth();
 
-    const { priceId } = await request.json();
+    const { price_id, region} = await request.json();
 
     const checkoutData = {
-      priceId,
-      userId,
+      price_id,
+      user_id: userId,
+      region,
       success: `${BASE_URL}/return`,
       cancel: `${BASE_URL}/return`
     };
