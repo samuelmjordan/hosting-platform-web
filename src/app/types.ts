@@ -1,6 +1,6 @@
 export interface Specification {
   type: SpecificationType;
-  specificationId: string;
+  specification_id: string;
   title: string;
   caption: string;
   ram_gb: number;
@@ -9,11 +9,11 @@ export interface Specification {
 }
 
 export interface Price {
-  priceId: string;
-  productId: string;
+  price_id: string;
+  product_id: string;
   active: boolean;
   currency: SupportedCurrency;
-  minorAmount: number;
+  minor_amount: number;
 }
 
 export interface Plan {
@@ -22,9 +22,9 @@ export interface Plan {
 }
 
 export interface Region {
-  regionId: string;
+  region_id: string;
   continent: string;
-  continentCode: string;
+  continent_code: string;
   city: string;
 }
 

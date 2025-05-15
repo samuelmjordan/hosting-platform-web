@@ -21,7 +21,7 @@ export const PriceGrid: React.FC<PriceGridProps> = ({
 }) => (
   <SelectableGrid
     items={plans}
-    getId={(plan) => plan.price.priceId}
+    getId={(plan) => plan.price.price_id}
     selectedId={selectedId}
     onSelect={onSelect}
     renderTitle={(plan) => plan.specification.title}
@@ -36,7 +36,7 @@ export const PriceGrid: React.FC<PriceGridProps> = ({
           <span>{plan.specification.cpu} Core CPU</span>
         </div>
         <div className="text-lg font-semibold">
-          {formatCurrency({type: plan.price.currency, value: plan.price.minorAmount})}/month
+          {formatCurrency({type: plan.price.currency, value: plan.price.minor_amount})}/month
         </div>
       </div>
     )}

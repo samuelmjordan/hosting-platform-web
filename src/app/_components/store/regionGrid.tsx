@@ -15,7 +15,7 @@ export const RegionGrid: React.FC<RegionGridProps> = ({
 }) => (
   <SelectableGrid
     items={regions}
-    getId={(region) => region.regionId}
+    getId={(region) => region.region_id}
     selectedId={selectedId}
     onSelect={onSelect}
     renderTitle={(region) => region.continent}
@@ -23,7 +23,7 @@ export const RegionGrid: React.FC<RegionGridProps> = ({
       <div className="flex flex-col space-y-2">
         <span className="text-lg">{region.city}</span>
         <span className="text-sm text-muted-foreground">
-          Region: {region.continentCode}
+          Region: {region.continent_code}
         </span>
       </div>
     )}

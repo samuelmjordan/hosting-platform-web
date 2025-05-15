@@ -71,7 +71,7 @@ export const StoreComponent: React.FC<StoreProps> = ({ plans: plans, regions }) 
     setError(null);
   
     try {
-      const checkoutUrl = await startCheckout(plan.price.priceId);
+      const checkoutUrl = await startCheckout(plan.price.price_id);
       console.log(checkoutUrl);
       router.push(checkoutUrl);
     } catch (error) {
@@ -126,7 +126,7 @@ export const StoreComponent: React.FC<StoreProps> = ({ plans: plans, regions }) 
             
             <PriceGrid
               plans={plans.filter(plan => plan.price.currency === currency)}
-              selectedId={plan?.price.priceId ?? null}
+              selectedId={plan?.price.price_id ?? null}
               onSelect={setPlan}
             />
           </section>
@@ -136,7 +136,7 @@ export const StoreComponent: React.FC<StoreProps> = ({ plans: plans, regions }) 
             <h2 className="text-2xl font-semibold text-gray-900 mb-6">Select Region</h2>
             <RegionGrid
               regions={regions}
-              selectedId={region?.regionId ?? null}
+              selectedId={region?.region_id ?? null}
               onSelect={setRegion}
             />
           </section>
