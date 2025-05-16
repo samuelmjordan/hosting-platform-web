@@ -35,12 +35,25 @@ export interface StoreSelection {
 }
 
 export interface Server {
-  id: bigint
-  title: string
-  description: string
-  status: "Online" | "Offline" | "Pending"
-  plan: Plan
-  region: Region
+  subscription: {
+    subscription_id: string;
+    customer_id: string;
+    status: string;
+    price_id: string;
+    current_period_end: number;
+    current_period_start: number;
+    cancel_at_period_end: boolean;
+    metadata: {
+      REGION: string;
+    };
+  };
+  game_server: {
+    server_id: string;
+    subscription_id: string;
+    plan_id: string;
+    node_id: string;
+  };
+  dns_cname_record: null | string;
 }
 
 export type SupportedCurrency = 'USD' | 'EUR' | 'GBP' | 'XXX';
