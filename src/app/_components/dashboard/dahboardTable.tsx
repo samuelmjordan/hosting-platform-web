@@ -41,14 +41,14 @@ export function DashboardTable({
                 </TableCell>
               </TableRow>
               {servers.map((server) => 
-              <TableRow key={server.game_server.server_id}>
+              <TableRow key={server.cname_record_name}>
                 <TableCell>
                   <div>
-                    <h1 className="text-2xl font-bold mb-3">{server.dns_cname_record?.record_name}</h1>
-                    <p className="text-gray-600 mb-4 max-w-s line-clamp-3">{server.game_server.subscription_id}</p>
+                    <h1 className="text-2xl font-bold mb-3">{server.name}</h1>
+                    <p className="text-gray-600 mb-4 max-w-s line-clamp-3">{server.cname_record_name}</p>
                     <div className="flex items-center gap-3">
-                      <span className={`inline-flex px-3 py-1 text-sm rounded-full ${getStatusStyles(server.subscription.status)} font-semibold min-w-20 justify-center`}>
-                        {server.subscription.status}
+                      <span className={`inline-flex px-3 py-1 text-sm rounded-full ${getStatusStyles(server.subscription_status)} font-semibold min-w-20 justify-center`}>
+                        {server.subscription_status}
                       </span>
                       <span className={`inline-flex px-3 py-1 text-sm rounded-full bg-gray-100 font-semibold min-w-10 justify-center`}>
                         5/20

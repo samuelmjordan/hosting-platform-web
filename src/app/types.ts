@@ -35,32 +35,15 @@ export interface StoreSelection {
 }
 
 export interface Server {
-  subscription: {
-    subscription_id: string;
-    customer_id: string;
-    status: string;
-    price_id: string;
-    current_period_end: number;
-    current_period_start: number;
-    cancel_at_period_end: boolean;
-    metadata: {
-      REGION: string;
-    };
-  };
-  game_server: {
-    server_id: string;
-    subscription_id: string;
-    plan_id: string;
-    node_id: string;
-  };
-  dns_cname_record: {
-    server_id: string;
-    c_name_record_id: string;
-    zone_id: string;
-    zone_name: string;
-    record_name: string;
-    content: string;
-  };
+  name: string;
+  subscription_status: string;
+  current_period_end: number;
+  current_period_start: number;
+  cancel_at_period_end: boolean;
+  currency: SupportedCurrency;
+  minor_amount: number;
+  region_code: string;
+  cname_record_name: null | string;
 }
 
 export type SupportedCurrency = 'USD' | 'EUR' | 'GBP' | 'XXX';
