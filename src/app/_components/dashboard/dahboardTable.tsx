@@ -44,7 +44,7 @@ export function DashboardTable({
               <TableRow key={server.game_server.server_id}>
                 <TableCell>
                   <div>
-                    <h1 className="text-2xl font-bold mb-3">{server.dns_cname_record}</h1>
+                    <h1 className="text-2xl font-bold mb-3">{server.dns_cname_record?.record_name}</h1>
                     <p className="text-gray-600 mb-4 max-w-s line-clamp-3">{server.game_server.subscription_id}</p>
                     <div className="flex items-center gap-3">
                       <span className={`inline-flex px-3 py-1 text-sm rounded-full ${getStatusStyles(server.subscription.status)} font-semibold min-w-20 justify-center`}>

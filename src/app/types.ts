@@ -53,7 +53,14 @@ export interface Server {
     plan_id: string;
     node_id: string;
   };
-  dns_cname_record: null | string;
+  dns_cname_record: {
+    server_id: string;
+    c_name_record_id: string;
+    zone_id: string;
+    zone_name: string;
+    record_name: string;
+    content: string;
+  };
 }
 
 export type SupportedCurrency = 'USD' | 'EUR' | 'GBP' | 'XXX';
