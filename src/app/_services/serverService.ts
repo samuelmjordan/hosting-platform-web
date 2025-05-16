@@ -2,6 +2,7 @@ import { Server } from "@/app/types";
 import { auth } from "@clerk/nextjs/server";
 
 export async function fetchServers(): Promise<Server[]> {
+
   const { userId } = await auth();
   const response = await fetch(`${process.env.API_URL}/api/user/${userId}/subscription/server`, {
     headers: {
