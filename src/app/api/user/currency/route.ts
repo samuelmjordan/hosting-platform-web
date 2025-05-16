@@ -1,14 +1,13 @@
 'server only'
 
-import { getAuth } from "@clerk/nextjs/server";
-import { NextApiRequest } from "next";
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from 'next/server';
 
 const API_URL = process.env.API_URL;
 
-export async function GET(req: NextApiRequest) {
+export async function GET() {
   try {
-    const { userId } = getAuth(req);
+    const { userId } = await auth();
 
     const response = await fetch(`${API_URL}/api/user/${userId}/currency`, {
       method: 'GET',
