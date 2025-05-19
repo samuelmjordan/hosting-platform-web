@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { EllipsisVertical, Copy, Check, HardDrive, Cpu } from 'lucide-react';
+import { EllipsisVertical, Copy, HardDrive, Cpu } from 'lucide-react';
 import { useState } from 'react';
 
 const getStatusStyles = (active: boolean) => {
