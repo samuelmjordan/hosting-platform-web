@@ -18,7 +18,7 @@ export const StoreCheckout: React.FC<StoreCheckoutProps> = ({
 }) => (
   <div className="space-y-4">
     <Button
-      className=""
+      size="lg" className="px-8 bg-pink-600 hover:bg-pink-700"
       onClick={onCheckout}
       disabled={disabled || isLoading}
     >

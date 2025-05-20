@@ -1,28 +1,35 @@
-'use client';
+"use client"
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@clerk/nextjs';
-import { Plan, Region, SupportedCurrency } from '@/app/types';
-import { PriceGrid } from '@/app/_components/store/priceGrid';
-import { RegionGrid } from '@/app/_components/store/regionGrid';
-import { StoreCheckout } from '@/app/_components/store/storeCheckout';
-import { Card, CardContent} from '@/components/ui/card';
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
-import { startCheckout } from '@/app/_services/checkoutService';
-import { fetchUserCurrency } from '@/app/_services/currencyService';
+import { useEffect, useState } from "react"
+import { Globe, Server } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Badge } from "@/components/ui/badge"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Plan, Region, SupportedCurrency } from "@/app/types"
+import { StoreCheckout } from "./storeCheckout"
+import { useAuth } from "@clerk/nextjs"
+import { startCheckout } from "@/app/_services/checkoutService"
+import { useRouter } from "next/navigation"
+import { fetchUserCurrency } from "@/app/_services/currencyService"
+
+interface CurrencyAmount {
+  type: SupportedCurrency;
+  value: number;
+}
 
 interface StoreProps {
   plans: Plan[];
   regions: Region[];
 }
 
-export const StoreComponent: React.FC<StoreProps> = ({ plans: plans, regions }) => {
+export function StoreComponent({ plans, regions }: StoreProps) {
   const router = useRouter();
   const { userId } = useAuth();
-  const [plan, setPlan] = useState<Plan | null>(null);
-  const [region, setRegion] = useState<Region | null>(null);
-  const [currency, setCurrency] = useState<SupportedCurrency>('USD');
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+  const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
+  const [currency, setCurrency] = useState('USD');
   const [isLockedCurrency, setIsLockedCurrency] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,8 +63,20 @@ export const StoreComponent: React.FC<StoreProps> = ({ plans: plans, regions }) 
     initCurrency();
   }, []);
 
+  const formatCurrency = (amount: CurrencyAmount): string => {
+    return new Intl.NumberFormat(navigator.language, {
+      style: 'currency',
+      currency: amount.type
+    }).format(amount.value / 100);
+  };
+
+  const selectCurrency = (currency: SupportedCurrency): void => {
+    setCurrency(currency);
+    setSelectedPlan(null);
+  }
+
   const handleCheckout = async () => {
-    if (!plan || !region) {
+    if (!selectedPlan || !selectedRegion) {
       setError('Please select both a product and region before proceeding');
       return;
     }
@@ -71,7 +90,7 @@ export const StoreComponent: React.FC<StoreProps> = ({ plans: plans, regions }) 
     setError(null);
   
     try {
-      const checkoutUrl = await startCheckout(plan.price.price_id, region.region_code);
+      const checkoutUrl = await startCheckout(selectedPlan.price.price_id, selectedRegion.region_code);
       console.log(checkoutUrl);
       router.push(checkoutUrl);
     } catch (error) {
@@ -83,75 +102,139 @@ export const StoreComponent: React.FC<StoreProps> = ({ plans: plans, regions }) 
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      <Card className="bg-white shadow-md rounded-lg">
-        <CardContent className="p-8 space-y-12">
-          {/* Plans Section */}
-          <section>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-semibold text-gray-900">Select Server Package</h2>
-              <div className="flex items-center">
-                {isLockedCurrency ? (
-                  <TooltipProvider>
-                    <Tooltip delayDuration={100}>
-                      <TooltipTrigger asChild>
-                        <select 
-                          value={currency}
-                          disabled
-                          className="px-4 py-2 border rounded-md shadow-sm text-sm bg-gray-50 opacity-50 cursor-not-allowed"
+    <div className="min-h-screen bg-gray-50">
+      <main className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          {!isLockedCurrency ? 
+            (<div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-bold">Configure Your Server</h2>
+              <div className="flex items-center gap-4">
+                <Select value={currency} onValueChange={selectCurrency}>
+                  <SelectTrigger className="w-[120px]">
+                    <SelectValue placeholder="Currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='USD'>$ USD</SelectItem>
+                    <SelectItem value='EUR'>€ EUR</SelectItem>
+                    <SelectItem value='GBP'>£ GBP</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>) : 
+            (<div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-bold">Configure Your Server</h2>
+              <TooltipProvider key=''>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-4">
+                      <Select value={currency} onValueChange={selectCurrency} disabled>
+                        <SelectTrigger className="w-[120px]">
+                          <SelectValue placeholder="Currency" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value='USD'>$ USD</SelectItem>
+                          <SelectItem value='EUR'>€ EUR</SelectItem>
+                          <SelectItem value='GBP'>£ GBP</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Your account is fixed to {currency}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>)}
+
+          <div className="space-y-8">
+            <section>
+              <h3 className="text-lg font-medium mb-4">1. Select Server Package</h3>
+              <div className="grid md:grid-cols-3 gap-4">
+                {plans
+                  .filter((plan) => (plan.price.currency == currency as SupportedCurrency))
+                  .map((plan) => (
+                    <Card key={plan.specification.title + plan.price.currency} className={`relative ${plan.specification.title == "Iron" ? "border-pink-500 shadow-md" : ""}`}>
+                      {plan.specification.title == "Iron" && <Badge className="absolute -top-2 right-4 bg-pink-500">Most Popular</Badge>}
+                      <CardHeader>
+                        <CardTitle>{plan.specification.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <ul className="space-y-2">
+                          <li className="flex items-center gap-2">
+                            <Server className="h-4 w-4 text-gray-500" />
+                            <span>{plan.specification.ram_gb} RAM</span>
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <Server className="h-4 w-4 text-gray-500" />
+                            <span>{plan.specification.cpu} CPU</span>
+                          </li>
+                        </ul>
+                        <div className="mt-4">
+                          <p className="text-2xl font-bold">{formatCurrency({type: plan.price.currency, value: plan.price.minor_amount})}</p>
+                          <p className="text-sm text-gray-500">{"per month"}</p>
+                        </div>
+                      </CardContent>
+                      <CardFooter>
+                        <Button
+                          variant={plan.specification.title === "Iron" ? "default" : "outline"}
+                          className={`w-full ${selectedPlan?.price.price_id === plan.price.price_id ? "bg-pink-600 hover:bg-pink-700 text-white" : ""}`}
+                          onClick={() => setSelectedPlan(plan)}
                         >
-                          <option value="USD">$ USD</option>
-                          <option value="EUR">€ EUR</option>
-                          <option value="GBP">£ GBP</option>
-                        </select>
+                          {selectedPlan?.price.price_id === plan.price.price_id ? "Selected" : "Select"}
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                ))}
+              </div>
+            </section>
+
+            <section>
+              <h3 className="text-lg font-medium mb-4">2. Select Region</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                {regions.map((region) => (
+                  <TooltipProvider key={region.region_code}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Card
+                            className={`cursor-pointer transition-colors ${
+                              selectedRegion?.region_code === region.region_code
+                                ? "border-pink-500 bg-pink-50"
+                                : "hover:border-pink-500"
+                            }`}
+                            onClick={() => setSelectedRegion(region)}
+                          >
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <h4 className="font-medium">{region.continent}</h4>
+                                <p className="text-sm text-gray-500">{region.city}</p>
+                                <p className="text-xs text-gray-400">Region: {region.region_code}</p>
+                              </div>
+                              <Globe className="h-8 w-8 text-gray-400" />
+                            </div>
+                          </CardContent>
+                        </Card>
                       </TooltipTrigger>
-                      <TooltipContent side="left">
-                        <p className="text-sm">Your account currency is locked</p>
+                      <TooltipContent>
+                        <p>Tooltip</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
-                ) : (
-                  <select 
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value as SupportedCurrency)}
-                    className="px-4 py-2 border rounded-md shadow-sm text-sm bg-white hover:bg-gray-50 transition-colors"
-                  >
-                    <option value="USD">$ USD</option>
-                    <option value="EUR">€ EUR</option>
-                    <option value="GBP">£ GBP</option>
-                  </select>
-                )}
+                ))}
               </div>
-            </div>
-            
-            <PriceGrid
-              plans={plans.filter(plan => plan.price.currency === currency)}
-              selectedId={plan?.price.price_id ?? null}
-              onSelect={setPlan}
-            />
-          </section>
+            </section>
 
-          {/* Regions Section */}
-          <section className="pt-4">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-6">Select Region</h2>
-            <RegionGrid
-              regions={regions}
-              selectedId={region?.region_id ?? null}
-              onSelect={setRegion}
-            />
-          </section>
-
-          {/* Checkout Section */}
-          <section className="pt-6">
-            <StoreCheckout
-              isLoading={isLoading}
-              error={error}
-              disabled={!plan || !region || !userId}
-              onCheckout={handleCheckout}
-            />
-          </section>
-        </CardContent>
-      </Card>
+            <section className="flex justify-end">
+              <StoreCheckout
+                isLoading={isLoading}
+                error={error}
+                disabled={!selectedPlan || !selectedRegion || !userId}
+                onCheckout={handleCheckout}
+              />
+            </section>
+          </div>
+        </div>
+      </main>
     </div>
-  );
-};
+  )
+}
