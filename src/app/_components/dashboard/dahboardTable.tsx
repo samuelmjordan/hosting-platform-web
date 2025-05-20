@@ -35,6 +35,7 @@ import {
   Trash2,
   Users,
 } from "lucide-react"
+import Link from "next/dist/client/link"
 
 const formatDate = (timestamp: number) => {
   if (!timestamp) return "N/A"
@@ -154,10 +155,12 @@ export function DashboardTable({ servers }: DashboardTableProps) {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <Button>
-            <ServerIcon className="mr-2 h-4 w-4" />
-            New Server
-          </Button>
+          <Link href="/store">
+            <Button>
+              <ServerIcon className="mr-2 h-4 w-4" />
+              New Server
+            </Button>
+          </Link>
         </div>
       </div>
 
@@ -189,10 +192,12 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                 : "Create your first server to get started"}
           </p>
           {!searchQuery && (
-            <Button className="mt-4">
-              <ServerIcon className="mr-2 h-4 w-4" />
-              Create Server
-            </Button>
+            <Link href="/store">
+              <Button className="mt-4">
+                <ServerIcon className="mr-2 h-4 w-4" />
+                Create Server
+              </Button>
+            </Link>
           )}
         </div>
       ) : (
