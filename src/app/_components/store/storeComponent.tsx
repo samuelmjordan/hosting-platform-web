@@ -7,17 +7,12 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Plan, Region, SupportedCurrency } from "@/app/types"
+import { CurrencyAmount, Plan, Region, SupportedCurrency } from "@/app/types"
 import { StoreCheckout } from "./storeCheckout"
 import { useAuth } from "@clerk/nextjs"
 import { startCheckout } from "@/app/_services/checkoutService"
 import { useRouter } from "next/navigation"
 import { fetchUserCurrency } from "@/app/_services/currencyService"
-
-interface CurrencyAmount {
-  type: SupportedCurrency;
-  value: number;
-}
 
 interface StoreProps {
   plans: Plan[];

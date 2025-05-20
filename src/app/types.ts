@@ -46,6 +46,11 @@ export interface Server {
   cname_record_name: null | string;
 }
 
+export interface CurrencyAmount {
+  type: SupportedCurrency;
+  value: number;
+}
+
 export type SupportedCurrency = 'USD' | 'EUR' | 'GBP' | 'XXX';
 
 export type SpecificationType = 'GAME_SERVER' | 'ACCOUNT_TIER';
