@@ -13,7 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import {
@@ -23,7 +22,7 @@ import {
   Cpu,
   Edit2,
   EllipsisVertical,
-  HardDrive,
+  MemoryStick,
   Play,
   PowerOff,
   RefreshCw,
@@ -32,8 +31,11 @@ import {
   Settings,
   Terminal,
   Trash2,
-  Users,
   Clock,
+  Calendar,
+  CreditCard,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react"
 import Link from "next/dist/client/link"
 import {
@@ -271,7 +273,8 @@ export function DashboardTable({ servers }: DashboardTableProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
         <div>
           <h1 className="text-2xl font-bold">Your Servers</h1>
           <p className="text-gray-500">Manage and monitor your server instances</p>
@@ -288,7 +291,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
             />
           </div>
           <Link href="/store">
-            <Button>
+            <Button className="bg-pink-600 hover:bg-pink-700">
               <ServerIcon className="mr-2 h-4 w-4" />
               New Server
             </Button>
@@ -296,27 +299,29 @@ export function DashboardTable({ servers }: DashboardTableProps) {
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      {/* Tabs Section */}
+      <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
         <Tabs defaultValue="all" className="w-full" value={activeTab} onValueChange={setActiveTab}>
-          <TabsList>
-            <TabsTrigger value="all">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="all" className="rounded-md">
               All Servers <Badge className="ml-2 bg-gray-100 text-gray-800">{servers.length}</Badge>
             </TabsTrigger>
-            <TabsTrigger value="active">
+            <TabsTrigger value="active" className="rounded-md">
               Active <Badge className="ml-2 bg-green-100 text-green-800">{activeServers.length}</Badge>
             </TabsTrigger>
-            <TabsTrigger value="inactive">
+            <TabsTrigger value="inactive" className="rounded-md">
               Inactive <Badge className="ml-2 bg-red-100 text-red-800">{inactiveServers.length}</Badge>
             </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
 
+      {/* Empty State */}
       {filteredServers.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 text-center">
-          <ServerIcon className="h-12 w-12 text-gray-300 mb-4" />
-          <h3 className="text-lg font-medium">No servers found</h3>
-          <p className="text-gray-500 mt-2">
+        <div className="flex flex-col items-center justify-center py-12 text-center bg-white p-8 rounded-lg shadow-sm border border-gray-100">
+          <ServerIcon className="h-16 w-16 text-gray-300 mb-4" />
+          <h3 className="text-xl font-medium">No servers found</h3>
+          <p className="text-gray-500 mt-2 max-w-md">
             {searchQuery
               ? "Try adjusting your search query"
               : activeTab !== "all"
@@ -325,7 +330,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
           </p>
           {!searchQuery && (
             <Link href="/store">
-              <Button className="mt-4">
+              <Button className="mt-6 bg-pink-600 hover:bg-pink-700">
                 <ServerIcon className="mr-2 h-4 w-4" />
                 Create Server
               </Button>
@@ -339,250 +344,238 @@ export function DashboardTable({ servers }: DashboardTableProps) {
             const serverStatus = true
             const planName = server.specification_title
             const subscriptionStatus = server.subscription_status
-            const playerCount = 5 // Placeholder - in a real app, you'd get this from the server data
-            const maxPlayers = 20 // Placeholder - in a real app, you'd get this from the server data
 
             return (
-              <Card key={serverId} className="overflow-hidden">
+              <Card key={serverId} className="overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
                 <div className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                    {/* Server Info */}
-                    <div className="md:col-span-5 space-y-4">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h2 className="text-xl font-semibold flex items-center">
-                            <span className="mr-2">{server.server_name}</span>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <button
-                                    onClick={() => handleEditClick(server)}
-                                    className="text-gray-400 hover:text-gray-600 transition-colors"
-                                  >
-                                    <Edit2 className="h-4 w-4" />
-                                    <span className="sr-only">Edit server name</span>
-                                  </button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Edit server name</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                            <Badge
-                              className={`ml-3 ${serverStatus ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
-                            >
-                              {serverStatus ? "Online" : "Offline"}
-                            </Badge>
-                          </h2>
-
-                          {/* Server Address - Conditional Rendering */}
-                          {server.cname_record_name ? (
-                            <div className="flex items-center mt-1 text-sm text-gray-500">
-                              <div className="flex items-center">
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <button
-                                        className="flex items-center hover:text-gray-900 mr-1.5"
-                                        onClick={() => handleCopy(server.cname_record_name || "", serverId)}
-                                      >
-                                        <span className="font-mono">{server.cname_record_name}</span>
-                                        <Copy className="h-3.5 w-3.5 ml-1.5" />
-                                      </button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      {copiedId === serverId ? "Copied!" : "Copy server address"}
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <button
-                                        onClick={() => handleEditAddressClick(server)}
-                                        className="text-gray-400 hover:text-gray-600 transition-colors"
-                                      >
-                                        <Edit2 className="h-3.5 w-3.5" />
-                                        <span className="sr-only">Edit server address</span>
-                                      </button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>Edit server address</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="flex items-center mt-1 text-sm text-amber-600">
-                              <Clock className="h-3.5 w-3.5 mr-1.5" />
-                              <span>Server address is being provisioned...</span>
-                            </div>
-                          )}
-                        </div>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
-                              <EllipsisVertical className="h-4 w-4" />
-                              <span className="sr-only">Open menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Server Actions</DropdownMenuLabel>
-                            <DropdownMenuItem className="flex items-center" onSelect={() => handleEditClick(server)}>
-                              <Edit2 className="mr-2 h-4 w-4" />
-                              <span>Rename Server</span>
-                            </DropdownMenuItem>
-                            {server.cname_record_name && (
-                              <DropdownMenuItem
-                                className="flex items-center"
-                                onSelect={() => handleEditAddressClick(server)}
-                              >
-                                <Edit2 className="mr-2 h-4 w-4" />
-                                <span>Edit Server Address</span>
-                              </DropdownMenuItem>
-                            )}
-                            <DropdownMenuItem className="flex items-center">
-                              <ArrowUpRight className="mr-2 h-4 w-4" />
-                              <span>Open Console</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="flex items-center">
-                              <Terminal className="mr-2 h-4 w-4" />
-                              <span>SSH Access</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="flex items-center">
-                              <Settings className="mr-2 h-4 w-4" />
-                              <span>Settings</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="flex items-center">
-                              {serverStatus ? (
-                                <>
-                                  <PowerOff className="mr-2 h-4 w-4 text-red-500" />
-                                  <span className="text-red-500">Stop Server</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Play className="mr-2 h-4 w-4 text-green-500" />
-                                  <span className="text-green-500">Start Server</span>
-                                </>
-                              )}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="flex items-center">
-                              <RefreshCw className="mr-2 h-4 w-4" />
-                              <span>Restart</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="flex items-center text-red-500">
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              <span>Delete Server</span>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                  {/* Server Header */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-gray-100 rounded-lg p-2 flex items-center justify-center">
+                        <ServerIcon className="h-8 w-8 text-gray-500" />
                       </div>
-
-                      <div className="flex flex-wrap gap-3">
-                        <div className="flex items-center text-sm">
-                          <Badge variant="outline" className="flex items-center gap-1.5 px-2 py-1">
-                            <span className="text-base leading-none">{getRegionFlag(server.region_code)}</span>
-                            {formatRegion(server.region_code)}
-                          </Badge>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <Badge variant="outline" className="flex items-center gap-1.5 px-2 py-1">
-                            <Users className="h-3.5 w-3.5" />
-                            {playerCount}/{maxPlayers}
-                          </Badge>
-                        </div>
-                        <div className="flex items-center text-sm">
+                      <div>
+                        <div className="flex items-center">
+                          <h2 className="text-xl font-semibold mr-2">{server.server_name}</h2>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button
+                                  onClick={() => handleEditClick(server)}
+                                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                                >
+                                  <Edit2 className="h-4 w-4" />
+                                  <span className="sr-only">Edit server name</span>
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Edit server name</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                           <Badge
-                            variant="outline"
-                            className={`flex items-center gap-1.5 px-2 py-1 ${getPlanColour(planName)}`}
+                            className={`ml-3 ${serverStatus ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
                           >
-                            {planName}
+                            {serverStatus ? "Online" : "Offline"}
                           </Badge>
                         </div>
+
+                        {/* Server Address - Conditional Rendering */}
+                        {server.cname_record_name ? (
+                          <div className="flex items-center mt-1 text-sm text-gray-500">
+                            <div className="flex items-center">
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <button
+                                      className="flex items-center hover:text-gray-900 mr-1.5"
+                                      onClick={() => handleCopy(server.cname_record_name || "", serverId)}
+                                    >
+                                      <span className="font-mono">{server.cname_record_name}</span>
+                                      <Copy className="h-3.5 w-3.5 ml-1.5" />
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    {copiedId === serverId ? "Copied!" : "Copy server address"}
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <button
+                                      onClick={() => handleEditAddressClick(server)}
+                                      className="text-gray-400 hover:text-gray-600 transition-colors"
+                                    >
+                                      <Edit2 className="h-3.5 w-3.5" />
+                                      <span className="sr-only">Edit server address</span>
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Edit server address</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-center mt-1 text-sm text-amber-600">
+                            <Clock className="h-3.5 w-3.5 mr-1.5" />
+                            <span>Server address is being provisioned...</span>
+                          </div>
+                        )}
                       </div>
-
-                      {serverStatus && (
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-500">CPU Usage</span>
-                            <span className="font-medium">24%</span>
-                          </div>
-                          <Progress value={24} className="h-2" />
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-500">Memory Usage</span>
-                            <span className="font-medium">3.2 GB / {server.ram_gb}</span>
-                          </div>
-                          <Progress value={40} className="h-2" />
-                        </div>
-                      )}
                     </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <EllipsisVertical className="h-4 w-4" />
+                          <span className="sr-only">Open menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Server Actions</DropdownMenuLabel>
+                        <DropdownMenuItem className="flex items-center" onSelect={() => handleEditClick(server)}>
+                          <Edit2 className="mr-2 h-4 w-4" />
+                          <span>Rename Server</span>
+                        </DropdownMenuItem>
+                        {server.cname_record_name && (
+                          <DropdownMenuItem
+                            className="flex items-center"
+                            onSelect={() => handleEditAddressClick(server)}
+                          >
+                            <Edit2 className="mr-2 h-4 w-4" />
+                            <span>Edit Server Address</span>
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuItem className="flex items-center">
+                          <ArrowUpRight className="mr-2 h-4 w-4" />
+                          <span>Open Console</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="flex items-center">
+                          <Terminal className="mr-2 h-4 w-4" />
+                          <span>SSH Access</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="flex items-center">
+                          <Settings className="mr-2 h-4 w-4" />
+                          <span>Settings</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="flex items-center">
+                          {serverStatus ? (
+                            <>
+                              <PowerOff className="mr-2 h-4 w-4 text-red-500" />
+                              <span className="text-red-500">Stop Server</span>
+                            </>
+                          ) : (
+                            <>
+                              <Play className="mr-2 h-4 w-4 text-green-500" />
+                              <span className="text-green-500">Start Server</span>
+                            </>
+                          )}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="flex items-center">
+                          <RefreshCw className="mr-2 h-4 w-4" />
+                          <span>Restart</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="flex items-center text-red-500">
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          <span>Delete Server</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
 
-                    {/* Divider for mobile */}
-                    <div className="md:hidden border-t border-gray-100 w-full my-2"></div>
+                  {/* Server Tags */}
+                  <div className="flex flex-wrap gap-2 mb-5">
+                    <Badge variant="outline" className="flex items-center gap-1.5 px-2 py-1">
+                      <span className="text-base leading-none">{getRegionFlag(server.region_code)}</span>
+                      {formatRegion(server.region_code)}
+                    </Badge>
+                    <Badge
+                      variant="outline"
+                      className={`flex items-center gap-1.5 px-2 py-1 ${getPlanColour(planName)}`}
+                    >
+                      {planName}
+                    </Badge>
+                  </div>
 
-                    {/* Server Specs & Billing */}
-                    <div className="md:col-span-4 flex flex-col justify-between">
+                  {/* Server Details Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    {/* Server Specs */}
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <h3 className="font-medium text-gray-700 flex items-center mb-3">
+                        <Cpu className="h-4 w-4 mr-2 text-gray-500" />
+                        Specifications
+                      </h3>
                       <div className="space-y-3">
-                        <h3 className="font-medium text-gray-500">Specifications</h3>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="flex items-center gap-2 text-sm">
-                            <HardDrive className="h-4 w-4 text-gray-500" />
-                            <span>{server.ram_gb} RAM</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-sm">
-                            <Cpu className="h-4 w-4 text-gray-500" />
-                            <span>{server.vcpu} CPU</span>
-                          </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-500">Memory</span>
+                          <span className="font-medium text-sm">{server.ram_gb} GB</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-500">CPU</span>
+                          <span className="font-medium text-sm">{server.vcpu} Cores</span>
                         </div>
                       </div>
                     </div>
-
-                    {/* Divider for mobile */}
-                    <div className="md:hidden border-t border-gray-100 w-full my-2"></div>
 
                     {/* Billing Info */}
-                    <div className="md:col-span-3 flex flex-col justify-between">
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <h3 className="font-medium text-gray-700 flex items-center mb-3">
+                        <CreditCard className="h-4 w-4 mr-2 text-gray-500" />
+                        Billing
+                      </h3>
                       <div className="space-y-3">
-                        <h3 className="font-medium text-gray-500">Billing</h3>
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-500">Monthly Cost</span>
-                            <span className="font-medium">
-                              {formatCurrency({ type: server.currency, value: server.minor_amount })}
-                            </span>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-500">Monthly Cost</span>
+                          <span className="font-medium text-sm">
+                            {formatCurrency({ type: server.currency, value: server.minor_amount })}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-500">Next Payment</span>
+                          <div className="flex items-center">
+                            <Calendar className="h-3.5 w-3.5 mr-1.5 text-gray-500" />
+                            <span className="font-medium text-sm">{formatDate(server.current_period_end)}</span>
                           </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-500">Next Payment</span>
-                            <span className="font-medium">{formatDate(server.current_period_end)}</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-500">Subscription Status</span>
-                            <Badge className={`ml-3 ${getSubscriptionStatusColour(subscriptionStatus)}`}>
-                              {getFormattedSubscriptionStatus(subscriptionStatus)}
-                            </Badge>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-500">Auto-Renew</span>
-                            <Badge
-                              className={
-                                server.cancel_at_period_end ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"
-                              }
-                            >
-                              {server.cancel_at_period_end ? "Off" : "On"}
-                            </Badge>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-500">Status</span>
+                          <Badge className={getSubscriptionStatusColour(subscriptionStatus)}>
+                            {getFormattedSubscriptionStatus(subscriptionStatus)}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-500">Auto-Renew</span>
+                          <div className="flex items-center">
+                            {server.cancel_at_period_end ? (
+                              <XCircle className="h-4 w-4 mr-1.5 text-red-500" />
+                            ) : (
+                              <CheckCircle2 className="h-4 w-4 mr-1.5 text-green-500" />
+                            )}
+                            <span className="text-sm font-medium">{server.cancel_at_period_end ? "Off" : "On"}</span>
                           </div>
                         </div>
                       </div>
-
-                      <div className="flex justify-end mt-4">
-                        <Button variant="outline" size="sm" className="text-xs">
-                          Manage Billing
-                        </Button>
-                      </div>
                     </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex justify-end mt-6 gap-2">
+                    <Button variant="outline" size="sm" className="text-xs">
+                      <Terminal className="h-3.5 w-3.5 mr-1.5" />
+                      Console
+                    </Button>
+                    <Button variant="outline" size="sm" className="text-xs">
+                      <Settings className="h-3.5 w-3.5 mr-1.5" />
+                      Settings
+                    </Button>
+                    <Button size="sm" className="text-xs bg-pink-600 hover:bg-pink-700">
+                      <ArrowUpRight className="h-3.5 w-3.5 mr-1.5" />
+                      Manage
+                    </Button>
                   </div>
                 </div>
 
@@ -722,6 +715,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                     newServerAddress.trim().length > MAX_SUBDOMAIN_LENGTH ||
                     newServerAddress.trim() + FIXED_DOMAIN === editingServer?.cname_record_name))
               }
+              className="bg-pink-600 hover:bg-pink-700"
             >
               {isSubmitting ? "Saving..." : "Save Changes"}
             </Button>
