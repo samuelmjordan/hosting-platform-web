@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { SetStateAction, useState } from "react"
 import type { CurrencyAmount, Server } from "@/app/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -17,14 +17,13 @@ import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import {
-  Activity,
   AlertCircle,
   ArrowUpRight,
   Copy,
   Cpu,
+  Edit2,
   EllipsisVertical,
   HardDrive,
-  LineChart,
   Play,
   PowerOff,
   RefreshCw,
@@ -36,6 +35,17 @@ import {
   Users,
 } from "lucide-react"
 import Link from "next/dist/client/link"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { toast } from "@/hooks/use-toast"
 
 const formatDate = (timestamp: number) => {
   if (!timestamp) return "N/A"
@@ -44,10 +54,10 @@ const formatDate = (timestamp: number) => {
 
 const formatCurrency = (amount: CurrencyAmount): string => {
   return new Intl.NumberFormat(navigator.language, {
-    style: 'currency',
-    currency: amount.type
-  }).format(amount.value / 100);
-};
+    style: "currency",
+    currency: amount.type,
+  }).format(amount.value / 100)
+}
 
 const formatRegion = (regionCode: string) => {
   switch (regionCode) {
@@ -85,7 +95,7 @@ const getPlanColour = (planName: string) => {
 }
 
 const getSubscriptionStatusColour = (status: string) => {
-  switch(status) {
+  switch (status) {
     case "active":
       return "bg-green-100 text-green-800"
     case "past_due":
@@ -99,7 +109,7 @@ const getSubscriptionStatusColour = (status: string) => {
 }
 
 const getFormattedSubscriptionStatus = (status: string) => {
-  switch(status) {
+  switch (status) {
     case "active":
       return "Active"
     case "past_due":
@@ -121,11 +131,56 @@ export function DashboardTable({ servers }: DashboardTableProps) {
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
+  const [editingServer, setEditingServer] = useState<Server | null>(null)
+  const [newServerName, setNewServerName] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text)
     setCopiedId(id)
     setTimeout(() => setCopiedId(null), 2000)
+  }
+
+  const handleEditClick = (server: Server) => {
+    setEditingServer(server)
+    setNewServerName(server.server_name)
+  }
+
+  const handleSaveServerName = async () => {
+    if (!editingServer || !newServerName.trim()) return
+
+    setIsSubmitting(true)
+
+    try {
+      // In a real app, you would make an API call here
+      // await updateServerName(editingServer.cname_record_name, newServerName);
+
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      // Update local state
+      servers.forEach((server) => {
+        if (server.cname_record_name === editingServer.cname_record_name) {
+          server.server_name = newServerName.trim()
+        }
+      })
+
+      toast({
+        title: "Server renamed",
+        description: `Server has been renamed to "${newServerName.trim()}"`,
+      })
+
+      // Close dialog
+      setEditingServer(null)
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to rename server. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const activeServers = servers.filter((server) => server.subscription_status === "active")
@@ -144,27 +199,6 @@ export function DashboardTable({ servers }: DashboardTableProps) {
         (server.cname_record_name && server.cname_record_name.toLowerCase().includes(searchQuery.toLowerCase()))
       )
     })
-
-  const getPlanName = (server: Server) => {
-    // This is a placeholder - in a real app, you'd get this from the server data
-    if (server.minor_amount <= 800) return "Wooden"
-    if (server.minor_amount <= 1600) return "Iron"
-    return "Diamond"
-  }
-
-  const getSpecs = (server: Server) => {
-    // This is a placeholder - in a real app, you'd get this from the server data
-    switch (server.specification_title) {
-      case "Wooden":
-        return { ram: "4 GB", cpu: "1 Core" }
-      case "Iron":
-        return { ram: "8 GB", cpu: "2 Core" }
-      case "Diamond":
-        return { ram: "16 GB", cpu: "4 Core" }
-      default:
-        return { ram: "8 GB", cpu: "2 Core" }
-    }
-  }
 
   return (
     <div className="space-y-6">
@@ -248,7 +282,23 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                       <div className="flex items-start justify-between">
                         <div>
                           <h2 className="text-xl font-semibold flex items-center">
-                            {server.server_name}
+                            <span className="mr-2">{server.server_name}</span>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <button
+                                    onClick={() => handleEditClick(server)}
+                                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                                  >
+                                    <Edit2 className="h-4 w-4" />
+                                    <span className="sr-only">Edit server name</span>
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Edit server name</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
                             <Badge
                               className={`ml-3 ${serverStatus ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
                             >
@@ -283,6 +333,10 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Server Actions</DropdownMenuLabel>
+                            <DropdownMenuItem className="flex items-center" onSelect={() => handleEditClick(server)}>
+                              <Edit2 className="mr-2 h-4 w-4" />
+                              <span>Rename Server</span>
+                            </DropdownMenuItem>
                             <DropdownMenuItem className="flex items-center">
                               <ArrowUpRight className="mr-2 h-4 w-4" />
                               <span>Open Console</span>
@@ -391,7 +445,9 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
                             <span className="text-sm text-gray-500">Monthly Cost</span>
-                            <span className="font-medium">{formatCurrency({ type: server.currency, value: server.minor_amount })}</span>
+                            <span className="font-medium">
+                              {formatCurrency({ type: server.currency, value: server.minor_amount })}
+                            </span>
                           </div>
                           <div className="flex items-center justify-between">
                             <span className="text-sm text-gray-500">Next Payment</span>
@@ -399,9 +455,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                           </div>
                           <div className="flex items-center justify-between">
                             <span className="text-sm text-gray-500">Subscription Status</span>
-                            <Badge
-                              className={`ml-3 ${getSubscriptionStatusColour(subscriptionStatus)}`}
-                            >
+                            <Badge className={`ml-3 ${getSubscriptionStatusColour(subscriptionStatus)}`}>
                               {getFormattedSubscriptionStatus(subscriptionStatus)}
                             </Badge>
                           </div>
@@ -440,6 +494,44 @@ export function DashboardTable({ servers }: DashboardTableProps) {
           })}
         </div>
       )}
+
+      {/* Edit Server Name Dialog */}
+      <Dialog open={editingServer !== null} onOpenChange={(open) => !open && setEditingServer(null)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Rename Server</DialogTitle>
+            <DialogDescription>
+              Enter a new name for your server. This will only change the display name for the dashboard.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="server-name" className="text-right">
+                Server Name
+              </Label>
+              <Input
+                id="server-name"
+                value={newServerName}
+                onChange={(e) => setNewServerName(e.target.value)}
+                className="col-span-3"
+                autoFocus
+                placeholder="Enter server name"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditingServer(null)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveServerName}
+              disabled={!newServerName.trim() || isSubmitting || newServerName.trim() === editingServer?.server_name}
+            >
+              {isSubmitting ? "Saving..." : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
