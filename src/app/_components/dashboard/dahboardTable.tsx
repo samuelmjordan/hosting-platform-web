@@ -344,6 +344,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
             const serverStatus = true
             const planName = server.specification_title
             const subscriptionStatus = server.subscription_status
+            const renew = !server.cancel_at_period_end
 
             return (
               <Card key={serverId} className="overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
@@ -550,12 +551,12 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-gray-500">Auto-Renew</span>
                           <div className="flex items-center">
-                            {server.cancel_at_period_end ? (
-                              <XCircle className="h-4 w-4 mr-1.5 text-red-500" />
-                            ) : (
+                            {renew ? (
                               <CheckCircle2 className="h-4 w-4 mr-1.5 text-green-500" />
+                            ) : (
+                              <XCircle className="h-4 w-4 mr-1.5 text-red-500" />
                             )}
-                            <span className="text-sm font-medium">{server.cancel_at_period_end ? "Off" : "On"}</span>
+                            <span className="text-sm font-medium">{renew ? "On" : "Off"}</span>
                           </div>
                         </div>
                       </div>
