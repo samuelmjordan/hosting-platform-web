@@ -35,8 +35,9 @@ export interface StoreSelection {
 }
 
 export interface Server {
-  name: string;
+  server_name: string;
   subscription_status: string;
+  specification_title: string;
   current_period_end: number;
   current_period_start: number;
   cancel_at_period_end: boolean;

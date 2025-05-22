@@ -110,7 +110,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
     .filter((server) => {
       if (!searchQuery) return true
       return (
-        server.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        server.server_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (server.cname_record_name && server.cname_record_name.toLowerCase().includes(searchQuery.toLowerCase()))
       )
     })
@@ -124,8 +124,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
 
   const getSpecs = (server: Server) => {
     // This is a placeholder - in a real app, you'd get this from the server data
-    const planName = getPlanName(server)
-    switch (planName) {
+    switch (server.specification_title) {
       case "Wooden":
         return { ram: "4 GB", cpu: "1 Core" }
       case "Iron":
@@ -203,9 +202,9 @@ export function DashboardTable({ servers }: DashboardTableProps) {
       ) : (
         <div className="grid gap-4">
           {filteredServers.map((server) => {
-            const serverId = server.cname_record_name || server.name
+            const serverId = server.cname_record_name || server.server_name
             const isActive = server.subscription_status === "active"
-            const planName = getPlanName(server)
+            const planName = server.specification_title
             const specs = getSpecs(server)
             const playerCount = 5 // Placeholder - in a real app, you'd get this from the server data
             const maxPlayers = 20 // Placeholder - in a real app, you'd get this from the server data
@@ -219,7 +218,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                       <div className="flex items-start justify-between">
                         <div>
                           <h2 className="text-xl font-semibold flex items-center">
-                            {server.name}
+                            {server.server_name}
                             <Badge
                               className={`ml-3 ${isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
                             >
