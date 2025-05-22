@@ -205,7 +205,6 @@ export function DashboardTable({ servers }: DashboardTableProps) {
             const serverId = server.cname_record_name || server.server_name
             const isActive = server.subscription_status === "active"
             const planName = server.specification_title
-            const specs = getSpecs(server)
             const playerCount = 5 // Placeholder - in a real app, you'd get this from the server data
             const maxPlayers = 20 // Placeholder - in a real app, you'd get this from the server data
 
@@ -324,7 +323,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                           <Progress value={24} className="h-2" />
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-gray-500">Memory Usage</span>
-                            <span className="font-medium">3.2 GB / {specs.ram}</span>
+                            <span className="font-medium">3.2 GB / {server.ram_gb}</span>
                           </div>
                           <Progress value={40} className="h-2" />
                         </div>
@@ -341,19 +340,11 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                         <div className="grid grid-cols-2 gap-3">
                           <div className="flex items-center gap-2 text-sm">
                             <HardDrive className="h-4 w-4 text-gray-500" />
-                            <span>{specs.ram} RAM</span>
+                            <span>{server.ram_gb} RAM</span>
                           </div>
                           <div className="flex items-center gap-2 text-sm">
                             <Cpu className="h-4 w-4 text-gray-500" />
-                            <span>{specs.cpu} CPU</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-sm">
-                            <Activity className="h-4 w-4 text-gray-500" />
-                            <span>99.9% Uptime</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-sm">
-                            <LineChart className="h-4 w-4 text-gray-500" />
-                            <span>Monitoring</span>
+                            <span>{server.vcpu} CPU</span>
                           </div>
                         </div>
                       </div>

@@ -38,6 +38,8 @@ export interface Server {
   server_name: string;
   subscription_status: string;
   specification_title: string;
+  ram_gb: number;
+  vcpu: number;
   current_period_end: number;
   current_period_start: number;
   cancel_at_period_end: boolean;
