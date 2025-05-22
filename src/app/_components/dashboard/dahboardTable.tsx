@@ -59,6 +59,7 @@ const formatRegion = (regionCode: string) => {
       return regionCode
   }
 }
+
 const getRegionFlag = (regionCode: string) => {
   switch (regionCode) {
     case "WEST_EUROPE":
@@ -70,7 +71,7 @@ const getRegionFlag = (regionCode: string) => {
   }
 }
 
-const getPlanColor = (planName: string) => {
+const getPlanColour = (planName: string) => {
   switch (planName) {
     case "Wooden":
       return "bg-amber-100 text-amber-800 border-amber-200"
@@ -80,6 +81,35 @@ const getPlanColor = (planName: string) => {
       return "bg-sky-100 text-sky-800 border-sky-200"
     default:
       return "bg-gray-100 text-gray-800 border-gray-200"
+  }
+}
+
+const getSubscriptionStatusColour = (status: string) => {
+  switch(status) {
+    case "active":
+      return "bg-green-100 text-green-800"
+    case "past_due":
+      return "bg-yellow-100 text-yellow-800"
+    case "unpaid":
+    case "canceled":
+      return "bg-red-100 text-red-800"
+    default:
+      return "bg-gray-100 text-gray-800"
+  }
+}
+
+const getFormattedSubscriptionStatus = (status: string) => {
+  switch(status) {
+    case "active":
+      return "Active"
+    case "past_due":
+      return "Payment Past Due"
+    case "unpaid":
+      return "Unpaid"
+    case "canceled":
+      return "Canceled"
+    default:
+      return "null"
   }
 }
 
@@ -203,8 +233,9 @@ export function DashboardTable({ servers }: DashboardTableProps) {
         <div className="grid gap-4">
           {filteredServers.map((server) => {
             const serverId = server.cname_record_name || server.server_name
-            const isActive = server.subscription_status === "active"
+            const serverStatus = true
             const planName = server.specification_title
+            const subscriptionStatus = server.subscription_status
             const playerCount = 5 // Placeholder - in a real app, you'd get this from the server data
             const maxPlayers = 20 // Placeholder - in a real app, you'd get this from the server data
 
@@ -219,9 +250,9 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                           <h2 className="text-xl font-semibold flex items-center">
                             {server.server_name}
                             <Badge
-                              className={`ml-3 ${isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
+                              className={`ml-3 ${serverStatus ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
                             >
-                              {isActive ? "Online" : "Offline"}
+                              {serverStatus ? "Online" : "Offline"}
                             </Badge>
                           </h2>
                           <div className="flex items-center mt-1 text-sm text-gray-500">
@@ -266,7 +297,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem className="flex items-center">
-                              {isActive ? (
+                              {serverStatus ? (
                                 <>
                                   <PowerOff className="mr-2 h-4 w-4 text-red-500" />
                                   <span className="text-red-500">Stop Server</span>
@@ -307,14 +338,14 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                         <div className="flex items-center text-sm">
                           <Badge
                             variant="outline"
-                            className={`flex items-center gap-1.5 px-2 py-1 ${getPlanColor(planName)}`}
+                            className={`flex items-center gap-1.5 px-2 py-1 ${getPlanColour(planName)}`}
                           >
                             {planName}
                           </Badge>
                         </div>
                       </div>
 
-                      {isActive && (
+                      {serverStatus && (
                         <div className="space-y-2">
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-gray-500">CPU Usage</span>
@@ -367,6 +398,14 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                             <span className="font-medium">{formatDate(server.current_period_end)}</span>
                           </div>
                           <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-500">Subscription Status</span>
+                            <Badge
+                              className={`ml-3 ${getSubscriptionStatusColour(subscriptionStatus)}`}
+                            >
+                              {getFormattedSubscriptionStatus(subscriptionStatus)}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center justify-between">
                             <span className="text-sm text-gray-500">Auto-Renew</span>
                             <Badge
                               className={
@@ -388,7 +427,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                   </div>
                 </div>
 
-                {!isActive && (
+                {!serverStatus && (
                   <div className="bg-red-50 border-t border-red-100 px-6 py-3 flex items-center">
                     <AlertCircle className="h-4 w-4 text-red-500 mr-2" />
                     <span className="text-sm text-red-700">
