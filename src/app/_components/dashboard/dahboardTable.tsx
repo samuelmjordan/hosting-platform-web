@@ -1,6 +1,6 @@
 "use client"
 
-import { SetStateAction, useState } from "react"
+import { useState } from "react"
 import type { CurrencyAmount, Server } from "@/app/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -33,6 +33,7 @@ import {
   Terminal,
   Trash2,
   Users,
+  Clock,
 } from "lucide-react"
 import Link from "next/dist/client/link"
 import {
@@ -46,6 +47,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/hooks/use-toast"
+import {
+  Tabs as DialogTabs,
+  TabsContent,
+  TabsList as DialogTabsList,
+  TabsTrigger as DialogTabsTrigger,
+} from "@/components/ui/tabs"
 
 const formatDate = (timestamp: number) => {
   if (!timestamp) return "N/A"
@@ -123,6 +130,10 @@ const getFormattedSubscriptionStatus = (status: string) => {
   }
 }
 
+// Domain constants
+const FIXED_DOMAIN = ".samuelmjordan.dev"
+const MAX_SUBDOMAIN_LENGTH = 32
+
 interface DashboardTableProps {
   servers: Server[]
 }
@@ -133,7 +144,9 @@ export function DashboardTable({ servers }: DashboardTableProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [editingServer, setEditingServer] = useState<Server | null>(null)
   const [newServerName, setNewServerName] = useState("")
+  const [newServerAddress, setNewServerAddress] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [editDialogTab, setEditDialogTab] = useState("name")
 
   const handleCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text)
@@ -141,33 +154,89 @@ export function DashboardTable({ servers }: DashboardTableProps) {
     setTimeout(() => setCopiedId(null), 2000)
   }
 
-  const handleEditClick = (server: Server) => {
+  const handleEditClick = (server: Server, initialTab = "name") => {
     setEditingServer(server)
     setNewServerName(server.server_name)
+
+    // Extract subdomain if address exists
+    if (server.cname_record_name) {
+      const subdomain = server.cname_record_name.replace(FIXED_DOMAIN, "")
+      setNewServerAddress(subdomain)
+    } else {
+      setNewServerAddress("")
+    }
+
+    setEditDialogTab(initialTab)
   }
 
-  const handleSaveServerName = async () => {
-    if (!editingServer || !newServerName.trim()) return
+  const handleEditAddressClick = (server: Server) => {
+    // Only allow editing if the address exists
+    if (server.cname_record_name) {
+      handleEditClick(server, "address")
+    } else {
+      toast({
+        title: "Server not ready",
+        description: "This server is still being provisioned. The address will be available soon.",
+        variant: "default",
+      })
+    }
+  }
+
+  const handleSaveServerDetails = async () => {
+    if (!editingServer) return
+
+    if (editDialogTab === "name" && (!newServerName.trim() || newServerName.trim() === editingServer.server_name)) {
+      return
+    }
+
+    if (
+      editDialogTab === "address" &&
+      (!newServerAddress.trim() ||
+        (editingServer.cname_record_name && newServerAddress.trim() + FIXED_DOMAIN === editingServer.cname_record_name))
+    ) {
+      return
+    }
+
+    // Validate subdomain length
+    if (editDialogTab === "address" && newServerAddress.trim().length > MAX_SUBDOMAIN_LENGTH) {
+      toast({
+        title: "Subdomain too long",
+        description: `Subdomain must be ${MAX_SUBDOMAIN_LENGTH} characters or less.`,
+        variant: "destructive",
+      })
+      return
+    }
 
     setIsSubmitting(true)
 
     try {
       // In a real app, you would make an API call here
-      // await updateServerName(editingServer.cname_record_name, newServerName);
+      // await updateServerDetails(editingServer.id, { name: newServerName, address: newServerAddress });
 
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 500))
 
       // Update local state
       servers.forEach((server) => {
-        if (server.cname_record_name === editingServer.cname_record_name) {
-          server.server_name = newServerName.trim()
+        if (
+          server.cname_record_name === editingServer.cname_record_name ||
+          (!server.cname_record_name && server.server_name === editingServer.server_name)
+        ) {
+          if (editDialogTab === "name") {
+            server.server_name = newServerName.trim()
+            toast({
+              title: "Server renamed",
+              description: `Server has been renamed to "${newServerName.trim()}"`,
+            })
+          } else if (editDialogTab === "address") {
+            const oldAddress = server.cname_record_name
+            server.cname_record_name = newServerAddress.trim() + FIXED_DOMAIN
+            toast({
+              title: "Server address updated",
+              description: `Server address has been changed from "${oldAddress}" to "${server.cname_record_name}"`,
+            })
+          }
         }
-      })
-
-      toast({
-        title: "Server renamed",
-        description: `Server has been renamed to "${newServerName.trim()}"`,
       })
 
       // Close dialog
@@ -175,7 +244,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to rename server. Please try again.",
+        description: `Failed to update server ${editDialogTab === "name" ? "name" : "address"}. Please try again.`,
         variant: "destructive",
       })
     } finally {
@@ -305,24 +374,51 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                               {serverStatus ? "Online" : "Offline"}
                             </Badge>
                           </h2>
-                          <div className="flex items-center mt-1 text-sm text-gray-500">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <button
-                                    className="flex items-center hover:text-gray-900"
-                                    onClick={() => handleCopy(server.cname_record_name || "", serverId)}
-                                  >
-                                    <span className="font-mono truncate max-w-[300px]">{server.cname_record_name}</span>
-                                    <Copy className="h-3.5 w-3.5 ml-1.5" />
-                                  </button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  {copiedId === serverId ? "Copied!" : "Copy server address"}
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
+
+                          {/* Server Address - Conditional Rendering */}
+                          {server.cname_record_name ? (
+                            <div className="flex items-center mt-1 text-sm text-gray-500">
+                              <div className="flex items-center">
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <button
+                                        className="flex items-center hover:text-gray-900 mr-1.5"
+                                        onClick={() => handleCopy(server.cname_record_name || "", serverId)}
+                                      >
+                                        <span className="font-mono">{server.cname_record_name}</span>
+                                        <Copy className="h-3.5 w-3.5 ml-1.5" />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      {copiedId === serverId ? "Copied!" : "Copy server address"}
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <button
+                                        onClick={() => handleEditAddressClick(server)}
+                                        className="text-gray-400 hover:text-gray-600 transition-colors"
+                                      >
+                                        <Edit2 className="h-3.5 w-3.5" />
+                                        <span className="sr-only">Edit server address</span>
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Edit server address</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex items-center mt-1 text-sm text-amber-600">
+                              <Clock className="h-3.5 w-3.5 mr-1.5" />
+                              <span>Server address is being provisioned...</span>
+                            </div>
+                          )}
                         </div>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -337,6 +433,15 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                               <Edit2 className="mr-2 h-4 w-4" />
                               <span>Rename Server</span>
                             </DropdownMenuItem>
+                            {server.cname_record_name && (
+                              <DropdownMenuItem
+                                className="flex items-center"
+                                onSelect={() => handleEditAddressClick(server)}
+                              >
+                                <Edit2 className="mr-2 h-4 w-4" />
+                                <span>Edit Server Address</span>
+                              </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem className="flex items-center">
                               <ArrowUpRight className="mr-2 h-4 w-4" />
                               <span>Open Console</span>
@@ -495,37 +600,128 @@ export function DashboardTable({ servers }: DashboardTableProps) {
         </div>
       )}
 
-      {/* Edit Server Name Dialog */}
+      {/* Edit Server Dialog */}
       <Dialog open={editingServer !== null} onOpenChange={(open) => !open && setEditingServer(null)}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Rename Server</DialogTitle>
+            <DialogTitle>Edit Server Details</DialogTitle>
             <DialogDescription>
-              Enter a new name for your server. This will only change the display name for the dashboard.
+              Update your server information. These changes only affect how the server appears in your dashboard.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="server-name" className="text-right">
-                Server Name
-              </Label>
-              <Input
-                id="server-name"
-                value={newServerName}
-                onChange={(e) => setNewServerName(e.target.value)}
-                className="col-span-3"
-                autoFocus
-                placeholder="Enter server name"
-              />
-            </div>
-          </div>
-          <DialogFooter>
+
+          <DialogTabs value={editDialogTab} onValueChange={setEditDialogTab} className="w-full">
+            <DialogTabsList className="grid w-full grid-cols-2">
+              <DialogTabsTrigger value="name">Server Name</DialogTabsTrigger>
+              <DialogTabsTrigger value="address" disabled={!editingServer?.cname_record_name}>
+                Server Address
+              </DialogTabsTrigger>
+            </DialogTabsList>
+
+            <TabsContent value="name" className="mt-4">
+              <div className="grid gap-4 py-2">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="server-name" className="text-right">
+                    Server Name
+                  </Label>
+                  <Input
+                    id="server-name"
+                    value={newServerName}
+                    onChange={(e) => setNewServerName(e.target.value)}
+                    className="col-span-3"
+                    autoFocus={editDialogTab === "name"}
+                    placeholder="Enter server name"
+                  />
+                </div>
+                <div className="text-sm text-gray-500 mt-2">
+                  This is the display name for your server in the dashboard.
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="address" className="mt-4">
+              {editingServer?.cname_record_name ? (
+                <div className="grid gap-4 py-2">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="server-address" className="text-right">
+                      Subdomain
+                    </Label>
+                    <div className="col-span-3 flex items-center">
+                      <Input
+                        id="server-address"
+                        value={newServerAddress}
+                        onChange={(e) => {
+                          // Remove the domain part if user pastes full address
+                          let value = e.target.value.replace(FIXED_DOMAIN, "")
+                          // Remove any invalid characters
+                          value = value.replace(/[^a-zA-Z0-9-]/g, "").toLowerCase()
+                          // Limit to max length
+                          if (value.length <= MAX_SUBDOMAIN_LENGTH) {
+                            setNewServerAddress(value)
+                          }
+                        }}
+                        className="font-mono rounded-r-none"
+                        autoFocus={editDialogTab === "address"}
+                        placeholder="Enter subdomain"
+                        maxLength={MAX_SUBDOMAIN_LENGTH}
+                      />
+                      <div className="bg-gray-100 text-gray-600 px-3 py-2 border border-l-0 border-gray-200 rounded-r-md font-mono text-sm">
+                        {FIXED_DOMAIN}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-2">
+                    <p>
+                      Enter only the subdomain part (max {MAX_SUBDOMAIN_LENGTH} characters). The domain will always be{" "}
+                      {FIXED_DOMAIN}
+                    </p>
+                    <div className="flex items-center justify-between mt-1">
+                      <span className="text-amber-600">
+                        <AlertCircle className="h-3.5 w-3.5 inline-block mr-1" />
+                        Changing this may affect connectivity to your server.
+                      </span>
+                      <span
+                        className={`text-xs ${
+                          newServerAddress.length > MAX_SUBDOMAIN_LENGTH - 5
+                            ? newServerAddress.length >= MAX_SUBDOMAIN_LENGTH
+                              ? "text-red-500"
+                              : "text-amber-500"
+                            : "text-gray-400"
+                        }`}
+                      >
+                        {newServerAddress.length}/{MAX_SUBDOMAIN_LENGTH}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="py-8 text-center">
+                  <Clock className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium">Server address not available yet</h3>
+                  <p className="text-gray-500 mt-2">
+                    Your server is still being provisioned. The address will be available soon.
+                  </p>
+                </div>
+              )}
+            </TabsContent>
+          </DialogTabs>
+
+          <DialogFooter className="mt-4">
             <Button variant="outline" onClick={() => setEditingServer(null)}>
               Cancel
             </Button>
             <Button
-              onClick={handleSaveServerName}
-              disabled={!newServerName.trim() || isSubmitting || newServerName.trim() === editingServer?.server_name}
+              onClick={handleSaveServerDetails}
+              disabled={
+                isSubmitting ||
+                (editDialogTab === "name" &&
+                  (!newServerName.trim() || newServerName.trim() === editingServer?.server_name)) ||
+                (editDialogTab === "address" &&
+                  (!editingServer?.cname_record_name ||
+                    !newServerAddress.trim() ||
+                    newServerAddress.trim().length > MAX_SUBDOMAIN_LENGTH ||
+                    newServerAddress.trim() + FIXED_DOMAIN === editingServer?.cname_record_name))
+              }
             >
               {isSubmitting ? "Saving..." : "Save Changes"}
             </Button>
