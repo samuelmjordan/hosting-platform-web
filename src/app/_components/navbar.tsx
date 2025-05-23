@@ -15,7 +15,8 @@ const Navbar = () => {
   
   const menuItems = [
     { label: 'Store', href: '/store' },
-    { label: 'Dashboard', href: '/dashboard' }
+    { label: 'Dashboard', href: '/dashboard' },
+    { label: 'Billing', href: '/billing' }
   ];
 
   return (
