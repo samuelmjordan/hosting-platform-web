@@ -1,7 +1,11 @@
-import { fetchServers } from '@/app/_services/serverService';
-import { BillingClientPage } from './client';
+import { fetchServers } from "@/app/_services/serverService"
+import { BillingComponent } from "@/app/_components/billing/billingTable"
 
 export default async function BillingPage() {
   const servers = await fetchServers();
-  return <BillingClientPage initialServers={servers} />;
+  return (
+    <div className="container mx-auto py-8 px-4">
+      <BillingComponent/>
+    </div>
+  );
 }
