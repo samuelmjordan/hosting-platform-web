@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { CalendarIcon, CreditCard, Download, Package } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -19,9 +18,39 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "@/hooks/use-toast"
+import Link from "next/dist/client/link"
+import { CurrencyAmount, Server, SupportedCurrency } from "@/app/types"
 
-export function BillingComponent() {
-  const router = useRouter()
+const formatCurrency = (amount: CurrencyAmount): string => {
+  return new Intl.NumberFormat(navigator.language, {
+    style: "currency",
+    currency: amount.type,
+  }).format(amount.value / 100)
+}
+
+const formatDate = (timestamp: number) => {
+  if (!timestamp) return "N/A"
+  return new Date(timestamp * 1000000).toLocaleDateString()
+}
+
+const getCurrency = (servers: Server[]) => 
+  servers[0]?.currency ?? 'USD' as SupportedCurrency
+
+const sumAmount = (servers: Server[]) => 
+  servers
+    .map((server) => server.minor_amount)
+    .reduce((partialSum, a) => partialSum + a, 0)
+
+const getNextPaymentDate = (servers: Server[]) => 
+  servers
+    .filter(server => !server.cancel_at_period_end)
+    .reduce((earliest, server) => !earliest || server.current_period_end < earliest.current_period_end ? server : earliest)
+
+interface BillingTableProps {
+  servers: Server[]
+}
+
+export function BillingComponent({ servers }: BillingTableProps) {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false)
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState("pro")
@@ -52,6 +81,8 @@ export function BillingComponent() {
     })
   }
 
+  const nextServerToPay = getNextPaymentDate(servers)
+
   return (
     <div className="container max-w-5xl py-10">
       <div className="mb-8">
@@ -64,16 +95,16 @@ export function BillingComponent() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-1">
               <p className="text-sm text-muted-foreground">Total Monthly Billing</p>
-              <p className="text-2xl font-bold">$129.98</p>
+              <p className="text-2xl font-bold">{formatCurrency({ type: getCurrency(servers), value: sumAmount(servers)})}</p>
             </div>
             <div className="space-y-1">
               <p className="text-sm text-muted-foreground">Active Subscriptions</p>
-              <p className="text-2xl font-bold">2</p>
+              <p className="text-2xl font-bold">{servers.length}</p>
             </div>
             <div className="space-y-1">
               <p className="text-sm text-muted-foreground">Next Payment</p>
-              <p className="text-2xl font-bold">June 15, 2025</p>
-              <p className="text-xs text-muted-foreground">Pro Plan: $29.99</p>
+              <p className="text-2xl font-bold">{formatDate(nextServerToPay.current_period_end)}</p>
+              <p className="text-xs text-muted-foreground">{nextServerToPay.specification_title} Plan: {formatCurrency({ type: nextServerToPay.currency, value: nextServerToPay.minor_amount})}</p>
             </div>
           </div>
         </CardContent>
@@ -90,10 +121,12 @@ export function BillingComponent() {
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold">Your Subscriptions</h2>
-              <Button>
-                <Package className="mr-2 h-4 w-4" />
-                Add New Subscription
-              </Button>
+              <Link href={"/store"}>
+                <Button>
+                  <Package className="mr-2 h-4 w-4" />
+                  Add New Subscription
+                </Button>
+              </Link>
             </div>
 
             {/* Subscription 1 */}
@@ -149,8 +182,7 @@ export function BillingComponent() {
                     <DialogHeader>
                       <DialogTitle>Cancel your Pro Plan subscription?</DialogTitle>
                       <DialogDescription>
-                        Your subscription will remain active until the end of your current billing period on June 15,
-                        2025.
+                        Your subscription will remain active until the end of your current billing period.
                       </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
