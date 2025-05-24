@@ -35,6 +35,7 @@ export interface StoreSelection {
 }
 
 export interface Server {
+  subscription_id: string;
   server_name: string;
   subscription_status: string;
   specification_title: string;
