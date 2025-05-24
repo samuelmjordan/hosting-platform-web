@@ -22,7 +22,6 @@ import {
   Cpu,
   Edit2,
   EllipsisVertical,
-  MemoryStick,
   Play,
   PowerOff,
   RefreshCw,
