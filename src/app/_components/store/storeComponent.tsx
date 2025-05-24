@@ -59,7 +59,8 @@ export function StoreComponent({ plans, regions }: StoreProps) {
   }, []);
 
   const formatCurrency = (amount: CurrencyAmount): string => {
-    return new Intl.NumberFormat(navigator.language, {
+    const locale = typeof navigator !== 'undefined' ? navigator.language : 'en-US';
+    return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: amount.type
     }).format(amount.value / 100);
