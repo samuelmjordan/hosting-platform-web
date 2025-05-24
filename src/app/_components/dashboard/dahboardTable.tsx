@@ -248,6 +248,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
         description: `Failed to update server ${editDialogTab === "name" ? "name" : "address"}. Please try again.`,
         variant: "destructive",
       })
+      console.error("Failed to update server details:", error)
     } finally {
       setIsSubmitting(false)
     }
