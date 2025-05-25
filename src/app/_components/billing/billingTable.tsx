@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "@/hooks/use-toast"
 import Link from "next/link"
-import type { CurrencyAmount, Server, SupportedCurrency } from "@/app/types"
+import type { CurrencyAmount, Invoice, Server, SupportedCurrency } from "@/app/types"
 
 const formatCurrency = (amount: CurrencyAmount): string => {
   return new Intl.NumberFormat("en-US", {
@@ -128,9 +128,10 @@ const getNextPaymentDate = (servers: Server[]) =>
 
 interface BillingTableProps {
   servers: Server[]
+  invoices: Invoice[]
 }
 
-export function BillingComponent({ servers }: BillingTableProps) {
+export function BillingComponent({ servers, invoices }: BillingTableProps) {
   const [selectedServer, setSelectedServer] = useState<Server | null>(null)
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false)
 
@@ -378,45 +379,33 @@ export function BillingComponent({ servers }: BillingTableProps) {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {servers
-                  .flatMap((server, serverIndex) =>
-                    Array.from({ length: 3 }, (_, monthIndex) => {
-                      const date = new Date()
-                      date.setMonth(date.getMonth() - monthIndex)
-                      return {
-                        date: date.toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        }),
-                        amount: formatCurrency({ type: server.currency, value: server.minor_amount }),
-                        status: "Paid",
-                        id: `INV-${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}${serverIndex}`,
-                        plan: `${server.specification_title} (${formatRegion(server.region_code)})`,
-                        server: server.server_name,
-                      }
-                    }),
-                  )
-                  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                {invoices
+                  .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                   .map((invoice, index) => (
                     <div
                       key={index}
                       className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border rounded-lg hover:shadow-sm transition-all"
                     >
                       <div>
-                        <p className="font-medium">{invoice.date}</p>
-                        <p className="text-muted-foreground text-sm">{invoice.id}</p>
-                        <p className="text-sm text-muted-foreground mt-1">{invoice.server}</p>
-                        <p className="text-sm text-muted-foreground">{invoice.plan}</p>
+                        <p className="font-medium">{formatDate(invoice.created_at)}</p>
+                        <p className="text-muted-foreground text-sm">{invoice.invoice_number}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{invoice.subscription_id}</p>
                       </div>
                       <div className="flex items-center mt-3 sm:mt-0">
-                        <Badge variant="outline" className="mr-4 bg-green-50 text-green-700 border-green-100">
-                          {invoice.status}
-                        </Badge>
-                        <p className="font-medium mr-4">{invoice.amount}</p>
-                        <Button size="icon" variant="outline" className="rounded-full h-8 w-8">
-                          <Download className="h-4 w-4" />
-                        </Button>
+                        {invoice.paid ? (
+                          <Badge variant="outline" className="mr-4 bg-green-50 text-green-700 border-green-100">
+                            Paid
+                          </Badge>) : (
+                          <Badge variant="outline" className="mr-4 bg-red-50 text-red-700 border-red-100">
+                            Unpaid
+                          </Badge>
+                        )}
+                        <p className="font-medium mr-4">{formatCurrency({ type: invoice.currency, value: invoice.minor_amount })}</p>
+                        <Link href={invoice.link} target="_blank" className="hover:underline">
+                          <Button size="icon" variant="outline" className="rounded-full h-8 w-8">
+                            <Download className="h-4 w-4" />
+                          </Button>
+                        </Link>
                       </div>
                     </div>
                   ))}

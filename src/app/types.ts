@@ -50,6 +50,20 @@ export interface Server {
   cname_record_name: null | string;
 }
 
+export interface Invoice {
+ invoice_id: string;
+ customer_id: string;
+ subscription_id: string;
+ invoice_number: string;
+ paid: boolean;
+ payment_method: string;
+ collection_method: string;
+ currency: SupportedCurrency;
+ minor_amount: number;
+ created_at: number;
+ link: string;
+}
+
 export interface CurrencyAmount {
   type: SupportedCurrency;
   value: number;
