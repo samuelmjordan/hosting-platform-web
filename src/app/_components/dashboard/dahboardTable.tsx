@@ -106,6 +106,7 @@ const formatRegion = (regionCode: string) => {
 // Domain constants
 const FIXED_DOMAIN = ".samuelmjordan.dev"
 const MAX_SUBDOMAIN_LENGTH = 32
+const MAX_TITLE_LENGTH = 32
 
 // Player interface
 interface Player {
@@ -288,8 +289,35 @@ export function DashboardTable({ servers }: DashboardTableProps) {
     }
   }
 
+  const validateSubdomain = (subdomain: string): boolean => {
+    if (subdomain.length === 0 || subdomain.length > MAX_SUBDOMAIN_LENGTH) {
+      return false
+    }
+
+    const validPattern = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/
+    return validPattern.test(subdomain.toLowerCase())
+  }
+
   const handleSaveServerDetails = async () => {
     if (!editingServer || !newServerName.trim()) return
+
+    if (newServerName.trim().length > MAX_TITLE_LENGTH) {
+      toast({
+        title: "Error",
+        description: `Server name must be ${MAX_TITLE_LENGTH} characters or less.`,
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (newServerAddress.trim() && !validateSubdomain(newServerAddress.trim())) {
+      toast({
+        title: "Error",
+        description: `Subdomain must be 1-${MAX_SUBDOMAIN_LENGTH} characters, contain only letters, numbers, and hyphens, and cannot start or end with a hyphen.`,
+        variant: "destructive",
+      })
+      return
+    }
 
     setIsSubmitting(true)
 
@@ -302,9 +330,16 @@ export function DashboardTable({ servers }: DashboardTableProps) {
           (!server.cname_record_name && server.server_name === editingServer.server_name)
         ) {
           server.server_name = newServerName.trim()
+
+          if (newServerAddress.trim()) {
+            server.cname_record_name = newServerAddress.trim().toLowerCase() + FIXED_DOMAIN
+          } else if (editingServer.cname_record_name && !newServerAddress.trim()) {
+            server.cname_record_name = null
+          }
+
           toast({
-            title: "Server renamed",
-            description: `Server has been renamed to "${newServerName.trim()}"`,
+            title: "Server updated",
+            description: `Server details have been updated successfully.`,
           })
         }
       })
@@ -313,7 +348,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to update server name. Please try again.",
+        description: "Failed to update server details. Please try again.",
         variant: "destructive",
       })
     } finally {
@@ -350,6 +385,18 @@ export function DashboardTable({ servers }: DashboardTableProps) {
       (server.cname_record_name && server.cname_record_name.toLowerCase().includes(searchQuery.toLowerCase()))
     )
   })
+
+  const isFormValid = () => {
+    if (!editingServer || !newServerName.trim()) return false
+    if (newServerName.trim().length > MAX_TITLE_LENGTH) return false
+    if (newServerAddress.trim() && !validateSubdomain(newServerAddress.trim())) return false
+
+    const nameChanged = newServerName.trim() !== editingServer.server_name
+    const addressChanged =
+      newServerAddress.trim().toLowerCase() !== (editingServer.cname_record_name?.replace(FIXED_DOMAIN, "") || "")
+
+    return nameChanged || addressChanged
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 md:p-6">
@@ -530,7 +577,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                                   </button>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                  <p>Edit server name</p>
+                                  <p>Edit server details</p>
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
@@ -592,7 +639,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuItem onClick={() => handleEditClick(server)}>
                             <Edit2 className="mr-2 h-4 w-4" />
-                            Rename
+                            Edit Details
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleRefreshStatus(server)}>
                             <RefreshCw className="mr-2 h-4 w-4" />
@@ -916,19 +963,49 @@ export function DashboardTable({ servers }: DashboardTableProps) {
       <Dialog open={editingServer !== null} onOpenChange={(open) => !open && setEditingServer(null)}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Rename Server</DialogTitle>
-            <DialogDescription>Enter a new name for your server.</DialogDescription>
+            <DialogTitle>Edit Server Details</DialogTitle>
+            <DialogDescription>Update your server name and address.</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="server-name">Server Name</Label>
+              <Label htmlFor="server-name">
+                Server Name{" "}
+                <span className="text-xs text-slate-500">
+                  ({newServerName.length}/{MAX_TITLE_LENGTH})
+                </span>
+              </Label>
               <Input
                 id="server-name"
                 value={newServerName}
                 onChange={(e) => setNewServerName(e.target.value)}
                 placeholder="Enter server name"
+                maxLength={MAX_TITLE_LENGTH}
                 autoFocus
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="server-address">
+                Server Address{" "}
+                <span className="text-xs text-slate-500">
+                  ({newServerAddress.length}/{MAX_SUBDOMAIN_LENGTH})
+                </span>
+              </Label>
+              <div className="flex items-center">
+                <Input
+                  id="server-address"
+                  value={newServerAddress}
+                  onChange={(e) => setNewServerAddress(e.target.value.toLowerCase())}
+                  placeholder="subdomain"
+                  maxLength={MAX_SUBDOMAIN_LENGTH}
+                  className="rounded-r-none"
+                />
+                <div className="bg-slate-50 border border-l-0 border-slate-200 px-3 py-2 text-sm text-slate-600 rounded-r-md">
+                  {FIXED_DOMAIN}
+                </div>
+              </div>
+              <p className="text-xs text-slate-500">
+                Leave empty to remove address. Use only letters, numbers, and hyphens.
+              </p>
             </div>
           </div>
           <DialogFooter>
@@ -937,10 +1014,10 @@ export function DashboardTable({ servers }: DashboardTableProps) {
             </Button>
             <Button
               onClick={handleSaveServerDetails}
-              disabled={isSubmitting || !newServerName.trim() || newServerName.trim() === editingServer?.server_name}
+              disabled={isSubmitting || !isFormValid()}
               className="bg-pink-600 hover:bg-pink-700"
             >
-              {isSubmitting ? "Saving..." : "Save"}
+              {isSubmitting ? "Saving..." : "Save Changes"}
             </Button>
           </DialogFooter>
         </DialogContent>
