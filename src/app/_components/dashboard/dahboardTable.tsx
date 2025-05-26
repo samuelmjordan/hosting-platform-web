@@ -148,6 +148,9 @@ interface ServerStatus {
   maxPlayers?: number
   version?: string
   motd?: string
+  protocol?: number
+  lastUpdated?: string
+  duration?: string
 }
 
 interface DashboardTableProps {
@@ -170,7 +173,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 5000)
 
-      await fetch(`${address}`, {
+      await fetch(`http://${address}`, {
         method: "HEAD",
         mode: "no-cors",
         signal: controller.signal,
@@ -191,6 +194,9 @@ export function DashboardTable({ servers }: DashboardTableProps) {
     maxPlayers?: number
     version?: string
     motd?: string
+    protocol?: number
+    lastUpdated?: string
+    duration?: string
   }> => {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 10000)
@@ -206,14 +212,17 @@ export function DashboardTable({ servers }: DashboardTableProps) {
         const data = await response.json()
         return {
           online: data.online || false,
-          playerCount: data.players?.online || 0,
+          playerCount: data.players?.now || 0,
           maxPlayers: data.players?.max || 0,
-          version: data.version || "Unknown",
-          motd: data.motd?.clean?.[0] || data.motd?.raw?.[0] || "A Minecraft Server",
+          version: data.server?.name || "Unknown",
+          motd: data.motd_json || data.motd || "A Minecraft Server",
+          protocol: data.server?.protocol,
+          lastUpdated: data.last_updated,
+          duration: data.duration,
         }
       }
     } catch (apiError) {
-      console.warn("Minecraft status API failed, falling back to connectivity check:", apiError)
+      console.warn("Minecraft status API failed:", apiError)
     }
 
     return {
@@ -240,7 +249,6 @@ export function DashboardTable({ servers }: DashboardTableProps) {
 
     try {
       const machineOnline = await pingMachine(server.cname_record_name)
-
       const minecraftStatus = await checkMinecraftServer(server.cname_record_name)
 
       setServerStatuses((prev) => ({
@@ -254,6 +262,9 @@ export function DashboardTable({ servers }: DashboardTableProps) {
           maxPlayers: minecraftStatus.maxPlayers,
           version: minecraftStatus.version,
           motd: minecraftStatus.motd,
+          protocol: minecraftStatus.protocol,
+          lastUpdated: minecraftStatus.lastUpdated,
+          duration: minecraftStatus.duration,
         },
       }))
     } catch (error) {
@@ -283,7 +294,6 @@ export function DashboardTable({ servers }: DashboardTableProps) {
   useEffect(() => {
     checkAllServerStatuses()
 
-    // Set up periodic status checks every 10 seconds
     const interval = setInterval(checkAllServerStatuses, 5 * 60 * 1000)
 
     return () => clearInterval(interval)
@@ -305,7 +315,6 @@ export function DashboardTable({ servers }: DashboardTableProps) {
     setEditingServer(server)
     setNewServerName(server.server_name)
 
-    // Extract subdomain if address exists
     if (server.cname_record_name) {
       const subdomain = server.cname_record_name.replace(FIXED_DOMAIN, "")
       setNewServerAddress(subdomain)
@@ -317,7 +326,6 @@ export function DashboardTable({ servers }: DashboardTableProps) {
   }
 
   const handleEditAddressClick = (server: Server) => {
-    // Only allow editing if the address exists
     if (server.cname_record_name) {
       handleEditClick(server, "address")
     } else {
@@ -344,7 +352,6 @@ export function DashboardTable({ servers }: DashboardTableProps) {
       return
     }
 
-    // Validate subdomain length
     if (editDialogTab === "address" && newServerAddress.trim().length > MAX_SUBDOMAIN_LENGTH) {
       toast({
         title: "Subdomain too long",
@@ -765,6 +772,144 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                       {planName}
                     </Badge>
                   </div>
+
+                  {/* Minecraft Server Info - Server List Style */}
+                  {server.cname_record_name && status.minecraftOnline && (
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4 mb-5">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+                            <div className="w-8 h-8 bg-green-600 rounded border-2 border-green-400 flex items-center justify-center">
+                              <div className="w-4 h-4 bg-white rounded-sm"></div>
+                            </div>
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-green-800 text-lg">{server.server_name}</h3>
+                            <p className="text-green-700 text-sm">{status.motd}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="flex items-center gap-2 mb-1">
+                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            <span className="text-green-800 font-medium text-sm">Online</span>
+                          </div>
+                          <div className="text-green-600 text-xs">
+                            {status.lastUpdated &&
+                              `Updated ${new Date(Number.parseInt(status.lastUpdated) * 1000).toLocaleTimeString()}`}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <div className="bg-white/60 rounded-lg p-3 text-center">
+                          <div className="text-green-800 font-semibold text-lg">
+                            {status.playerCount}/{status.maxPlayers}
+                          </div>
+                          <div className="text-green-600 text-xs">Players</div>
+                        </div>
+
+                        <div className="bg-white/60 rounded-lg p-3 text-center">
+                          <div className="text-green-800 font-semibold text-lg">{status.version}</div>
+                          <div className="text-green-600 text-xs">Version</div>
+                        </div>
+
+                        <div className="bg-white/60 rounded-lg p-3 text-center">
+                          <div className="text-green-800 font-semibold text-lg">
+                            {status.duration ? `${Math.round(Number.parseInt(status.duration) / 1000000)}ms` : "N/A"}
+                          </div>
+                          <div className="text-green-600 text-xs">Ping</div>
+                        </div>
+
+                        <div className="bg-white/60 rounded-lg p-3 text-center">
+                          <div className="text-green-800 font-semibold text-lg">{status.protocol || "N/A"}</div>
+                          <div className="text-green-600 text-xs">Protocol</div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Offline Server Display */}
+                  {server.cname_record_name && !status.minecraftOnline && !status.isChecking && (
+                    <div className="bg-gradient-to-r from-red-50 to-rose-50 border border-red-200 rounded-lg p-4 mb-5">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center">
+                            <div className="w-8 h-8 bg-red-600 rounded border-2 border-red-400 flex items-center justify-center">
+                              <XCircle className="w-4 h-4 text-white" />
+                            </div>
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-red-800 text-lg">{server.server_name}</h3>
+                            <p className="text-red-700 text-sm">Server is offline</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="flex items-center gap-2 mb-1">
+                            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                            <span className="text-red-800 font-medium text-sm">Offline</span>
+                          </div>
+                          <div className="text-red-600 text-xs">
+                            {status.lastChecked && `Checked ${new Date(status.lastChecked).toLocaleTimeString()}`}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <div className="bg-white/60 rounded-lg p-3 text-center">
+                          <div className="text-red-800 font-semibold text-lg">0/0</div>
+                          <div className="text-red-600 text-xs">Players</div>
+                        </div>
+
+                        <div className="bg-white/60 rounded-lg p-3 text-center">
+                          <div className="text-red-800 font-semibold text-lg">Unknown</div>
+                          <div className="text-red-600 text-xs">Version</div>
+                        </div>
+
+                        <div className="bg-white/60 rounded-lg p-3 text-center">
+                          <div className="text-red-800 font-semibold text-lg">Timeout</div>
+                          <div className="text-red-600 text-xs">Ping</div>
+                        </div>
+
+                        <div className="bg-white/60 rounded-lg p-3 text-center">
+                          <div className="text-red-800 font-semibold text-lg">N/A</div>
+                          <div className="text-red-600 text-xs">Protocol</div>
+                        </div>
+                      </div>
+
+                      <div className="mt-3 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button
+                                  className="flex items-center gap-1 text-red-700 hover:text-red-800 text-sm"
+                                  onClick={() => handleRefreshStatus(server)}
+                                  disabled={status.isChecking}
+                                >
+                                  <RefreshCw className={`h-3 w-3 ${status.isChecking ? "animate-spin" : ""}`} />
+                                  Retry Connection
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Try to connect to the server again</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-xs border-red-300 text-red-700 hover:bg-red-100"
+                            disabled
+                          >
+                            Server Offline
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Server Details Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
