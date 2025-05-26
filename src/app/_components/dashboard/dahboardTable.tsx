@@ -38,6 +38,8 @@ import {
   Loader2,
   Wifi,
   WifiOff,
+  Users,
+  User,
 } from "lucide-react"
 import Link from "next/dist/client/link"
 import {
@@ -138,6 +140,12 @@ const getFormattedSubscriptionStatus = (status: string) => {
 const FIXED_DOMAIN = ".samuelmjordan.dev"
 const MAX_SUBDOMAIN_LENGTH = 32
 
+// Player interface
+interface Player {
+  name: string
+  id: string
+}
+
 // Server status types
 interface ServerStatus {
   machineOnline: boolean
@@ -148,9 +156,9 @@ interface ServerStatus {
   maxPlayers?: number
   version?: string
   motd?: string
-  protocol?: number
   lastUpdated?: string
   duration?: string
+  players?: Player[]
 }
 
 interface DashboardTableProps {
@@ -172,7 +180,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
     try {
       const response = await fetch(`/api/ping?address=${encodeURIComponent(address)}`)
       const data = await response.json()
-      return data.status === 'up'
+      return data.status === "up"
     } catch (error) {
       return false
     }
@@ -186,9 +194,9 @@ export function DashboardTable({ servers }: DashboardTableProps) {
     maxPlayers?: number
     version?: string
     motd?: string
-    protocol?: number
     lastUpdated?: string
     duration?: string
+    players?: Player[]
   }> => {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 10000)
@@ -208,9 +216,9 @@ export function DashboardTable({ servers }: DashboardTableProps) {
           maxPlayers: data.players?.max || 0,
           version: data.server?.name || "Unknown",
           motd: data.motd_json || data.motd || "A Minecraft Server",
-          protocol: data.server?.protocol,
           lastUpdated: data.last_updated,
           duration: data.duration,
+          players: data.players?.sample || [],
         }
       }
     } catch (apiError) {
@@ -223,6 +231,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
       maxPlayers: 0,
       version: "Unknown",
       motd: "Connection Failed",
+      players: [],
     }
   }
 
@@ -254,9 +263,9 @@ export function DashboardTable({ servers }: DashboardTableProps) {
           maxPlayers: minecraftStatus.maxPlayers,
           version: minecraftStatus.version,
           motd: minecraftStatus.motd,
-          protocol: minecraftStatus.protocol,
           lastUpdated: minecraftStatus.lastUpdated,
           duration: minecraftStatus.duration,
+          players: minecraftStatus.players,
         },
       }))
     } catch (error) {
@@ -268,6 +277,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
           minecraftOnline: false,
           isChecking: false,
           lastChecked: Date.now(),
+          players: [],
         },
       }))
     }
@@ -500,6 +510,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
               minecraftOnline: false,
               isChecking: false,
               lastChecked: null,
+              players: [],
             }
 
             const planName = server.specification_title
@@ -792,12 +803,12 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-4">
                         <div className="bg-white/60 rounded-lg p-3 text-center">
                           <div className="text-green-800 font-semibold text-lg">
                             {status.playerCount}/{status.maxPlayers}
                           </div>
-                          <div className="text-green-600 text-xs">Players</div>
+                          <div className="text-green-600 text-xs">Players Online</div>
                         </div>
 
                         <div className="bg-white/60 rounded-lg p-3 text-center">
@@ -805,17 +816,45 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                           <div className="text-green-600 text-xs">Version</div>
                         </div>
 
-                        <div className="bg-white/60 rounded-lg p-3 text-center">
-                          <div className="text-green-800 font-semibold text-lg">
-                            {status.duration ? `${Math.round(Number.parseInt(status.duration) / 1000000)}ms` : "N/A"}
+                        {/* Online Players List */}
+                        {status.players && status.players.length > 0 && (
+                          <div className="bg-white/60 rounded-lg p-3 mb-3">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Users className="h-4 w-4 text-green-700" />
+                              <span className="text-green-800 font-medium text-sm">Online Players</span>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {status.players.map((player) => (
+                                <TooltipProvider key={player.id}>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <div className="flex items-center gap-1.5 bg-green-100 text-green-800 px-2 py-1 rounded-md text-xs">
+                                        <User className="h-3 w-3" />
+                                        <span className="font-medium">{player.name}</span>
+                                      </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <div className="text-xs">
+                                        <p>Player: {player.name}</p>
+                                        <p>UUID: {player.id}</p>
+                                      </div>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              ))}
+                            </div>
                           </div>
-                          <div className="text-green-600 text-xs">Ping</div>
-                        </div>
+                        )}
 
-                        <div className="bg-white/60 rounded-lg p-3 text-center">
-                          <div className="text-green-800 font-semibold text-lg">{status.protocol || "N/A"}</div>
-                          <div className="text-green-600 text-xs">Protocol</div>
-                        </div>
+                        {/* No Players Online */}
+                        {status.playerCount === 0 && (
+                          <div className="bg-white/60 rounded-lg p-3 mb-3 text-center">
+                            <div className="flex items-center justify-center gap-2 text-green-700">
+                              <Users className="h-4 w-4" />
+                              <span className="text-sm">No players currently online</span>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -846,25 +885,15 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div className="bg-white/60 rounded-lg p-3 text-center">
                           <div className="text-red-800 font-semibold text-lg">0/0</div>
-                          <div className="text-red-600 text-xs">Players</div>
+                          <div className="text-red-600 text-xs">Players Online</div>
                         </div>
 
                         <div className="bg-white/60 rounded-lg p-3 text-center">
                           <div className="text-red-800 font-semibold text-lg">Unknown</div>
                           <div className="text-red-600 text-xs">Version</div>
-                        </div>
-
-                        <div className="bg-white/60 rounded-lg p-3 text-center">
-                          <div className="text-red-800 font-semibold text-lg">Timeout</div>
-                          <div className="text-red-600 text-xs">Ping</div>
-                        </div>
-
-                        <div className="bg-white/60 rounded-lg p-3 text-center">
-                          <div className="text-red-800 font-semibold text-lg">N/A</div>
-                          <div className="text-red-600 text-xs">Protocol</div>
                         </div>
                       </div>
 
