@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import type { CurrencyAmount, Server } from "@/app/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -35,6 +35,9 @@ import {
   CreditCard,
   CheckCircle2,
   XCircle,
+  Loader2,
+  Wifi,
+  WifiOff,
 } from "lucide-react"
 import Link from "next/dist/client/link"
 import {
@@ -135,6 +138,18 @@ const getFormattedSubscriptionStatus = (status: string) => {
 const FIXED_DOMAIN = ".samuelmjordan.dev"
 const MAX_SUBDOMAIN_LENGTH = 32
 
+// Server status types
+interface ServerStatus {
+  machineOnline: boolean
+  minecraftOnline: boolean
+  isChecking: boolean
+  lastChecked: number | null
+  playerCount?: number
+  maxPlayers?: number
+  version?: string
+  motd?: string
+}
+
 interface DashboardTableProps {
   servers: Server[]
 }
@@ -148,6 +163,137 @@ export function DashboardTable({ servers }: DashboardTableProps) {
   const [newServerAddress, setNewServerAddress] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [editDialogTab, setEditDialogTab] = useState("name")
+  const [serverStatuses, setServerStatuses] = useState<Record<string, ServerStatus>>({})
+
+  const pingMachine = async (address: string): Promise<boolean> => {
+    try {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 5000)
+
+      await fetch(`${address}`, {
+        method: "HEAD",
+        mode: "no-cors",
+        signal: controller.signal,
+      })
+
+      clearTimeout(timeoutId)
+      return true
+    } catch (error) {
+      return false
+    }
+  }
+
+  const checkMinecraftServer = async (
+    address: string,
+  ): Promise<{
+    online: boolean
+    playerCount?: number
+    maxPlayers?: number
+    version?: string
+    motd?: string
+  }> => {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000)
+
+    try {
+      const response = await fetch(`https://mcapi.us/server/status?ip=${address}`, {
+        signal: controller.signal,
+      })
+
+      clearTimeout(timeoutId)
+
+      if (response.ok) {
+        const data = await response.json()
+        return {
+          online: data.online || false,
+          playerCount: data.players?.online || 0,
+          maxPlayers: data.players?.max || 0,
+          version: data.version || "Unknown",
+          motd: data.motd?.clean?.[0] || data.motd?.raw?.[0] || "A Minecraft Server",
+        }
+      }
+    } catch (apiError) {
+      console.warn("Minecraft status API failed, falling back to connectivity check:", apiError)
+    }
+
+    return {
+      online: false,
+      playerCount: 0,
+      maxPlayers: 0,
+      version: "Unknown",
+      motd: "Connection Failed",
+    }
+  }
+
+  const checkServerStatus = useCallback(async (server: Server) => {
+    if (!server.cname_record_name) return
+
+    const serverId = server.cname_record_name
+
+    setServerStatuses((prev) => ({
+      ...prev,
+      [serverId]: {
+        ...prev[serverId],
+        isChecking: true,
+      },
+    }))
+
+    try {
+      const machineOnline = await pingMachine(server.cname_record_name)
+
+      const minecraftStatus = await checkMinecraftServer(server.cname_record_name)
+
+      setServerStatuses((prev) => ({
+        ...prev,
+        [serverId]: {
+          machineOnline,
+          minecraftOnline: minecraftStatus.online,
+          isChecking: false,
+          lastChecked: Date.now(),
+          playerCount: minecraftStatus.playerCount,
+          maxPlayers: minecraftStatus.maxPlayers,
+          version: minecraftStatus.version,
+          motd: minecraftStatus.motd,
+        },
+      }))
+    } catch (error) {
+      console.error("Error checking server status:", error)
+      setServerStatuses((prev) => ({
+        ...prev,
+        [serverId]: {
+          machineOnline: false,
+          minecraftOnline: false,
+          isChecking: false,
+          lastChecked: Date.now(),
+        },
+      }))
+    }
+  }, [])
+
+  const checkAllServerStatuses = useCallback(async () => {
+    const serversWithAddresses = servers.filter((server) => server.cname_record_name)
+
+    for (let i = 0; i < serversWithAddresses.length; i++) {
+      setTimeout(() => {
+        checkServerStatus(serversWithAddresses[i])
+      }, i * 1000)
+    }
+  }, [servers, checkServerStatus])
+
+  useEffect(() => {
+    checkAllServerStatuses()
+
+    // Set up periodic status checks every 10 seconds
+    const interval = setInterval(checkAllServerStatuses, 5 * 60 * 1000)
+
+    return () => clearInterval(interval)
+  }, [checkAllServerStatuses])
+
+  const handleRefreshStatus = (server: Server) => {
+    if (server.cname_record_name) {
+      checkServerStatus(server)
+    }
+  }
 
   const handleCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text)
@@ -236,6 +382,11 @@ export function DashboardTable({ servers }: DashboardTableProps) {
               title: "Server address updated",
               description: `Server address has been changed from "${oldAddress}" to "${server.cname_record_name}"`,
             })
+
+            // Recheck status for the updated server
+            setTimeout(() => {
+              checkServerStatus(server)
+            }, 1000)
           }
         }
       })
@@ -290,6 +441,10 @@ export function DashboardTable({ servers }: DashboardTableProps) {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
+          <Button variant="outline" size="sm" onClick={checkAllServerStatuses} className="flex items-center gap-2">
+            <RefreshCw className="h-4 w-4" />
+            Refresh All
+          </Button>
           <Link href="/store">
             <Button className="bg-pink-600 hover:bg-pink-700">
               <ServerIcon className="mr-2 h-4 w-4" />
@@ -341,7 +496,13 @@ export function DashboardTable({ servers }: DashboardTableProps) {
         <div className="grid gap-4">
           {filteredServers.map((server) => {
             const serverId = server.cname_record_name || server.server_name
-            const serverStatus = true
+            const status = serverStatuses[server.cname_record_name || ""] || {
+              machineOnline: false,
+              minecraftOnline: false,
+              isChecking: false,
+              lastChecked: null,
+            }
+
             const planName = server.specification_title
             const subscriptionStatus = server.subscription_status
             const renew = !server.cancel_at_period_end
@@ -374,11 +535,82 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
-                          <Badge
-                            className={`ml-3 ${serverStatus ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
-                          >
-                            {serverStatus ? "Online" : "Offline"}
-                          </Badge>
+
+                          {/* Status Badges */}
+                          <div className="flex items-center gap-2 ml-3">
+                            {status.isChecking ? (
+                              <Badge className="bg-blue-100 text-blue-800 flex items-center gap-1">
+                                <Loader2 className="h-3 w-3 animate-spin" />
+                                Checking...
+                              </Badge>
+                            ) : (
+                              <>
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Badge
+                                        className={`flex items-center gap-1 ${
+                                          status.machineOnline
+                                            ? "bg-green-100 text-green-800"
+                                            : "bg-red-100 text-red-800"
+                                        }`}
+                                      >
+                                        {status.machineOnline ? (
+                                          <Wifi className="h-3 w-3" />
+                                        ) : (
+                                          <WifiOff className="h-3 w-3" />
+                                        )}
+                                        Machine
+                                      </Badge>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Machine {status.machineOnline ? "is reachable" : "is unreachable"}</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Badge
+                                        className={`flex items-center gap-1 ${
+                                          status.minecraftOnline
+                                            ? "bg-green-100 text-green-800"
+                                            : "bg-red-100 text-red-800"
+                                        }`}
+                                      >
+                                        {status.minecraftOnline ? (
+                                          <CheckCircle2 className="h-3 w-3" />
+                                        ) : (
+                                          <XCircle className="h-3 w-3" />
+                                        )}
+                                        Minecraft
+                                        {status.minecraftOnline && status.playerCount !== undefined && (
+                                          <span className="ml-1">
+                                            ({status.playerCount}/{status.maxPlayers})
+                                          </span>
+                                        )}
+                                      </Badge>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <div className="text-sm">
+                                        <p>Minecraft server is {status.minecraftOnline ? "online" : "offline"}</p>
+                                        {status.minecraftOnline && (
+                                          <>
+                                            <p>
+                                              Players: {status.playerCount}/{status.maxPlayers}
+                                            </p>
+                                            <p>Version: {status.version}</p>
+                                            <p>MOTD: {status.motd}</p>
+                                          </>
+                                        )}
+                                      </div>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </>
+                            )}
+                          </div>
                         </div>
 
                         {/* Server Address - Conditional Rendering */}
@@ -417,12 +649,36 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                                   </TooltipContent>
                                 </Tooltip>
                               </TooltipProvider>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <button
+                                      onClick={() => handleRefreshStatus(server)}
+                                      className="text-gray-400 hover:text-gray-600 transition-colors ml-1"
+                                      disabled={status.isChecking}
+                                    >
+                                      <RefreshCw className={`h-3.5 w-3.5 ${status.isChecking ? "animate-spin" : ""}`} />
+                                      <span className="sr-only">Refresh status</span>
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Refresh server status</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
                             </div>
                           </div>
                         ) : (
                           <div className="flex items-center mt-1 text-sm text-amber-600">
                             <Clock className="h-3.5 w-3.5 mr-1.5" />
                             <span>Server address is being provisioned...</span>
+                          </div>
+                        )}
+
+                        {/* Last checked timestamp */}
+                        {status.lastChecked && (
+                          <div className="text-xs text-gray-400 mt-1">
+                            Last checked: {new Date(status.lastChecked).toLocaleTimeString()}
                           </div>
                         )}
                       </div>
@@ -449,6 +705,14 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                             <span>Edit Server Address</span>
                           </DropdownMenuItem>
                         )}
+                        <DropdownMenuItem
+                          className="flex items-center"
+                          onSelect={() => handleRefreshStatus(server)}
+                          disabled={status.isChecking}
+                        >
+                          <RefreshCw className={`mr-2 h-4 w-4 ${status.isChecking ? "animate-spin" : ""}`} />
+                          <span>Refresh Status</span>
+                        </DropdownMenuItem>
                         <DropdownMenuItem className="flex items-center">
                           <ArrowUpRight className="mr-2 h-4 w-4" />
                           <span>Open Console</span>
@@ -463,7 +727,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem className="flex items-center">
-                          {serverStatus ? (
+                          {status.minecraftOnline ? (
                             <>
                               <PowerOff className="mr-2 h-4 w-4 text-red-500" />
                               <span className="text-red-500">Stop Server</span>
@@ -580,11 +844,13 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                   </div>
                 </div>
 
-                {!serverStatus && (
+                {(!status.machineOnline || !status.minecraftOnline) && server.cname_record_name && (
                   <div className="bg-red-50 border-t border-red-100 px-6 py-3 flex items-center">
                     <AlertCircle className="h-4 w-4 text-red-500 mr-2" />
                     <span className="text-sm text-red-700">
-                      This server is currently offline. Restart it to make it available.
+                      {!status.machineOnline
+                        ? "Machine is unreachable. Check your server configuration."
+                        : "Minecraft server is offline. The machine is reachable but Minecraft isn't running."}
                     </span>
                   </div>
                 )}
