@@ -64,6 +64,21 @@ export interface Invoice {
  link: string;
 }
 
+export interface PaymentMethodField {
+  value: string;
+  label: string;
+  display_type: 'brand_icon' | 'masked' | 'text' | 'wallet_icon';
+}
+
+export interface PaymentMethod {
+  id: string;
+  type: 'card' | 'google_pay' | 'apple_pay' | 'samsung_pay' | 'sepa';
+  display_name: string;
+  is_default: boolean;
+  is_active: boolean;
+  fields: Record<string, PaymentMethodField>;
+}
+
 export interface CurrencyAmount {
   type: SupportedCurrency;
   value: number;
