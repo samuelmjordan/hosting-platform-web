@@ -1,9 +1,18 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## BUGS
-- [] Hydration error with clerk UserButton in navbar
+- [] Hydration errors galore
+- [] give a return path, not a whole url
 
 ## TODO
-- [] Checkout
-- [] Setup Stripe
-- [] Dashboard
+- [] payment methods
+    - [] default
+    - [] edit
+    - [] remove
+    - [] add
+- [] subscriptions
+    - [] cancel
+- [] servers
+    - [] name limit (32?)
+    - [] actions
+    - [] console
