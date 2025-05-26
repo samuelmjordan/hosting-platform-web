@@ -170,17 +170,9 @@ export function DashboardTable({ servers }: DashboardTableProps) {
 
   const pingMachine = async (address: string): Promise<boolean> => {
     try {
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 5000)
-
-      await fetch(`http://${address}`, {
-        method: "HEAD",
-        mode: "no-cors",
-        signal: controller.signal,
-      })
-
-      clearTimeout(timeoutId)
-      return true
+      const response = await fetch(`/api/ping?address=${encodeURIComponent(address)}`)
+      const data = await response.json()
+      return data.status === 'up'
     } catch (error) {
       return false
     }
