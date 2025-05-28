@@ -168,23 +168,35 @@ export function DashboardTable({ servers }: DashboardTableProps) {
     const timeoutId = setTimeout(() => controller.abort(), 10000)
 
     try {
-      const response = await fetch(`https://mcapi.us/server/status?ip=${address}`, {
+      // Using mcstatus.io - way more reliable than mcapi.us
+      const response = await fetch(`https://api.mcstatus.io/v2/status/java/${address}`, {
         signal: controller.signal,
+        headers: {
+          'User-Agent': 'MinecraftStatusChecker/1.0'
+        }
       })
 
       clearTimeout(timeoutId)
 
       if (response.ok) {
         const data = await response.json()
+        
+        // Handle the different response structure
+        const motdText = data.motd?.clean || data.motd?.raw || "A Minecraft Server"
+        const versionName = data.version?.name_clean || data.version?.name_raw || "Unknown"
+        
         return {
           online: data.online || false,
-          playerCount: data.players?.now || 0,
+          playerCount: data.players?.online || 0,
           maxPlayers: data.players?.max || 0,
-          version: data.server?.name || "Unknown",
-          motd: data.motd_json || data.motd || "A Minecraft Server",
-          lastUpdated: data.last_updated,
-          duration: data.duration,
-          players: data.players?.sample || [],
+          version: versionName,
+          motd: motdText,
+          lastUpdated: new Date(data.retrieved_at).toISOString(),
+          duration: `${Date.now() - data.retrieved_at}ms`, // rough estimate
+          players: data.players?.list?.map((player: any) => ({
+            name: player.name_clean || player.name_raw,
+            id: player.uuid || ""
+          })) || [],
         }
       }
     } catch (apiError) {
