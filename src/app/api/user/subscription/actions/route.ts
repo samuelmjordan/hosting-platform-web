@@ -9,11 +9,12 @@ export async function POST(request: Request) {
   }
 
   const { title, address, region, action, subscriptionId } = await request.json();
+  const basePath = `${process.env.API_URL}/api/stripe/user/${userId}/subscription/${subscriptionId}`
 
   try {
     switch (action) {
       case "cancel":
-        const createResponse = await fetch(`${process.env.API_URL}/api/stripe/user/${userId}/subscription/${subscriptionId}/cancel`, {
+        const createResponse = await fetch(`${basePath}/cancel`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
         });
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ url });
 
       case "uncancel":
-        const setDefaultResponse = await fetch(`${process.env.API_URL}/api/stripe/user/${userId}/subscription/${subscriptionId}/uncancel`, {
+        const setDefaultResponse = await fetch(`${basePath}/uncancel`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' }
         });
@@ -38,7 +39,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true });
 
       case "change-region":
-        const changeRegionResponse = await fetch(`${process.env.API_URL}/api/stripe/user/${userId}/subscription/${subscriptionId}/region`, {
+        const changeRegionResponse = await fetch(`${basePath}/region`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ region })
@@ -51,7 +52,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true });
 
       case "change-address":
-        const changeAddressResponse = await fetch(`${process.env.API_URL}/api/stripe/user/${userId}/subscription/${subscriptionId}/address`, {
+        const changeAddressResponse = await fetch(`${basePath}/address`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ address })
@@ -64,7 +65,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true });
 
       case "change-title":
-        const changeTitleResponse = await fetch(`${process.env.API_URL}/api/stripe/user/${userId}/subscription/${subscriptionId}/title`, {
+        const changeTitleResponse = await fetch(`${basePath}/title`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ title })
