@@ -158,46 +158,68 @@ const getBrandIcon = (brand: string) => {
   switch (brand) {
     case "visa":
       return (
-        <div className="inline-flex items-center justify-center w-10 h-6 bg-blue-600 text-white text-xs font-bold rounded">
-          <svg width="32" height="20" viewBox="0 0 32 20" fill="white">
-            <path d="M13.8 2.2l-2.6 15.6h-2.7L11.1 2.2h2.7zm7.466 10.12c.01-1.37-1.88-2.42-2.96-2.94-.66-.32-1.07-.54-1.07-.87 0-.3.37-.62 1.17-.62 1.29-.02 2.22.27 2.95.57l.53-2.46c-.72-.26-1.84-.54-3.11-.54-2.93 0-4.99 1.48-5.01 3.6-.02 1.57 1.48 2.44 2.61 2.96 1.16.54 1.55.88 1.55 1.36 0 .73-.92 1.05-1.77 1.05-1.49 0-2.28-.21-3.51-.74l-.62 2.88c.8.35 2.28.65 3.81.67 3.11 0 5.14-1.46 5.16-3.72l.01-.01zm5.16-7.9c-.64 0-1.18.35-1.42.89L20.1 17.8h2.93s.48-1.26.59-1.54c.32 0 3.18.01 3.59.01.08.36.35 1.53.35 1.53h2.59L27.426 4.42h-1.99zm.35 6.26c.23-.58 1.1-2.82 1.1-2.82-.02.03.23-.59.37-.97l.19.9s.54 2.46.65 2.97l-2.31-.08zm-12.62-6.26L11.566 14.8l-.29-1.43c-.5-1.61-2.06-3.35-3.81-4.22l2.41 8.64h2.96l4.41-10.57h-2.94z" />
-          </svg>
-        </div>
+        <img 
+          src="https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1ecfd6f/svg/color/visa.svg"
+          alt="Visa"
+          className="h-6 w-10 object-contain"
+          onError={(e) => {
+            e.currentTarget.onerror = null
+            e.currentTarget.src = "https://cdn.jsdelivr.net/npm/payment-icons@1.2.1/min/flat/visa.svg"
+          }}
+        />
       )
     case "mastercard":
       return (
-        <div className="inline-flex items-center justify-center w-10 h-6 bg-red-500 text-white text-xs font-bold rounded">
-          <svg width="32" height="20" viewBox="0 0 32 20" fill="white">
-            <circle cx="11" cy="10" r="7" fill="#EB001B" />
-            <circle cx="21" cy="10" r="7" fill="#F79E1B" />
-            <path
-              d="M16 6.5c1.26 1.1 2.06 2.73 2.06 4.5s-.8 3.4-2.06 4.5c-1.26-1.1-2.06-2.73-2.06-4.5s.8-3.4 2.06-4.5z"
-              fill="#FF5F00"
-            />
-          </svg>
-        </div>
+        <img 
+          src="https://cdn.jsdelivr.net/npm/payment-icons@1.2.1/min/flat/mastercard.svg"
+          alt="Mastercard"
+          className="h-6 w-10 object-contain"
+        />
       )
     case "amex":
       return (
-        <div className="inline-flex items-center justify-center w-10 h-6 bg-blue-700 text-white text-xs font-bold rounded">
-          <svg width="32" height="20" viewBox="0 0 32 20" fill="white">
-            <path d="M6.26 4.2h3.38l.77 1.82.78-1.82h3.38v7.6h-2.1V7.4l-1.06 2.4h-1.01L9.34 7.4v4.4h-2.1V4.2h-.98zm8.5 0h5.7v1.6h-3.6v1.2h3.5v1.5h-3.5v1.7h3.7v1.6h-5.8V4.2zm7.8 0h2.3l1.4 2.8 1.4-2.8h2.3l-2.7 4.8v2.8h-2.1V9l-2.6-4.8z" />
-          </svg>
-        </div>
+        <img 
+          src="https://cdn.jsdelivr.net/npm/payment-icons@1.2.1/min/flat/amex.svg"
+          alt="American Express"
+          className="h-6 w-10 object-contain"
+        />
       )
     case "discover":
       return (
-        <div className="inline-flex items-center justify-center w-10 h-6 bg-orange-500 text-white text-xs font-bold rounded">
-          <svg width="32" height="20" viewBox="0 0 32 20" fill="white">
-            <path d="M16 2C8.27 2 2 8.27 2 16s6.27 14 14 14 14-6.27 14-14S23.73 2 16 2zm0 25.2c-6.18 0-11.2-5.02-11.2-11.2S9.82 4.8 16 4.8 27.2 9.82 27.2 16 22.18 27.2 16 27.2z" />
-            <path d="M16 7.2c-4.86 0-8.8 3.94-8.8 8.8s3.94 8.8 8.8 8.8 8.8-3.94 8.8-8.8-3.94-8.8-8.8-8.8z" />
-          </svg>
-        </div>
+        <img 
+          src="https://cdn.jsdelivr.net/npm/payment-icons@1.2.1/min/flat/discover.svg"
+          alt="Discover"
+          className="h-6 w-10 object-contain"
+        />
+      )
+    case "diners":
+      return (
+        <img 
+          src="https://cdn.jsdelivr.net/npm/payment-icons@1.2.1/min/flat/diners.svg"
+          alt="Diners Club"
+          className="h-6 w-10 object-contain"
+        />
+      )
+    case "jcb":
+      return (
+        <img 
+          src="https://cdn.jsdelivr.net/npm/payment-icons@1.2.1/min/flat/jcb.svg"
+          alt="JCB"
+          className="h-6 w-10 object-contain"
+        />
+      )
+    case "unionpay":
+      return (
+        <img 
+          src="https://cdn.jsdelivr.net/npm/payment-icons@1.2.1/min/flat/unionpay.svg"
+          alt="UnionPay"
+          className="h-6 w-10 object-contain"
+        />
       )
     default:
       return (
-        <div className="inline-flex items-center justify-center w-10 h-6 bg-gray-500 text-white text-xs font-bold rounded">
-          <CreditCard className="h-4 w-4" />
+        <div className="inline-flex items-center justify-center w-10 h-6 bg-gray-100 border border-gray-300 rounded">
+          <CreditCard className="h-4 w-4 text-gray-600" />
         </div>
       )
   }
