@@ -42,6 +42,7 @@ import {
   Plus,
   MapPin,
   TrendingUp,
+  CalendarIcon,
 } from "lucide-react"
 import Link from "next/dist/client/link"
 import {
@@ -877,17 +878,17 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                       </div>
                       <div className="flex items-center justify-between text-xs text-slate-500">
                         <span>Auto-Renew</span>
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center">
                           {!server.cancel_at_period_end ? (
-                            <>
+                            <div className="flex items-center gap-1">
                               <CheckCircle2 className="h-3 w-3 text-green-500" />
                               <span className="text-green-600">On</span>
-                            </>
+                            </div>
                           ) : (
-                            <>
-                              <XCircle className="h-3 w-3 text-red-500" />
-                              <span className="text-red-600">Off</span>
-                            </>
+                            <div className="flex items-center">
+                              <XCircle className="mr-1 h-4 w-4 text-red-500" />
+                              <span className="text-red-600 text-sm font-medium">Off</span>
+                            </div>
                           )}
                         </div>
                       </div>
@@ -896,12 +897,13 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                         <div className="flex items-center gap-1">
                           {!server.cancel_at_period_end ? (
                             <>
-                              <span className="">{formatDate(server.current_period_end)}</span> 
+                              <span className="text-sm font-medium">{formatDate(server.current_period_end)}</span> 
                             </>
                           ) : (
-                            <>
-                            <span className="text-red-600">{formatDate(server.current_period_end)}</span> 
-                            </>
+                          <span className="text-sm font-medium flex items-center text-destructive">
+                            <CalendarIcon className="mr-1 h-4 w-4" />
+                            {formatDate(server.current_period_end)}
+                          </span>
                           )}
                         </div>
                       </div>
