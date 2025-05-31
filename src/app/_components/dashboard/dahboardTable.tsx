@@ -56,6 +56,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/hooks/use-toast"
+import { useRouter } from "next/navigation"
 
 const formatDate = (timestamp: number) => {
   if (!timestamp) return "N/A"
@@ -142,6 +143,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
   const [newServerAddress, setNewServerAddress] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [serverStatuses, setServerStatuses] = useState<Record<string, ServerStatus>>({})
+  const router = useRouter()
 
   const pingMachine = async (address: string): Promise<boolean> => {
     try {
@@ -182,7 +184,6 @@ export function DashboardTable({ servers }: DashboardTableProps) {
       if (response.ok) {
         const data = await response.json()
         
-        // Handle the different response structure
         const motdText = data.motd?.clean || data.motd?.raw || "A Minecraft Server"
         const versionName = data.version?.name_clean || data.version?.name_raw || "Unknown"
         
@@ -932,12 +933,17 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                           <TrendingUp className="h-3 w-3 mr-1" />
                           Upgrade
                         </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="bg-white text-xs"
+                          onClick={() => router.push("/billing?tab=subscription")}
+                        >
+                          <DollarSign className="h-3 w-3 mr-1" />
+                          Billing
+                        </Button>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm" className="bg-white">
-                          <Terminal className="h-3 w-3 mr-1" />
-                          Console
-                        </Button>
                         <Button size="sm" className="bg-slate-900 hover:bg-slate-800 text-white">
                           <ArrowUpRight className="h-3 w-3 mr-1" />
                           Manage
