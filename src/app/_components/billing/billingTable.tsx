@@ -258,10 +258,11 @@ interface BillingTableProps {
   paymentMethods: PaymentMethod[]
 }
 
-export function BillingComponent({ servers, invoices, paymentMethods }: BillingTableProps) {
+export function BillingComponent({ servers, invoices, paymentMethods: initialPaymentMethods }: BillingTableProps) {
   const [selectedServer, setSelectedServer] = useState<Server | null>(null)
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false)
   const [loading, setLoading] = useState<string | null>(null)
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(initialPaymentMethods)
   
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -315,12 +316,16 @@ export function BillingComponent({ servers, invoices, paymentMethods }: BillingT
     try {
       setLoading(paymentMethodId)
       await setDefaultPaymentMethod(paymentMethodId)
+      
+      setPaymentMethods(prev => prev.map(method => ({
+        ...method,
+        is_default: method.id === paymentMethodId
+      })))
+      
       toast({
         title: "Default payment method updated",
         description: `${displayName} is now your default payment method.`,
       })
-      // refresh page or update state
-      window.location.reload()
     } catch (error) {
       toast({
         title: "Error", 
@@ -336,12 +341,16 @@ export function BillingComponent({ servers, invoices, paymentMethods }: BillingT
     try {
       setLoading(paymentMethodId)
       await removeDefaultPaymentMethod(paymentMethodId)
+      
+      setPaymentMethods(prev => prev.map(method => ({
+        ...method,
+        is_default: false
+      })))
+      
       toast({
         title: "Default payment method unset",
         description: `${displayName} has been unset as default payment method.`,
       })
-      // refresh page or update state  
-      window.location.reload()
     } catch (error) {
       toast({
         title: "Error",
@@ -357,12 +366,13 @@ export function BillingComponent({ servers, invoices, paymentMethods }: BillingT
     try {
       setLoading(paymentMethodId)
       await removePaymentMethod(paymentMethodId)
+      
+      setPaymentMethods(prev => prev.filter(method => method.id !== paymentMethodId))
+      
       toast({
         title: "Payment method removed",
         description: `${displayName} has been removed from your account.`,
       })
-      // refresh page or update state
-      window.location.reload()
     } catch (error) {
       toast({
         title: "Error",
