@@ -2,7 +2,6 @@ import { PaymentMethod } from "@/app/types";
 import { auth } from "@clerk/nextjs/server";
 
 export async function fetchPaymentMethods(): Promise<PaymentMethod[]> {
-
   const { userId } = await auth();
 
   if (!userId) {

@@ -19,6 +19,7 @@ import { Separator } from "@/components/ui/separator"
 import { toast } from "@/hooks/use-toast"
 import Link from "next/link"
 import type { CurrencyAmount, Invoice, PaymentMethod, Server, SupportedCurrency } from "@/app/types"
+import { createPaymentMethod, setDefaultPaymentMethod, removeDefaultPaymentMethod, removePaymentMethod } from "@/app/_services/paymentMethodClientService";
 
 const formatCurrency = (amount: CurrencyAmount): string => {
   return new Intl.NumberFormat("en-US", {
@@ -259,6 +260,7 @@ interface BillingTableProps {
 export function BillingComponent({ servers, invoices, paymentMethods }: BillingTableProps) {
   const [selectedServer, setSelectedServer] = useState<Server | null>(null)
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false)
+  const [loading, setLoading] = useState<string | null>(null)
 
   const handleCancelSubscription = (server: Server) => {
     toast({
@@ -268,11 +270,85 @@ export function BillingComponent({ servers, invoices, paymentMethods }: BillingT
     setCancelDialogOpen(false)
   }
 
-  const handleUpdatePaymentMethod = () => {
-    toast({
-      title: "Redirecting to payment update",
-      description: "You'll be redirected to securely update your payment method.",
-    })
+  const handleAddPaymentMethod = async () => {
+    try {
+      setLoading("add")
+      const checkoutUrl = await createPaymentMethod(
+        window.location.href,
+        window.location.href
+      )
+      window.location.href = checkoutUrl
+    } catch (error) {
+      toast({
+        title: "Error", 
+        description: "Failed to add new payment method. Please try again.",
+        variant: "destructive"
+      })      
+    } finally {
+      setLoading(null)
+    }
+  }
+
+  const handleSetDefault = async (paymentMethodId: string, displayName: string) => {
+    try {
+      setLoading(paymentMethodId)
+      await setDefaultPaymentMethod(paymentMethodId)
+      toast({
+        title: "Default payment method updated",
+        description: `${displayName} is now your default payment method.`,
+      })
+      window.location.reload()
+    } catch (error) {
+      toast({
+        title: "Error", 
+        description: "Failed to set default payment method. Please try again.",
+        variant: "destructive"
+      })
+    } finally {
+      setLoading(null)
+    }
+  }
+
+  const handleRemoveDefault = async (paymentMethodId: string, displayName: string) => {
+    try {
+      setLoading(paymentMethodId)
+      await removeDefaultPaymentMethod(paymentMethodId)
+      toast({
+        title: "Default payment method unset",
+        description: `${displayName} has been unset as default payment method.`,
+      })
+      // refresh page or update state  
+      window.location.reload()
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to remove default payment method. Please try again.", 
+        variant: "destructive"
+      })
+    } finally {
+      setLoading(null)
+    }
+  }
+
+  const handleRemovePaymentMethod = async (paymentMethodId: string, displayName: string) => {
+    try {
+      setLoading(paymentMethodId)
+      await removePaymentMethod(paymentMethodId)
+      toast({
+        title: "Payment method removed",
+        description: `${displayName} has been removed from your account.`,
+      })
+      // refresh page or update state
+      window.location.reload()
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to remove payment method. Please try again.",
+        variant: "destructive"
+      })
+    } finally {
+      setLoading(null)
+    }
   }
 
   const nextServerToPay = getNextPaymentDate(servers)
@@ -475,9 +551,13 @@ export function BillingComponent({ servers, invoices, paymentMethods }: BillingT
                     <CardTitle>Payment Methods</CardTitle>
                     <CardDescription>Manage your payment methods and billing preferences</CardDescription>
                   </div>
-                  <Button className="shadow-sm hover:shadow transition-all">
+                  <Button 
+                    className="shadow-sm hover:shadow transition-all"
+                    onClick={handleAddPaymentMethod}
+                    disabled={loading === "add"}
+                  >
                     <Package className="mr-2 h-4 w-4" />
-                    Add Payment Method
+                    {loading === "add" ? "Adding..." : "Add Payment Method"}
                   </Button>
                 </div>
               </CardHeader>
@@ -490,7 +570,9 @@ export function BillingComponent({ servers, invoices, paymentMethods }: BillingT
                       <p className="text-sm text-muted-foreground mb-4">
                         Add a payment method to manage your subscriptions
                       </p>
-                      <Button>Add Payment Method</Button>
+                      <Button onClick={handleAddPaymentMethod} disabled={loading === "add"}>
+                        {loading === "add" ? "Adding..." : "Add Payment Method"}
+                      </Button>
                     </div>
                   ) : (
                     paymentMethods.map((method) => (
@@ -573,78 +655,77 @@ export function BillingComponent({ servers, invoices, paymentMethods }: BillingT
                                   variant="outline"
                                   size="sm"
                                   className="text-xs"
-                                  onClick={() => {
-                                    toast({
-                                      title: "Default payment method updated",
-                                      description: `${method.display_name} is now your default payment method.`,
-                                    })
-                                  }}
+                                  onClick={() => handleSetDefault(method.id, method.display_name)}
+                                  disabled={loading === method.id}
                                 >
-                                  Set as Default
+                                  {loading === method.id ? "Setting..." : "Set as Default"}
                                 </Button>
                               )}
 
-                              <Dialog>
-                                <DialogTrigger asChild>
-                                  <Button variant="outline" size="sm" className="text-xs">
-                                    Edit
-                                  </Button>
-                                </DialogTrigger>
-                                <DialogContent>
-                                  <DialogHeader>
-                                    <DialogTitle>Edit Payment Method</DialogTitle>
-                                    <DialogDescription>
-                                      Update your {method.display_name} payment method details.
-                                    </DialogDescription>
-                                  </DialogHeader>
-                                  <div className="py-4">
-                                    <p className="text-sm text-muted-foreground">
-                                      You'll be redirected to a secure page to update your payment method.
-                                    </p>
-                                  </div>
-                                  <DialogFooter>
-                                    <Button variant="outline">Cancel</Button>
-                                    <Button onClick={handleUpdatePaymentMethod}>Update Method</Button>
-                                  </DialogFooter>
-                                </DialogContent>
-                              </Dialog>
-
-                              {!method.is_default && (
+                              {method.is_default && paymentMethods.length > 1 && (
                                 <Dialog>
                                   <DialogTrigger asChild>
                                     <Button
                                       variant="outline"
                                       size="sm"
                                       className="text-xs text-red-600 hover:text-red-700"
+                                      disabled={loading === method.id}
                                     >
-                                      Remove
+                                      Unset Default
                                     </Button>
                                   </DialogTrigger>
                                   <DialogContent>
                                     <DialogHeader>
-                                      <DialogTitle>Remove Payment Method</DialogTitle>
+                                      <DialogTitle>Unset Default Payment Method</DialogTitle>
                                       <DialogDescription>
-                                        Are you sure you want to remove {method.display_name}? This action cannot be
-                                        undone.
+                                        Are you sure you want to unset {method.display_name} as the default payment method?
                                       </DialogDescription>
                                     </DialogHeader>
                                     <DialogFooter>
                                       <Button variant="outline">Cancel</Button>
                                       <Button
                                         variant="destructive"
-                                        onClick={() => {
-                                          toast({
-                                            title: "Payment method removed",
-                                            description: `${method.display_name} has been removed from your account.`,
-                                          })
-                                        }}
+                                        onClick={() => handleRemoveDefault(method.id, method.display_name)}
+                                        disabled={loading === method.id}
                                       >
-                                        Remove Method
+                                        {loading === method.id ? "Unsetting..." : "Unset Default"}
                                       </Button>
                                     </DialogFooter>
                                   </DialogContent>
                                 </Dialog>
                               )}
+
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="text-xs text-red-600 hover:text-red-700"
+                                    disabled={loading === method.id}
+                                  >
+                                    Remove
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                  <DialogHeader>
+                                    <DialogTitle>Remove Payment Method</DialogTitle>
+                                    <DialogDescription>
+                                      Are you sure you want to remove {method.display_name}? This action cannot be
+                                      undone.
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <DialogFooter>
+                                    <Button variant="outline">Cancel</Button>
+                                    <Button
+                                      variant="destructive"
+                                      onClick={() => handleRemovePaymentMethod(method.id, method.display_name)}
+                                      disabled={loading === method.id}
+                                    >
+                                      {loading === method.id ? "Removing..." : "Remove Method"}
+                                    </Button>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
                             </div>
                           </div>
                         </CardContent>

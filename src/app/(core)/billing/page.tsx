@@ -1,7 +1,7 @@
 import { fetchServers } from "@/app/_services/serverService"
 import { BillingComponent } from "@/app/_components/billing/billingTable"
 import { fetchInvoices } from "@/app/_services/invoiceService";
-import { fetchPaymentMethods } from "@/app/_services/paymentMethodService";
+import { fetchPaymentMethods } from "@/app/_services/paymentMethodServerService";
 
 export default async function BillingPage() {
   const servers = await fetchServers();
