@@ -7,9 +7,11 @@ import { SubscriptionCard } from "./SubscriptionCard"
 interface SubscriptionListProps {
   servers: Server[]
   onCancelClick: (server: Server) => void
+  onUncancelClick: (server: Server) => void
+  loadingSubscriptions?: Set<string>
 }
 
-export function SubscriptionList({ servers, onCancelClick }: SubscriptionListProps) {
+export function SubscriptionList({ servers, onCancelClick, onUncancelClick, loadingSubscriptions }: SubscriptionListProps) {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -30,6 +32,8 @@ export function SubscriptionList({ servers, onCancelClick }: SubscriptionListPro
             key={server.subscription_id}
             server={server}
             onCancelClick={onCancelClick}
+            onUncancelClick={onUncancelClick}
+            isLoading={loadingSubscriptions?.has(server.subscription_id)}
           />
         ))
       )}

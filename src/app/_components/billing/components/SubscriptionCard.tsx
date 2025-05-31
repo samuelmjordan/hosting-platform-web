@@ -10,9 +10,11 @@ import { SUBSCRIPTION_STATUS, PLAN_STYLES, REGIONS } from "../utils/constants"
 interface SubscriptionCardProps {
   server: Server
   onCancelClick: (server: Server) => void
+  onUncancelClick: (server: Server) => void
+  isLoading?: boolean
 }
 
-export function SubscriptionCard({ server, onCancelClick }: SubscriptionCardProps) {
+export function SubscriptionCard({ server, onCancelClick, onUncancelClick, isLoading = false }: SubscriptionCardProps) {
   const status = SUBSCRIPTION_STATUS[server.subscription_status as keyof typeof SUBSCRIPTION_STATUS] || SUBSCRIPTION_STATUS.active
   const planStyle = PLAN_STYLES[server.specification_title as keyof typeof PLAN_STYLES] || PLAN_STYLES.default
   const region = REGIONS[server.region_code as keyof typeof REGIONS] || REGIONS.default
@@ -115,16 +117,30 @@ export function SubscriptionCard({ server, onCancelClick }: SubscriptionCardProp
         </div>
       </CardContent>
       
-      {!server.cancel_at_period_end && server.subscription_status === "active" && (
+      {server.cancel_at_period_end && server.subscription_status === "active" ? (
         <CardFooter className="pt-2">
           <Button 
             variant="outline" 
             className="shadow-sm hover:shadow transition-all"
-            onClick={() => onCancelClick(server)}
+            onClick={() => onUncancelClick(server)}
+            disabled={isLoading}
           >
-            Cancel Subscription
+            {isLoading ? "Resuming..." : "Resume Subscription"}
           </Button>
         </CardFooter>
+      ) : (
+        !server.cancel_at_period_end && server.subscription_status === "active" && (
+          <CardFooter className="pt-2">
+            <Button 
+              variant="outline" 
+              className="shadow-sm hover:shadow transition-all"
+              onClick={() => onCancelClick(server)}
+              disabled={isLoading}
+            >
+              {isLoading ? "Canceling..." : "Cancel Subscription"}
+            </Button>
+          </CardFooter>
+        )
       )}
     </Card>
   )

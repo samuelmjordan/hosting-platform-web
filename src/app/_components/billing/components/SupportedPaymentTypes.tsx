@@ -4,7 +4,7 @@ import { PAYMENT_ICONS } from "../utils/constants"
 
 const paymentTypes = [
   {
-    name: "Credit Cards",
+    name: "Payment Cards",
     icon: (
       <div className="w-8 h-8 bg-gradient-to-br from-gray-100 to-gray-200 rounded-md flex items-center justify-center">
         <CreditCard className="h-5 w-5 text-gray-700" />

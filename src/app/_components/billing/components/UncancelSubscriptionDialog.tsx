@@ -10,21 +10,21 @@ import { Button } from "@/components/ui/button"
 import type { Server } from "@/app/types"
 import { formatDate } from "../utils/formatters"
 
-interface CancelSubscriptionDialogProps {
+interface UncancelSubscriptionDialogProps {
   server: Server | null
   open: boolean
   onOpenChange: (open: boolean) => void
   onConfirm?: (server: Server) => void
 }
 
-export function CancelSubscriptionDialog({
+export function UncancelSubscriptionDialog({
   server,
   open,
   onOpenChange,
   onConfirm
-}: CancelSubscriptionDialogProps) {
+}: UncancelSubscriptionDialogProps) {
   
-  const handleCancel = () => {
+  const handleUncancel = () => {
     if (!server) return
     
     // Call the onConfirm callback if provided
@@ -32,7 +32,7 @@ export function CancelSubscriptionDialog({
       onConfirm(server)
     }
     
-    // Close dialog (toast is handled by the hook)
+    // Close dialog
     onOpenChange(false)
   }
   
@@ -42,18 +42,18 @@ export function CancelSubscriptionDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Cancel your {server.server_name} subscription?</DialogTitle>
+          <DialogTitle>Resume your {server.server_name} subscription?</DialogTitle>
           <DialogDescription>
-            Your subscription will remain active until the end of your current billing period on{" "}
+            Your subscription will renew at the end of your current billing period on{" "}
             {formatDate(server.current_period_end)}.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Keep Subscription
+          <Button onClick={handleUncancel}>
+            Resume Subscription
           </Button>
-          <Button variant="destructive" onClick={handleCancel}>
-            Cancel Subscription
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>
+            Stay Canceled
           </Button>
         </DialogFooter>
       </DialogContent>

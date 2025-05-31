@@ -8,7 +8,9 @@ import { SubscriptionList } from "./components/SubscriptionList"
 import { PaymentMethodList } from "./components/PaymentMethodList"
 import { BillingHistory } from "./components/BillingHistory"
 import { CancelSubscriptionDialog } from "./components/CancelSubscriptionDialog"
+import { UncancelSubscriptionDialog } from "./components/UncancelSubscriptionDialog"
 import { useBillingTabs } from "./hooks/useBillingTabs"
+import { useSubscriptions } from "./hooks/useSubscriptions"
 import { BILLING_TABS } from "./utils/constants"
 
 interface BillingPageProps {
@@ -19,7 +21,14 @@ interface BillingPageProps {
 
 export function BillingPage({ servers, invoices, paymentMethods }: BillingPageProps) {
   const { activeTab, setActiveTab } = useBillingTabs()
+  const { servers: newServers, loading, cancelSubscription, uncancelSubscription } = useSubscriptions(servers)
+  
   const [cancelDialog, setCancelDialog] = useState<{
+    open: boolean
+    server: Server | null
+  }>({ open: false, server: null })
+  
+  const [uncancelDialog, setUncancelDialog] = useState<{
     open: boolean
     server: Server | null
   }>({ open: false, server: null })
@@ -27,10 +36,19 @@ export function BillingPage({ servers, invoices, paymentMethods }: BillingPagePr
   const handleCancelRequest = (server: Server) => {
     setCancelDialog({ open: true, server })
   }
+
+  const handleUncancelRequest = (server: Server) => {
+    setUncancelDialog({ open: true, server })
+  }
   
-  const handleCancelConfirm = (server: Server) => {
-    // TODO: Actually cancel the subscription via API
-    console.log("Canceling subscription:", server.subscription_id)
+  const handleCancelConfirm = async (server: Server) => {
+    await cancelSubscription(server)
+    setCancelDialog({ open: false, server: null })
+  }
+
+  const handleUncancelConfirm = async (server: Server) => {
+    await uncancelSubscription(server)
+    setUncancelDialog({ open: false, server: null })
   }
   
   return (
@@ -44,7 +62,7 @@ export function BillingPage({ servers, invoices, paymentMethods }: BillingPagePr
       </div>
       
       {/* Billing Overview Card */}
-      <BillingOverview servers={servers} />
+      <BillingOverview servers={newServers} />
       
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as keyof typeof BILLING_TABS)} className="w-full">
@@ -58,8 +76,10 @@ export function BillingPage({ servers, invoices, paymentMethods }: BillingPagePr
         
         <TabsContent value="subscription">
           <SubscriptionList 
-            servers={servers} 
+            servers={newServers} 
             onCancelClick={handleCancelRequest}
+            onUncancelClick={handleUncancelRequest}
+            loadingSubscriptions={loading}
           />
         </TabsContent>
         
@@ -78,6 +98,14 @@ export function BillingPage({ servers, invoices, paymentMethods }: BillingPagePr
         open={cancelDialog.open}
         onOpenChange={(open) => setCancelDialog({ ...cancelDialog, open })}
         onConfirm={handleCancelConfirm}
+      />
+      
+      {/* Uncancel Subscription Dialog */}
+      <UncancelSubscriptionDialog
+        server={uncancelDialog.server}
+        open={uncancelDialog.open}
+        onOpenChange={(open) => setUncancelDialog({ ...uncancelDialog, open })}
+        onConfirm={handleUncancelConfirm}
       />
     </div>
   )
