@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const { action, subscriptionId } = await request.json();
+  const { title, address, region, action, subscriptionId } = await request.json();
 
   try {
     switch (action) {
@@ -33,6 +33,45 @@ export async function POST(request: Request) {
         
         if (!setDefaultResponse.ok) {
           throw new Error('Failed to unancel subscription');
+        }
+        
+        return NextResponse.json({ success: true });
+
+      case "change-region":
+        const changeRegionResponse = await fetch(`${process.env.API_URL}/api/stripe/user/${userId}/subscription/${subscriptionId}/region`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ region })
+        });
+        
+        if (!changeRegionResponse.ok) {
+          throw new Error('Failed to make change server region request');
+        }
+        
+        return NextResponse.json({ success: true });
+
+      case "change-address":
+        const changeAddressResponse = await fetch(`${process.env.API_URL}/api/stripe/user/${userId}/subscription/${subscriptionId}/address`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ address })
+        });
+        
+        if (!changeAddressResponse.ok) {
+          throw new Error('Failed to change server adress');
+        }
+        
+        return NextResponse.json({ success: true });
+
+      case "change-title":
+        const changeTitleResponse = await fetch(`${process.env.API_URL}/api/stripe/user/${userId}/subscription/${subscriptionId}/title`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title })
+        });
+        
+        if (!changeTitleResponse.ok) {
+          throw new Error('Failed to change server title');
         }
         
         return NextResponse.json({ success: true });
