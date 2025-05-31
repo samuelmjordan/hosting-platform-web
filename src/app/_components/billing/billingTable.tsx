@@ -440,8 +440,8 @@ export function BillingComponent({ servers, invoices, paymentMethods: initialPay
                 <p className="text-sm font-medium text-muted-foreground">Next Payment</p>
                 <p className="text-3xl font-bold">{formatDate(nextServerToPay?.current_period_end ?? 0)}</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {nextServerToPay?.server_name}:{" "}
-                  {formatCurrency({
+                  {nextServerToPay?.server_name}{nextServerToPay && ": "}
+                  {nextServerToPay && formatCurrency({
                     type: nextServerToPay?.currency || "USD",
                     value: nextServerToPay?.minor_amount || 0,
                   })}
