@@ -891,11 +891,20 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                           )}
                         </div>
                       </div>
-                      {status.lastChecked && (
-                        <p className="text-xs text-slate-500 mt-2">
-                          Last checked: {new Date(status.lastChecked).toLocaleTimeString()}
-                        </p>
-                      )}
+                      <div className="flex items-center justify-between text-xs text-slate-500">
+                        <span>Period ends</span>
+                        <div className="flex items-center gap-1">
+                          {!server.cancel_at_period_end ? (
+                            <>
+                              <span className="">{formatDate(server.current_period_end)}</span> 
+                            </>
+                          ) : (
+                            <>
+                            <span className="text-red-600">{formatDate(server.current_period_end)}</span> 
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
 
