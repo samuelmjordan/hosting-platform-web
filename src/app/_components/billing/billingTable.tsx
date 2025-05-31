@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { CalendarIcon, CreditCard, Download, Package, AlertCircle, CheckCircle2, XCircle, Wallet, Check, Smartphone } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -261,6 +262,30 @@ export function BillingComponent({ servers, invoices, paymentMethods }: BillingT
   const [selectedServer, setSelectedServer] = useState<Server | null>(null)
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false)
   const [loading, setLoading] = useState<string | null>(null)
+  
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  
+  const getActiveTab = () => {
+    const tab = searchParams.get('tab')
+    if (tab && ['subscription', 'payment', 'history'].includes(tab)) {
+      return tab
+    }
+    return 'subscription'
+  }
+  
+  const [activeTab, setActiveTab] = useState(getActiveTab())
+  
+  useEffect(() => {
+    setActiveTab(getActiveTab())
+  }, [searchParams])
+  
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab)
+    const url = new URL(window.location.href)
+    url.searchParams.set('tab', tab)
+    router.push(url.pathname + url.search, { scroll: false })
+  }
 
   const handleCancelSubscription = (server: Server) => {
     toast({
@@ -273,17 +298,14 @@ export function BillingComponent({ servers, invoices, paymentMethods }: BillingT
   const handleAddPaymentMethod = async () => {
     try {
       setLoading("add")
-      const checkoutUrl = await createPaymentMethod(
-        window.location.href,
-        window.location.href
-      )
+      const checkoutUrl = await createPaymentMethod(window.location.href, window.location.href)
       window.location.href = checkoutUrl
     } catch (error) {
       toast({
-        title: "Error", 
-        description: "Failed to add new payment method. Please try again.",
+        title: "Error",
+        description: "Failed to create payment method. Please try again.",
         variant: "destructive"
-      })      
+      })
     } finally {
       setLoading(null)
     }
@@ -297,6 +319,7 @@ export function BillingComponent({ servers, invoices, paymentMethods }: BillingT
         title: "Default payment method updated",
         description: `${displayName} is now your default payment method.`,
       })
+      // refresh page or update state
       window.location.reload()
     } catch (error) {
       toast({
@@ -391,7 +414,7 @@ export function BillingComponent({ servers, invoices, paymentMethods }: BillingT
         </div>
       </Card>
 
-      <Tabs defaultValue="subscription" className="w-full">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="grid w-full grid-cols-3 mb-8">
           <TabsTrigger value="subscription">Subscriptions</TabsTrigger>
           <TabsTrigger value="payment">Payment Methods</TabsTrigger>
