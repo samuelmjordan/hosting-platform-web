@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import type { CurrencyAmount, Server } from "@/app/types"
+import type { CurrencyAmount, Server, Region, Specification, SpecificationType, Plan } from "@/app/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -43,6 +43,7 @@ import {
   MapPin,
   TrendingUp,
   CalendarIcon,
+  HardDrive,
 } from "lucide-react"
 import Link from "next/dist/client/link"
 import {
@@ -57,6 +58,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { 
+  changeServerAddress, 
+  changeServerTitle, 
+  changeServerRegion,
+  changeServerSpecification 
+} from "@/app/_services/subscriptionClientService"
 
 const formatDate = (timestamp: number) => {
   if (!timestamp) return "N/A"
@@ -133,9 +141,12 @@ interface ServerStatus {
 
 interface DashboardTableProps {
   servers: Server[]
+  plans: Plan[]
+  regions: Region[]
 }
 
-export function DashboardTable({ servers }: DashboardTableProps) {
+export function DashboardTable({ servers: initialServers, plans, regions }: DashboardTableProps) {
+  const [servers, setServers] = useState(initialServers)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [editingServer, setEditingServer] = useState<Server | null>(null)
@@ -143,6 +154,10 @@ export function DashboardTable({ servers }: DashboardTableProps) {
   const [newServerAddress, setNewServerAddress] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [serverStatuses, setServerStatuses] = useState<Record<string, ServerStatus>>({})
+  const [regionChangeServer, setRegionChangeServer] = useState<Server | null>(null)
+  const [selectedRegion, setSelectedRegion] = useState("")
+  const [upgradeServer, setUpgradeServer] = useState<Server | null>(null)
+  const [selectedSpecification, setSelectedSpecification] = useState("")
   const router = useRouter()
 
   const pingMachine = async (address: string): Promise<boolean> => {
@@ -171,7 +186,6 @@ export function DashboardTable({ servers }: DashboardTableProps) {
     const timeoutId = setTimeout(() => controller.abort(), 10000)
 
     try {
-      // Using mcstatus.io - way more reliable than mcapi.us
       const response = await fetch(`https://api.mcstatus.io/v2/status/java/${address}`, {
         signal: controller.signal,
         headers: {
@@ -194,7 +208,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
           version: versionName,
           motd: motdText,
           lastUpdated: new Date(data.retrieved_at).toISOString(),
-          duration: `${Date.now() - data.retrieved_at}ms`, // rough estimate
+          duration: `${Date.now() - data.retrieved_at}ms`,
           players: data.players?.list?.map((player: any) => ({
             name: player.name_clean || player.name_raw,
             id: player.uuid || ""
@@ -336,26 +350,36 @@ export function DashboardTable({ servers }: DashboardTableProps) {
     setIsSubmitting(true)
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500))
+      // call both apis if needed
+      const nameChanged = newServerName.trim() !== editingServer.server_name
+      const addressChanged = newServerAddress.trim().toLowerCase() !== (editingServer.cname_record_name?.replace(FIXED_DOMAIN, "") || "")
 
-      servers.forEach((server) => {
-        if (
-          server.cname_record_name === editingServer.cname_record_name ||
-          (!server.cname_record_name && server.server_name === editingServer.server_name)
-        ) {
-          server.server_name = newServerName.trim()
+      if (nameChanged) {
+        await changeServerTitle(editingServer.subscription_id, newServerName.trim())
+      }
 
-          if (newServerAddress.trim()) {
-            server.cname_record_name = newServerAddress.trim().toLowerCase() + FIXED_DOMAIN
-          } else if (editingServer.cname_record_name && !newServerAddress.trim()) {
-            server.cname_record_name = null
+      if (addressChanged) {
+        const newFullAddress = newServerAddress.trim() ? newServerAddress.trim().toLowerCase() + FIXED_DOMAIN : ""
+        await changeServerAddress(editingServer.subscription_id, newFullAddress)
+      }
+
+      // update local state
+      setServers(prevServers => 
+        prevServers.map(server => {
+          if (server.subscription_id === editingServer.subscription_id) {
+            return {
+              ...server,
+              server_name: newServerName.trim(),
+              cname_record_name: newServerAddress.trim() ? newServerAddress.trim().toLowerCase() + FIXED_DOMAIN : null
+            }
           }
+          return server
+        })
+      )
 
-          toast({
-            title: "Server updated",
-            description: `Server details have been updated successfully.`,
-          })
-        }
+      toast({
+        title: "Server updated",
+        description: `Server details have been updated successfully.`,
       })
 
       setEditingServer(null)
@@ -371,19 +395,88 @@ export function DashboardTable({ servers }: DashboardTableProps) {
   }
 
   const handleChangeRegion = (server: Server) => {
-    toast({
-      title: "Change Region",
-      description: `Opening region selection for ${server.server_name}...`,
-    })
-    // In a real app, this would open a region selection dialog or navigate to a page
+    setRegionChangeServer(server)
+    setSelectedRegion(server.region_code)
+  }
+
+  const handleSaveRegion = async () => {
+    if (!regionChangeServer || !selectedRegion) return
+
+    setIsSubmitting(true)
+    try {
+      // assuming the API expects region_code string, not full Region object
+      await changeServerRegion(regionChangeServer.subscription_id, selectedRegion as any)
+      
+      setServers(prevServers =>
+        prevServers.map(server => {
+          if (server.subscription_id === regionChangeServer.subscription_id) {
+            return { ...server, region_code: selectedRegion }
+          }
+          return server
+        })
+      )
+
+      toast({
+        title: "Region changed",
+        description: "Server region has been updated. Your server will be migrated shortly.",
+      })
+      setRegionChangeServer(null)
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to change server region. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleUpgradeServer = (server: Server) => {
-    toast({
-      title: "Upgrade Server",
-      description: `Opening upgrade options for ${server.server_name}...`,
-    })
-    // In a real app, this would open an upgrade dialog or navigate to a page
+    setUpgradeServer(server)
+    const currentPlan = plans.find(plan => plan.specification.specification_id === server.subscription_id)
+    setSelectedSpecification(currentPlan?.specification.specification_id || "")
+  }
+
+  const handleSaveUpgrade = async () => {
+    if (!upgradeServer || !selectedSpecification) return
+
+    setIsSubmitting(true)
+    try {
+      await changeServerSpecification(upgradeServer.subscription_id, selectedSpecification)
+      
+      const newPlan = plans.find(plan => plan.specification.specification_id === selectedSpecification)
+      if (newPlan) {
+        setServers(prevServers =>
+          prevServers.map(server => {
+            if (server.subscription_id === upgradeServer.subscription_id) {
+              return {
+                ...server,
+                specification_title: newPlan.specification.title,
+                ram_gb: newPlan.specification.ram_gb,
+                vcpu: newPlan.specification.cpu,
+                minor_amount: newPlan.price.minor_amount
+              }
+            }
+            return server
+          })
+        )
+      }
+
+      toast({
+        title: "Server upgraded",
+        description: "Your server specification has been updated.",
+      })
+      setUpgradeServer(null)
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to upgrade server. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const activeServers = servers.filter((server) => server.subscription_status === "active")
@@ -1051,6 +1144,139 @@ export function DashboardTable({ servers }: DashboardTableProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Region Change Dialog */}
+      <Dialog open={regionChangeServer !== null} onOpenChange={(open) => !open && setRegionChangeServer(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Change Server Region</DialogTitle>
+            <DialogDescription>
+              Select a new region for your server. This will migrate your server data to the new location.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <RadioGroup value={selectedRegion} onValueChange={setSelectedRegion}>
+              {regions.map((region) => (
+                <div key={region.region_id} className="flex items-center space-x-2 p-3 rounded-lg hover:bg-slate-50">
+                  <RadioGroupItem value={region.region_code} id={region.region_id} />
+                  <Label htmlFor={region.region_id} className="flex items-center gap-2 cursor-pointer flex-grow">
+                    <span className="text-lg">{getRegionFlag(region.region_code)}</span>
+                    <div>
+                      <span className="font-medium">{region.city}</span>
+                      <span className="text-sm text-slate-500 ml-2">{region.continent}</span>
+                    </div>
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRegionChangeServer(null)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveRegion}
+              disabled={isSubmitting || selectedRegion === regionChangeServer?.region_code}
+              className="bg-pink-600 hover:bg-pink-700"
+            >
+              {isSubmitting ? "Changing..." : "Change Region"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Upgrade Dialog */}
+      <Dialog open={upgradeServer !== null} onOpenChange={(open) => !open && setUpgradeServer(null)}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Upgrade Server</DialogTitle>
+            <DialogDescription>
+              Choose a new plan for your server. Changes will take effect immediately.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <RadioGroup value={selectedSpecification} onValueChange={setSelectedSpecification}>
+              {plans
+              .filter((plan) => plan.price.currency == upgradeServer?.currency)
+              .map((plan) => {
+                const isCurrentPlan = plan.specification.title === upgradeServer?.specification_title
+                const currentPrice = upgradeServer?.minor_amount || 0
+                const newPrice = plan.price.minor_amount
+                const isDowngrade = newPrice < currentPrice
+                
+                return (
+                  <div
+                    key={plan.specification.specification_id}
+                    className={`flex items-center space-x-3 p-4 rounded-lg border ${
+                      isCurrentPlan ? "border-pink-500 bg-pink-50" : "border-slate-200 hover:bg-slate-50"
+                    }`}
+                  >
+                    <RadioGroupItem value={plan.specification.specification_id} id={plan.specification.specification_id} disabled={isCurrentPlan} />
+                    <Label htmlFor={plan.specification.specification_id} className="flex-grow cursor-pointer">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold">{plan.specification.specification_id}</span>
+                            {isCurrentPlan && (
+                              <Badge variant="outline" className="text-xs">
+                                Current Plan
+                              </Badge>
+                            )}
+                            {isDowngrade && !isCurrentPlan && (
+                              <Badge variant="outline" className="text-xs text-orange-600 border-orange-600">
+                                Downgrade
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-xs text-slate-500 mt-0.5">{plan.specification.caption}</p>
+                          <div className="flex items-center gap-4 text-sm text-slate-600 mt-1">
+                            <span className="flex items-center gap-1">
+                              <Cpu className="h-3 w-3" />
+                              {plan.specification.cpu} vCPU
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <MemoryStick className="h-3 w-3" />
+                              {plan.specification.ram_gb} GB RAM
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <HardDrive className="h-3 w-3" />
+                              {plan.specification.ssd_gb} GB SSD
+                            </span>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-semibold">
+                            {formatCurrency({ type: upgradeServer?.currency || "USD", value: newPrice })}
+                          </div>
+                          <div className="text-xs text-slate-600">per month</div>
+                        </div>
+                      </div>
+                    </Label>
+                  </div>
+                )
+              })}
+            </RadioGroup>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setUpgradeServer(null)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveUpgrade}
+              disabled={
+                isSubmitting ||
+                !selectedSpecification ||
+                plans.find(plan => plan.specification.specification_id === selectedSpecification)?.specification.title === upgradeServer?.specification_title
+              }
+              className="bg-pink-600 hover:bg-pink-700"
+            >
+              {isSubmitting ? "Upgrading..." : "Confirm Upgrade"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
+
+export default DashboardTable

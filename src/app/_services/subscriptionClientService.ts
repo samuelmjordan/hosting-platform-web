@@ -24,7 +24,7 @@ export async function uncancelSubscription(subscriptionId: string): Promise<void
   }
 }
 
-export async function changeServerRegion(subscriptionId: string, region: Region): Promise<void> {
+export async function changeServerRegion(subscriptionId: string, region: string): Promise<void> {
   const response = await fetch('/api/user/subscription/actions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -57,5 +57,17 @@ export async function changeServerTitle(subscriptionId: string, title: string): 
   
   if (!response.ok) {
     throw new Error('Failed to change server title');
+  }
+}
+
+export async function changeServerSpecification(subscriptionId: string, specificationId: string): Promise<void> {
+  const response = await fetch('/api/user/subscription/actions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'change-specification', subscriptionId, specificationId })
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to change server specification');
   }
 }
