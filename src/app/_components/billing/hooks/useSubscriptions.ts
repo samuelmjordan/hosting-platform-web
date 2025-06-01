@@ -42,7 +42,9 @@ export function useSubscriptions(initialSubscriptions: Server[]): UseSubscriptio
 
       setSubscriptions(prev => prev.map(subscription => ({
         ...subscription,
-        cancel_at_period_end: subscription.subscription_id === server.subscription_id
+        cancel_at_period_end: subscription.subscription_id === server.subscription_id 
+          ? true 
+          : subscription.cancel_at_period_end
       })))
       
       toast({
@@ -71,7 +73,9 @@ export function useSubscriptions(initialSubscriptions: Server[]): UseSubscriptio
 
       setSubscriptions(prev => prev.map(subscription => ({
         ...subscription,
-        cancel_at_period_end: subscription.subscription_id !== server.subscription_id
+        cancel_at_period_end: subscription.subscription_id === server.subscription_id 
+          ? false 
+          : subscription.cancel_at_period_end
       })))
       
       toast({
