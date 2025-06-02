@@ -35,27 +35,31 @@ export function ServerCard({
 
   return (
     <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-white border-slate-200 flex flex-col h-full">
-      <div className="p-6 pb-4 flex-grow">
-        <ServerHeader
-          server={server}
-          status={status}
-          isOnline={isOnline}
-          isProvisioning={isProvisioning}
-          onEdit={() => onEdit(server)}
-          onRefresh={() => onRefresh(server)}
-        />
+      <div className="p-6 pb-4 flex-grow flex flex-col">
+        <div className="flex-grow">
+          <ServerHeader
+            server={server}
+            status={status}
+            isOnline={isOnline}
+            isProvisioning={isProvisioning}
+            onEdit={() => onEdit(server)}
+            onRefresh={() => onRefresh(server)}
+          />
 
-        <ServerStatusDisplay
-          server={server}
-          status={status}
-          isOnline={isOnline}
-          isProvisioning={isProvisioning}
-          copiedId={copiedId}
-          onCopy={onCopy}
-        />
+          <ServerStatusDisplay
+            server={server}
+            status={status}
+            isOnline={isOnline}
+            isProvisioning={isProvisioning}
+            copiedId={copiedId}
+            onCopy={onCopy}
+          />
+        </div>
 
-        <ServerSpecs server={server} />
-        <ServerBilling server={server} />
+        <div className="mt-auto">
+          <ServerSpecs server={server} />
+          <ServerBilling server={server} />
+        </div>
       </div>
 
       <ActionFooter
