@@ -84,6 +84,7 @@ export function ServerGrid({
         return (
           <ServerCard
             key={serverId}
+            servers={servers}
             server={server}
             status={status}
             copiedId={copiedId}

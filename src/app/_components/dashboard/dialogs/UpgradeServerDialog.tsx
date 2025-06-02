@@ -29,7 +29,7 @@ export function UpgradeServerDialog({ server, plans, isOpen, onClose, onSave }: 
 
   useEffect(() => {
     if (server) {
-      const currentPlan = plans.find(plan => plan.specification.title === server.specification_title)
+      const currentPlan = plans.find(plan => plan.specification.specification_id === server.specification_title)
       setSelectedSpecification(currentPlan?.specification.specification_id || "")
     }
   }, [server, plans])

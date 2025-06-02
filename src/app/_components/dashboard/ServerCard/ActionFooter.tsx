@@ -1,16 +1,22 @@
 import { Button } from "@/components/ui/button"
 import { ArrowUpRight, MapPin, TrendingUp, DollarSign } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { Server } from "@/app/types"
+import { Plan, Server } from "@/app/types"
 
 interface ActionFooterProps {
+  servers: Server[]
   server: Server
   onChangeRegion: () => void
   onUpgrade: () => void
 }
 
-export function ActionFooter({ server, onChangeRegion, onUpgrade }: ActionFooterProps) {
+export function ActionFooter({ servers, server, onChangeRegion, onUpgrade }: ActionFooterProps) {
   const router = useRouter()
+  const serverUpgrades: Server[] = server 
+    ? servers.filter((otherServer) => 
+      otherServer.currency === server.currency
+      && otherServer.minor_amount > server.minor_amount)
+    : []
 
   return (
     <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 mt-auto">
@@ -25,7 +31,8 @@ export function ActionFooter({ server, onChangeRegion, onUpgrade }: ActionFooter
             <MapPin className="h-3 w-3 mr-1" />
             Region
           </Button>
-          <Button
+          {(serverUpgrades.length > 0) 
+          ? (<Button
             variant="outline"
             size="sm"
             className="bg-white text-xs"
@@ -33,7 +40,16 @@ export function ActionFooter({ server, onChangeRegion, onUpgrade }: ActionFooter
           >
             <TrendingUp className="h-3 w-3 mr-1" />
             Upgrade
-          </Button>
+          </Button>)
+          : (<Button
+            variant="outline"
+            size="sm"
+            className="bg-white text-xs"
+            disabled
+          >
+            <TrendingUp className="h-3 w-3 mr-1" />
+            Upgrade
+          </Button>)}
           <Button
             variant="outline"
             size="sm"
