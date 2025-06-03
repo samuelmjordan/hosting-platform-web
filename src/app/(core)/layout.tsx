@@ -6,10 +6,16 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+    const menuItems = [
+    { label: 'Store', href: '/store' },
+    { label: 'Dashboard', href: '/dashboard' },
+    { label: 'Billing', href: '/billing' }
+  ];
+
   return (
     <div className="flex flex-col min-h-screen">
       <div>
-        <Navbar />
+        <Navbar items={menuItems}/>
       </div>
       <main className="flex-1">
         {children}

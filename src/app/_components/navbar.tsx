@@ -9,9 +9,13 @@ import {
  CollapsibleContent,
  CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import { NavbarItem } from '../types';
 
+interface NavbarProps {
+  items: NavbarItem[]
+}
 
-const Navbar = () => {
+const Navbar = ({ items }: NavbarProps) => {
  const { isLoaded } = useUser();
  
  const UserButtonWithLoader = () => {
@@ -22,12 +26,6 @@ const Navbar = () => {
     }
     return <UserButton />;
   };
-  
-  const menuItems = [
-    { label: 'Store', href: '/store' },
-    { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Billing', href: '/billing' }
-  ];
 
   return (
     <nav className="w-full border-b bg-white sticky top-0 z-50">
@@ -49,7 +47,7 @@ const Navbar = () => {
 
           {/* Desktop menu */}
           <div className="hidden md:flex md:space-x-8">
-            {menuItems.map((item) => (
+            {items.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
@@ -71,7 +69,7 @@ const Navbar = () => {
               </CollapsibleTrigger>
               <CollapsibleContent className="absolute right-0 mt-4 w-48 bg-white rounded-lg shadow-lg border border-gray-100 z-50">
                 <div className="flex flex-col py-2">
-                  {menuItems.map((item) => (
+                  {items.map((item) => (
                     <a
                       key={item.label}
                       href={item.href}

@@ -8,6 +8,11 @@ export interface Specification {
   ssd_gb: number;
 }
 
+export interface NavbarItem {
+  label: string;
+  href: string;
+}
+
 export interface Price {
   price_id: string;
   product_id: string;
