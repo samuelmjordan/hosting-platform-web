@@ -1,17 +1,27 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { UserButton } from '@clerk/nextjs';
+import { UserButton, useUser } from '@clerk/nextjs';
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
+ Collapsible,
+ CollapsibleContent,
+ CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 
 
 const Navbar = () => {
+ const { isLoaded } = useUser();
+ 
+ const UserButtonWithLoader = () => {
+    if (!isLoaded) {
+      return (
+        <div className="h-8 w-8 rounded-full bg-gray-200 animate-pulse" />
+      );
+    }
+    return <UserButton />;
+  };
   
   const menuItems = [
     { label: 'Store', href: '/store' },
@@ -48,7 +58,7 @@ const Navbar = () => {
                 {item.label}
               </a>
             ))}
-            <UserButton />
+            <UserButtonWithLoader />
           </div>
 
           {/* Mobile menu */}
@@ -73,7 +83,7 @@ const Navbar = () => {
                 </div>
               </CollapsibleContent>
             </Collapsible>
-            <UserButton />
+            <UserButtonWithLoader />
           </div>
 
         </div>
