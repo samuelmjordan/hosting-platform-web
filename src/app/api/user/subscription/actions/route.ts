@@ -8,11 +8,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const { title, address, region, action, subscriptionId, specificationId } = await request.json();
+  const { title, address, region, action, subscriptionId, specificationId: specification_id } = await request.json();
   const stripeBasePath = `${process.env.API_URL}/api/stripe/user/${userId}/subscription/${subscriptionId}`
   const basePath = `${process.env.API_URL}/api/user/${userId}/subscription/${subscriptionId}`
-
-  console.log({ title, address, region, action, subscriptionId })
 
   try {
     switch (action) {
@@ -45,7 +43,7 @@ export async function POST(request: Request) {
         const specificationResponse = await fetch(`${stripeBasePath}/specification`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ specificationId })
+          body: JSON.stringify({ specification_id })
         });
         
         if (!specificationResponse.ok) {

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { ServerIcon, Search } from "lucide-react"
-import { Server } from "@/app/types"
+import { Plan, Server } from "@/app/types"
 import { ServerStatus } from "./hooks/useServerStatus"
 import { ServerCard } from "./ServerCard"
 import { CreateServerCard } from "./CreateServerCard"
@@ -9,6 +9,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 interface ServerGridProps {
+  plans: Plan[]
   servers: Server[]
   serverStatuses: Record<string, ServerStatus>
   searchQuery: string
@@ -21,6 +22,7 @@ interface ServerGridProps {
 }
 
 export function ServerGrid({
+  plans,
   servers,
   serverStatuses,
   searchQuery,
@@ -84,7 +86,7 @@ export function ServerGrid({
         return (
           <ServerCard
             key={serverId}
-            servers={servers}
+            plans={plans}
             server={server}
             status={status}
             copiedId={copiedId}

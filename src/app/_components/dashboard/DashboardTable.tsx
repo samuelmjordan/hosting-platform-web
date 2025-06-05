@@ -45,8 +45,6 @@ export function DashboardTable({ servers: initialServers, plans, regions }: Dash
     setTimeout(() => setCopiedId(null), 2000)
   }
 
-  const upgradePlans = plans.filter((plan) => (plan.price.currency === (upgradeServer?.currency || "")) && (plan.price.minor_amount >= (upgradeServer?.minor_amount || 0)))
-
   const activeServers = servers.filter((server) => server.subscription_status === "active")
   const totalPlayers = activeServers.reduce((sum, server) => {
     const status = serverStatuses[server.cname_record_name || ""]
@@ -97,6 +95,7 @@ export function DashboardTable({ servers: initialServers, plans, regions }: Dash
 
         {/* Server Grid */}
         <ServerGrid
+          plans={plans}
           servers={servers}
           serverStatuses={serverStatuses}
           searchQuery={searchQuery}
@@ -127,7 +126,7 @@ export function DashboardTable({ servers: initialServers, plans, regions }: Dash
 
       <UpgradeServerDialog
         server={upgradeServer}
-        plans={upgradePlans}
+        plans={plans}
         isOpen={upgradeServer !== null}
         onClose={() => setUpgradeServer(null)}
         onSave={handleUpgradeServer}

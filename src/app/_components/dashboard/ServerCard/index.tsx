@@ -8,7 +8,7 @@ import { ServerBilling } from "./ServerBilling"
 import { ActionFooter } from "./ActionFooter"
 
 interface ServerCardProps {
-  servers: Server[]
+  plans: Plan[]
   server: Server
   status: ServerStatus
   copiedId: string | null
@@ -20,7 +20,7 @@ interface ServerCardProps {
 }
 
 export function ServerCard({
-  servers,
+  plans,
   server,
   status,
   copiedId,
@@ -63,7 +63,7 @@ export function ServerCard({
       </div>
 
       <ActionFooter
-        servers={servers}
+        plans={plans}
         server={server}
         onChangeRegion={() => onChangeRegion(server)}
         onUpgrade={() => onUpgrade(server)}

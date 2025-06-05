@@ -5,21 +5,21 @@ import { useRouter } from "next/navigation"
 import { Plan, Server } from "@/app/types"
 
 interface ActionFooterProps {
-  servers: Server[]
+  plans: Plan[]
   server: Server
   onChangeRegion: () => void
   onUpgrade: () => void
 }
 
-export function ActionFooter({ servers, server, onChangeRegion, onUpgrade }: ActionFooterProps) {
+export function ActionFooter({ plans, server, onChangeRegion, onUpgrade }: ActionFooterProps) {
   const router = useRouter()
-  const serverUpgrades: Server[] = server 
-    ? servers.filter((otherServer) => 
-      otherServer.currency === server.currency
-      && otherServer.minor_amount > server.minor_amount)
+  const planUpgrades: Plan[] = server 
+    ? plans.filter((plan) => 
+      plan.price.currency === server.currency
+      && plan.price.minor_amount > server.minor_amount)
     : []
 
-  const hasUpgrades = serverUpgrades.length > 0
+  const hasUpgrades = planUpgrades.length > 0
 
   const upgradeButton = (
     <Button
