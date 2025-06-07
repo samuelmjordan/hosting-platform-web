@@ -24,7 +24,7 @@ export function StoreComponent({ plans, regions }: StoreProps) {
   const { userId } = useAuth();
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
-  const [currency, setCurrency] = useState('USD');
+  const [currency, setCurrency] = useState('EUR');
   const [isLockedCurrency, setIsLockedCurrency] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +40,7 @@ export function StoreComponent({ plans, regions }: StoreProps) {
           const userLocale = navigator.language;
           const formatter = new Intl.NumberFormat(userLocale, {
             style: 'currency',
-            currency: 'USD'
+            currency: 'EUR'
           });
           const detectedCurrency = formatter.formatToParts(0)
             .find(part => part.type === 'currency')
