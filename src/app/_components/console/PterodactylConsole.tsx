@@ -111,6 +111,18 @@ export default function PterodactylConsole({ subscriptionUid, className = "" }: 
     }
   };
 
+  const sendPowerSignal = (signal: 'start' | 'stop' | 'restart' | 'kill') => {
+    if (wsRef.current && isConnected) {
+      wsRef.current.send(JSON.stringify({
+        event: "set state",
+        args: [signal]
+      }));
+      
+      // add power action to logs for feedback
+      setLogs(prev => [...prev, `[POWER] ${signal.toUpperCase()} signal sent`]);
+    }
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       sendCommand();
@@ -144,6 +156,40 @@ export default function PterodactylConsole({ subscriptionUid, className = "" }: 
             className="px-3 py-1 bg-red-600 text-white rounded text-sm disabled:opacity-50"
           >
             disconnect
+          </button>
+        </div>
+      </div>
+
+      {/* Power Controls */}
+      <div className="p-4 border-b bg-gray-900">
+        <div className="flex justify-center space-x-3">
+          <button
+            onClick={() => sendPowerSignal('start')}
+            disabled={!isConnected}
+            className="px-4 py-2 bg-green-600 text-white rounded text-sm disabled:opacity-50 hover:bg-green-700 transition-colors"
+          >
+            start
+          </button>
+          <button
+            onClick={() => sendPowerSignal('stop')}
+            disabled={!isConnected}
+            className="px-4 py-2 bg-yellow-600 text-white rounded text-sm disabled:opacity-50 hover:bg-yellow-700 transition-colors"
+          >
+            stop
+          </button>
+          <button
+            onClick={() => sendPowerSignal('restart')}
+            disabled={!isConnected}
+            className="px-4 py-2 bg-blue-600 text-white rounded text-sm disabled:opacity-50 hover:bg-blue-700 transition-colors"
+          >
+            restart
+          </button>
+          <button
+            onClick={() => sendPowerSignal('kill')}
+            disabled={!isConnected}
+            className="px-4 py-2 bg-red-600 text-white rounded text-sm disabled:opacity-50 hover:bg-red-700 transition-colors"
+          >
+            kill
           </button>
         </div>
       </div>
