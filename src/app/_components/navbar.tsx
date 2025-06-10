@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { UserButton, useUser } from '@clerk/nextjs';
@@ -35,7 +35,7 @@ const Navbar = ({ items }: NavbarProps) => {
           <div className="flex-shrink-0 relative -mb-8">
             <div className="flex items-center relative">
               <img 
-                src="logo.svg" 
+                src="/logo.svg" 
                 alt="Axolhost" 
                 className="h-24"
               />

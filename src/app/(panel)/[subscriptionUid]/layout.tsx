@@ -6,6 +6,7 @@ export default async function RootLayout({ children, params }: { children: React
     const { subscriptionUid } = await params;
     
     const menuItems = [
+        { label: 'Home', href: `/dashboard` },
         { label: 'Console', href: `/${subscriptionUid}/console` },
         { label: 'Files', href: `/${subscriptionUid}/files` },
         { label: 'Settings', href: `/${subscriptionUid}/settings` }

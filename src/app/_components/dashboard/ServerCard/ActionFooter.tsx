@@ -3,6 +3,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { ArrowUpRight, MapPin, TrendingUp, DollarSign } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Plan, Server } from "@/app/types"
+import Link from "next/link"
 
 interface ActionFooterProps {
   plans: Plan[]
@@ -71,10 +72,12 @@ export function ActionFooter({ plans, server, onChangeRegion, onUpgrade }: Actio
             </Button>
           </div>
           <div className="flex items-center gap-2">
+          <Link href={`/${server.subscription_id}/console`}>
             <Button size="sm" className="bg-slate-900 hover:bg-slate-800 text-white">
               <ArrowUpRight className="h-3 w-3 mr-1" />
               Manage
             </Button>
+          </Link>
           </div>
         </div>
       </div>

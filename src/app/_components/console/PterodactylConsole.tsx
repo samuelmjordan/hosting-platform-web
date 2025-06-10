@@ -40,7 +40,6 @@ export default function PterodactylConsole({ subscriptionUid, className = "" }: 
   const { user } = useUser();
   const defaultColour = 'text-white'
 
-  // ansi color mapping - keeping it simple but extensible
   const ansiColorMap: { [key: string]: string } = {
     '30': 'text-black',
     '31': 'text-red-400',
@@ -50,7 +49,7 @@ export default function PterodactylConsole({ subscriptionUid, className = "" }: 
     '35': 'text-purple-400',
     '36': 'text-cyan-400',
     '37': 'text-white',
-    '39': defaultColour, // default - keeping console green theme
+    '39': defaultColour,
     '90': 'text-gray-500',
     '91': 'text-red-300',
     '92': 'text-green-300',
@@ -65,11 +64,10 @@ export default function PterodactylConsole({ subscriptionUid, className = "" }: 
     const ansiRegex = /\x1b\[([0-9;]*)m/g;
     const spans: AnsiSpan[] = [];
     let lastIndex = 0;
-    let currentClasses = [defaultColour]; // default console color
+    let currentClasses = [defaultColour];
     let match;
 
     while ((match = ansiRegex.exec(str)) !== null) {
-      // add text before this escape sequence
       if (match.index > lastIndex) {
         const text = str.slice(lastIndex, match.index);
         if (text) {
@@ -80,20 +78,16 @@ export default function PterodactylConsole({ subscriptionUid, className = "" }: 
         }
       }
 
-      // parse the escape sequence
       const codes = match[1].split(';').filter(Boolean);
       
       for (const code of codes) {
         if (code === '0') {
-          // reset all
           currentClasses = [defaultColour];
         } else if (code === '1') {
-          // bold
           if (!currentClasses.includes('font-bold')) {
             currentClasses.push('font-bold');
           }
         } else if (ansiColorMap[code]) {
-          // color - remove any existing color classes and add new one
           currentClasses = currentClasses.filter(cls => !cls.startsWith('text-'));
           currentClasses.push(ansiColorMap[code]);
         }
@@ -102,7 +96,6 @@ export default function PterodactylConsole({ subscriptionUid, className = "" }: 
       lastIndex = ansiRegex.lastIndex;
     }
 
-    // add remaining text
     if (lastIndex < str.length) {
       const text = str.slice(lastIndex);
       if (text) {
