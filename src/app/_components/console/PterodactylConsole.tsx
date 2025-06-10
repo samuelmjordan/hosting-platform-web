@@ -42,7 +42,6 @@ export default function PterodactylConsole({ subscriptionUid, className = "" }: 
     scrollToBottom();
   }, [logs]);
 
-  // uptime calculator
   useEffect(() => {
     const interval = setInterval(() => {
       if (uptimeStartRef.current && serverStatus === "running") {
@@ -68,11 +67,21 @@ export default function PterodactylConsole({ subscriptionUid, className = "" }: 
 
   const getStatusColor = (status: string): string => {
     switch (status) {
-      case "running": return "text-green-400";
-      case "starting": return "text-yellow-400";
+      case "running": return "text-emerald-400";
+      case "starting": return "text-amber-400";
       case "stopping": return "text-orange-400";
       case "offline": return "text-red-400";
-      default: return "text-gray-400";
+      default: return "text-slate-400";
+    }
+  };
+
+  const getStatusBadgeColor = (status: string): string => {
+    switch (status) {
+      case "running": return "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+      case "starting": return "bg-amber-500/20 text-amber-400 border-amber-500/30";
+      case "stopping": return "bg-orange-500/20 text-orange-400 border-orange-500/30";
+      case "offline": return "bg-red-500/20 text-red-400 border-red-500/30";
+      default: return "bg-slate-500/20 text-slate-400 border-slate-500/30";
     }
   };
 
@@ -201,166 +210,260 @@ export default function PterodactylConsole({ subscriptionUid, className = "" }: 
   }, []);
 
   return (
-    <div className={`border rounded-lg bg-gray-800 text-white font-mono ${className}`}>
-      <div className="p-4 border-b border-gray-700 flex justify-between items-center bg-gray-900">
-        <div className="flex items-center space-x-4">
-          <span className="text-sm">
-            status: <span className={getStatusColor(serverStatus)}>{serverStatus}</span>
-          </span>
-          <span className="text-sm text-gray-400">
-            uptime: {uptime}
-          </span>
-        </div>
-        <div className="space-x-2">
-          <button
-            onClick={connect}
-            disabled={isConnected || !user?.id}
-            className="px-3 py-1 bg-green-600 text-white rounded text-sm disabled:opacity-50 hover:bg-green-700"
-          >
-            connect
-          </button>
-          <button
-            onClick={disconnect}
-            disabled={!isConnected}
-            className="px-3 py-1 bg-red-600 text-white rounded text-sm disabled:opacity-50 hover:bg-red-700"
-          >
-            disconnect
-          </button>
-        </div>
-      </div>
-
-      {/* Resource Stats */}
-      {stats && (
-        <div className="p-4 border-b border-gray-700 bg-gray-850">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-            {/* CPU */}
-            <div className="bg-gray-900 p-3 rounded">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-gray-300">CPU Load</span>
-                <span className="text-blue-400">{stats.cpu_absolute.toFixed(2)}%</span>
+    <div className={`min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 ${className}`}>
+      <div className="container mx-auto p-6 space-y-6">
+        
+        {/* Header */}
+        <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6 shadow-2xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-emerald-400' : 'bg-red-400'} 
+                  ${isConnected ? 'animate-pulse' : ''}`}></div>
+                {isConnected && (
+                  <div className="absolute inset-0 w-3 h-3 rounded-full bg-emerald-400 animate-ping opacity-75"></div>
+                )}
               </div>
-              <div className="w-full bg-gray-700 rounded-full h-2">
+              <div>
+                <h1 className="text-xl font-bold text-white">Server Console</h1>
+                <div className="flex items-center gap-3 mt-1 text-sm">
+                  <span className={`px-2 py-1 rounded-full border text-xs font-medium ${getStatusBadgeColor(serverStatus)}`}>
+                    {serverStatus.toUpperCase()}
+                  </span>
+                  <span className="text-slate-400">uptime: {uptime}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex gap-2">
+              <button
+                onClick={connect}
+                disabled={isConnected || !user?.id}
+                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-600 
+                  disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-all
+                  shadow-lg hover:shadow-emerald-500/25"
+              >
+                Connect
+              </button>
+              <button
+                onClick={disconnect}
+                disabled={!isConnected}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-slate-600 
+                  disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-all
+                  shadow-lg hover:shadow-red-500/25"
+              >
+                Disconnect
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Resource Stats */}
+        {stats && (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            {/* CPU */}
+            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-5 shadow-xl">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-blue-400"></div>
+                  <span className="text-slate-300 font-medium">CPU Load</span>
+                </div>
+                <span className="text-blue-400 font-bold">{stats.cpu_absolute.toFixed(1)}%</span>
+              </div>
+              <div className="w-full bg-slate-700/50 rounded-full h-2 overflow-hidden">
                 <div 
-                  className="bg-blue-500 h-2 rounded-full transition-all duration-300" 
+                  className="bg-gradient-to-r from-blue-500 to-blue-400 h-2 rounded-full transition-all duration-500 ease-out" 
                   style={{ width: `${Math.min(stats.cpu_absolute, 100)}%` }}
                 ></div>
               </div>
             </div>
 
             {/* Memory */}
-            <div className="bg-gray-900 p-3 rounded">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-gray-300">Memory</span>
-                <span className="text-green-400">
-                  {formatBytes(stats.memory_bytes)} / {formatBytes(stats.memory_limit_bytes)}
+            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-5 shadow-xl">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
+                  <span className="text-slate-300 font-medium">Memory</span>
+                </div>
+                <span className="text-emerald-400 font-bold text-xs">
+                  {formatBytes(stats.memory_bytes)}
                 </span>
               </div>
-              <div className="w-full bg-gray-700 rounded-full h-2">
+              <div className="w-full bg-slate-700/50 rounded-full h-2 overflow-hidden">
                 <div 
-                  className="bg-green-500 h-2 rounded-full transition-all duration-300" 
+                  className="bg-gradient-to-r from-emerald-500 to-emerald-400 h-2 rounded-full transition-all duration-500 ease-out" 
                   style={{ width: `${(stats.memory_bytes / stats.memory_limit_bytes) * 100}%` }}
                 ></div>
+              </div>
+              <div className="text-xs text-slate-400 mt-1">
+                of {formatBytes(stats.memory_limit_bytes)}
               </div>
             </div>
 
             {/* Disk */}
-            <div className="bg-gray-900 p-3 rounded">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-gray-300">Disk</span>
-                <span className="text-yellow-400">{formatBytes(stats.disk_bytes)}</span>
+            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-5 shadow-xl">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-amber-400"></div>
+                  <span className="text-slate-300 font-medium">Disk Usage</span>
+                </div>
+                <span className="text-amber-400 font-bold text-xs">{formatBytes(stats.disk_bytes)}</span>
               </div>
-              <div className="w-full bg-gray-700 rounded-full h-2">
+              <div className="w-full bg-slate-700/50 rounded-full h-2 overflow-hidden">
                 <div 
-                  className="bg-yellow-500 h-2 rounded-full transition-all duration-300" 
-                  style={{ width: "25%" }} // placeholder since we don't have disk limit
+                  className="bg-gradient-to-r from-amber-500 to-amber-400 h-2 rounded-full transition-all duration-500 ease-out" 
+                  style={{ width: "35%" }}
                 ></div>
               </div>
             </div>
 
             {/* Network */}
-            <div className="bg-gray-900 p-3 rounded">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-gray-300">Network</span>
-              </div>
-              <div className="text-xs space-y-1">
-                <div className="flex justify-between">
-                  <span className="text-purple-400">↓ {formatBytes(stats.network.rx_bytes)}</span>
+            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-5 shadow-xl">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-purple-400"></div>
+                  <span className="text-slate-300 font-medium">Network</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-pink-400">↑ {formatBytes(stats.network.tx_bytes)}</span>
+              </div>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-400">↓ Download</span>
+                  <span className="text-purple-400 font-bold">{formatBytes(stats.network.rx_bytes)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-400">↑ Upload</span>
+                  <span className="text-pink-400 font-bold">{formatBytes(stats.network.tx_bytes)}</span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Power Controls */}
-      <div className="p-4 border-b border-gray-700 bg-gray-900">
-        <div className="flex justify-center space-x-3">
-          <button
-            onClick={() => sendPowerSignal('start')}
-            disabled={!isConnected}
-            className="px-4 py-2 bg-green-600 text-white rounded text-sm disabled:opacity-50 hover:bg-green-700 transition-colors"
-          >
-            start
-          </button>
-          <button
-            onClick={() => sendPowerSignal('stop')}
-            disabled={!isConnected}
-            className="px-4 py-2 bg-yellow-600 text-white rounded text-sm disabled:opacity-50 hover:bg-yellow-700 transition-colors"
-          >
-            stop
-          </button>
-          <button
-            onClick={() => sendPowerSignal('restart')}
-            disabled={!isConnected}
-            className="px-4 py-2 bg-blue-600 text-white rounded text-sm disabled:opacity-50 hover:bg-blue-700 transition-colors"
-          >
-            restart
-          </button>
-          <button
-            onClick={() => sendPowerSignal('kill')}
-            disabled={!isConnected}
-            className="px-4 py-2 bg-red-600 text-white rounded text-sm disabled:opacity-50 hover:bg-red-700 transition-colors"
-          >
-            kill
-          </button>
-        </div>
-      </div>
-
-      {error && (
-        <div className="p-2 bg-red-900 border-red-700 text-red-300 text-sm border-b">
-          error: {error}
-        </div>
-      )}
-
-      <div className="h-96 overflow-y-auto p-4 space-y-1 bg-black text-green-400">
-        {logs.map((log, i) => (
-          <div key={i} className="text-sm whitespace-pre-wrap">
-            {log}
+        {/* Power Controls */}
+        <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-6 shadow-xl">
+          <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-indigo-400"></div>
+            Power Controls
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <button
+              onClick={() => sendPowerSignal('start')}
+              disabled={!isConnected}
+              className="group px-4 py-3 bg-emerald-600/20 hover:bg-emerald-600 border border-emerald-500/30 
+                hover:border-emerald-500 text-emerald-400 hover:text-white rounded-lg font-medium 
+                transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+                shadow-lg hover:shadow-emerald-500/25"
+            >
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-400 group-hover:bg-white"></div>
+                Start
+              </div>
+            </button>
+            <button
+              onClick={() => sendPowerSignal('stop')}
+              disabled={!isConnected}
+              className="group px-4 py-3 bg-amber-600/20 hover:bg-amber-600 border border-amber-500/30 
+                hover:border-amber-500 text-amber-400 hover:text-white rounded-lg font-medium 
+                transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+                shadow-lg hover:shadow-amber-500/25"
+            >
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-amber-400 group-hover:bg-white"></div>
+                Stop
+              </div>
+            </button>
+            <button
+              onClick={() => sendPowerSignal('restart')}
+              disabled={!isConnected}
+              className="group px-4 py-3 bg-blue-600/20 hover:bg-blue-600 border border-blue-500/30 
+                hover:border-blue-500 text-blue-400 hover:text-white rounded-lg font-medium 
+                transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+                shadow-lg hover:shadow-blue-500/25"
+            >
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-blue-400 group-hover:bg-white"></div>
+                Restart
+              </div>
+            </button>
+            <button
+              onClick={() => sendPowerSignal('kill')}
+              disabled={!isConnected}
+              className="group px-4 py-3 bg-red-600/20 hover:bg-red-600 border border-red-500/30 
+                hover:border-red-500 text-red-400 hover:text-white rounded-lg font-medium 
+                transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+                shadow-lg hover:shadow-red-500/25"
+            >
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-red-400 group-hover:bg-white"></div>
+                Kill
+              </div>
+            </button>
           </div>
-        ))}
-        <div ref={logsEndRef} />
-      </div>
+        </div>
 
-      <div className="p-4 border-t border-gray-700 flex bg-gray-900">
-        <input
-          type="text"
-          value={command}
-          onChange={(e) => setCommand(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder="Type a command..."
-          disabled={!isConnected}
-          className="flex-1 bg-gray-800 text-white px-3 py-2 rounded-l border border-gray-600 border-r-0 focus:outline-none focus:border-blue-500 disabled:opacity-50"
-        />
-        <button
-          onClick={sendCommand}
-          disabled={!isConnected || !command.trim()}
-          className="px-4 py-2 bg-blue-600 text-white rounded-r border border-blue-600 disabled:opacity-50 hover:bg-blue-700"
-        >
-          send
-        </button>
+        {/* Error Display */}
+        {error && (
+          <div className="bg-red-900/50 border border-red-500/50 rounded-xl p-4 shadow-xl">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 rounded-full bg-red-400 animate-pulse"></div>
+              <span className="text-red-400 font-medium">Error: {error}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Console */}
+        <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl shadow-2xl overflow-hidden">
+          <div className="bg-slate-900/50 border-b border-slate-700/50 p-4">
+            <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-green-400"></div>
+              Console Output
+            </h2>
+          </div>
+          
+          <div className="h-96 overflow-y-auto p-4 bg-black/50 font-mono text-sm leading-relaxed">
+            {logs.length === 0 ? (
+              <div className="text-slate-500 italic">No console output yet. Connect to start receiving logs...</div>
+            ) : (
+              logs.map((log, i) => (
+                <div key={i} className="text-green-400 hover:bg-green-400/5 px-2 py-0.5 rounded transition-colors">
+                  {log}
+                </div>
+              ))
+            )}
+            <div ref={logsEndRef} />
+          </div>
+
+          <div className="border-t border-slate-700/50 bg-slate-900/50 p-4">
+            <div className="flex gap-2">
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  value={command}
+                  onChange={(e) => setCommand(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Type a command..."
+                  disabled={!isConnected}
+                  className="w-full bg-slate-800/50 border border-slate-600/50 rounded-lg px-4 py-3 
+                    text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 
+                    focus:border-blue-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed
+                    font-mono text-sm"
+                />
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <div className="text-slate-500 text-xs">↵</div>
+                </div>
+              </div>
+              <button
+                onClick={sendCommand}
+                disabled={!isConnected || !command.trim()}
+                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 
+                  disabled:opacity-50 text-white rounded-lg font-medium transition-all
+                  shadow-lg hover:shadow-blue-500/25"
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
