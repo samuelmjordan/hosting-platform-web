@@ -516,7 +516,7 @@ export default function PterodactylConsole({ subscriptionUid, className = "" }: 
             </h2>
           </div>
           
-          <div className="h-96 overflow-y-auto p-4 bg-black/50 font-mono text-sm leading-relaxed">
+          <div className="h-96 overflow-y-auto p-4 bg-black/50 font-mono text-sm leading-relaxed terminal-scroll">
             {logs.length === 0 ? (
               <div className="text-slate-500 italic">No console output yet. Connect to start receiving logs...</div>
             ) : (
