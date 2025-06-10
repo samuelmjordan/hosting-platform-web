@@ -1,5 +1,3 @@
-import { Region } from "../types";
-
 export async function cancelSubscription(subscriptionId: string): Promise<void> {
   const response = await fetch('/api/user/subscription/actions', {
     method: 'POST',

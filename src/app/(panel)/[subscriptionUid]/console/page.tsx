@@ -1,15 +1,15 @@
+import PterodactylConsole from "@/app/_components/console/PterodactylConsole";
+
 type Params = {
   subscriptionUid: string;
 }
 
 export default async function Console({ params }: { params: Promise<Params> }) {
-    const { subscriptionUid } = await params;
+  const { subscriptionUid } = await params;
 
   return (
-    <main className="flex-1">
-        <h1 className="text-6xl font-extrabold tracking-tight text-center sm:text-8xl lg:text-9xl">
-          {subscriptionUid}
-        </h1>
+    <main className="flex-1 p-4">
+      <PterodactylConsole subscriptionUid={subscriptionUid} />
     </main>
-  )
+  );
 }
