@@ -18,18 +18,19 @@ export class PterodactylFileClient implements FileApiClient {
     const options: RequestInit = {
       method,
       headers: {
-        'Content-Type': body instanceof FormData ? 'multipart/form-data' : 'application/json',
+        'Content-Type': 'application/json',
         // Add auth headers as needed
       },
     };
 
     if (body && !(body instanceof FormData)) {
       options.body = typeof body === 'string' ? body : JSON.stringify(body);
-    } else if (body instanceof FormData) {
-      options.body = body;
     }
 
     const response = await fetch(url, options);
+    
+    console.log('Response status:', response.status);
+    console.log('Response URL:', url);
     
     if (!response.ok) {
       const errorText = await response.text();
@@ -51,6 +52,7 @@ export class PterodactylFileClient implements FileApiClient {
 
   async getFiles(path: string): Promise<FileObject[]> {
     const params = new URLSearchParams({ directory: path });
+    console.log('Fetching files from:', `${this.baseUrl}/api/panel/user/${this.userId}/subscription/${this.subscriptionId}/file/list?${params}`);
     
     try {
       const response = await this.request<Array<{ object: string; attributes: FileObject }>>(
@@ -58,7 +60,11 @@ export class PterodactylFileClient implements FileApiClient {
         '/list', 
         params
       );
+      console.log('Raw response:', response);
+      
       const mappedFiles = response.map(item => item.attributes);
+      console.log('Mapped files:', mappedFiles);
+      
       return mappedFiles;
     } catch (error) {
       console.error('Error in getFiles:', error);

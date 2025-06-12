@@ -7,7 +7,7 @@ import { FileList } from './FileList';
 import { FileToolbar } from './FileToolbar';
 import { FileBreadcrumb } from './FileBreadcrumb';
 import { FileEditor } from './FileEditor';
-import { UploadDialog } from './FileDialog';
+import { UploadDialog } from './UploadDialog';
 import { useToast } from '@/hooks/use-toast';
 import { Card } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
@@ -240,7 +240,8 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
           setIsUploading(false);
           await loadFiles();
         }}
-        getUploadUrl={() => client.getUploadLink()}
+        userId={userId}
+        subscriptionId={subscriptionId}
       />
     </Card>
   );

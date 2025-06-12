@@ -18,7 +18,8 @@ interface UploadDialogProps {
   open: boolean;
   onClose: () => void;
   onUpload: (files: File[]) => void;
-  getUploadUrl: () => Promise<SignedUrl>;
+  userId: string;
+  subscriptionId: string;
 }
 
 interface UploadFile {
@@ -27,7 +28,7 @@ interface UploadFile {
   status: 'pending' | 'uploading' | 'completed' | 'error';
 }
 
-export function UploadDialog({ open, onClose, onUpload, getUploadUrl }: UploadDialogProps) {
+export function UploadDialog({ open, onClose, onUpload, userId, subscriptionId }: UploadDialogProps) {
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const { toast } = useToast();
@@ -65,9 +66,6 @@ export function UploadDialog({ open, onClose, onUpload, getUploadUrl }: UploadDi
 
   const uploadFiles = async () => {
     try {
-      const { attributes } = await getUploadUrl();
-      const uploadUrl = attributes.url;
-
       for (let i = 0; i < files.length; i++) {
         const uploadFile = files[i];
         if (uploadFile.status !== 'pending') continue;
@@ -76,10 +74,12 @@ export function UploadDialog({ open, onClose, onUpload, getUploadUrl }: UploadDi
           idx === i ? { ...f, status: 'uploading' } : f
         ));
 
-        const formData = new FormData();
-        formData.append('file', uploadFile.file);
-
         try {
+          // Create FormData with the file
+          const formData = new FormData();
+          formData.append('files', uploadFile.file);
+
+          // Upload through your backend proxy
           const xhr = new XMLHttpRequest();
           
           xhr.upload.addEventListener('progress', (e) => {
@@ -99,8 +99,10 @@ export function UploadDialog({ open, onClose, onUpload, getUploadUrl }: UploadDi
                 reject(new Error(`Upload failed: ${xhr.status}`));
               }
             });
-            xhr.addEventListener('error', reject);
+            xhr.addEventListener('error', () => reject(new Error('Upload failed')));
 
+            // Upload to YOUR backend, not the signed URL
+            const uploadUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/panel/user/${userId}/subscription/${subscriptionId}/file/upload`;
             xhr.open('POST', uploadUrl);
             xhr.send(formData);
           });
@@ -112,18 +114,19 @@ export function UploadDialog({ open, onClose, onUpload, getUploadUrl }: UploadDi
           setFiles(prev => prev.map((f, idx) => 
             idx === i ? { ...f, status: 'error' } : f
           ));
-          throw error;
+          console.error('Upload error:', error);
         }
       }
 
       toast({
         title: 'Upload complete',
-        description: `${files.length} file(s) uploaded successfully`,
+        description: `${files.filter(f => f.status === 'completed').length} file(s) uploaded successfully`,
       });
 
       onUpload(files.map(f => f.file));
-      onClose();
-      setFiles([]);
+      setTimeout(() => {
+        setFiles([]);
+      }, 1000);
     } catch (error) {
       toast({
         title: 'Upload failed',
