@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { FileObject } from '@/app/_components/files/utils/types';
 import { PterodactylFileClient } from '@/app/_components/files/utils/client';
 import { FileList } from './FileList';
@@ -26,18 +26,23 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
 
-  const client = new PterodactylFileClient(
-    process.env.NEXT_PUBLIC_API_URL || '',
-    userId,
-    subscriptionId
+  const client = useMemo(
+    () => new PterodactylFileClient(
+      process.env.NEXT_PUBLIC_API_URL || '',
+      userId,
+      subscriptionId
+    ),
+    [userId, subscriptionId]
   );
 
   const loadFiles = useCallback(async () => {
     try {
       setIsLoading(true);
       const files = await client.getFiles(currentPath);
+      console.log('Files loaded:', files);
       setFiles(files);
     } catch (error) {
+      console.error('Error loading files:', error);
       toast({
         title: 'Error loading files',
         description: error instanceof Error ? error.message : 'Unknown error',

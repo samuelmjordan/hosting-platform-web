@@ -32,7 +32,9 @@ export class PterodactylFileClient implements FileApiClient {
     const response = await fetch(url, options);
     
     if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error('Error response:', errorText);
+      throw new Error(`API error: ${response.status} - ${errorText}`);
     }
 
     if (response.status === 204) {
@@ -49,12 +51,19 @@ export class PterodactylFileClient implements FileApiClient {
 
   async getFiles(path: string): Promise<FileObject[]> {
     const params = new URLSearchParams({ directory: path });
-    const response = await this.request<Array<{ object: string; attributes: FileObject }>>(
-      'GET', 
-      '/list', 
-      params
-    );
-    return response.map(item => item.attributes);
+    
+    try {
+      const response = await this.request<Array<{ object: string; attributes: FileObject }>>(
+        'GET', 
+        '/list', 
+        params
+      );
+      const mappedFiles = response.map(item => item.attributes);
+      return mappedFiles;
+    } catch (error) {
+      console.error('Error in getFiles:', error);
+      throw error;
+    }
   }
 
   async getFileContents(file: string): Promise<string> {
