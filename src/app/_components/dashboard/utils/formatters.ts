@@ -6,8 +6,9 @@ export const formatDate = (timestamp: number) => {
   return new Date(timestamp * 1000000).toLocaleDateString()
 }
 
-export const formatCurrency = (amount: CurrencyAmount): string => {
-  return new Intl.NumberFormat(navigator.language, {
+export const formatCurrency = (amount: CurrencyAmount, locale?: string): string => {
+  const defaultLocale = typeof navigator !== 'undefined' ? navigator.language : 'en-US'
+  return new Intl.NumberFormat(locale || defaultLocale, {
     style: "currency",
     currency: amount.type,
   }).format(amount.value / 100)
