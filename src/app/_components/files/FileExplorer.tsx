@@ -183,6 +183,31 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
     }
   };
 
+  const handleCopy = async () => {
+    if (selectedFiles.size === 0) return;
+
+    try {
+      for (const fileName of selectedFiles) {
+        const filePath = `${currentPath}/${fileName}`.replace('//', '/');
+        await client.copyFile(filePath);
+      }
+
+      await loadFiles();
+      setSelectedFiles(new Set());
+
+      toast({
+        title: 'Files duplicated',
+        description: `${selectedFiles.size} file(s) duplicated successfully`,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error duplicating files',
+        description: error instanceof Error ? error.message : 'Unknown error',
+        variant: 'destructive',
+      });
+    }
+  };
+
   if (editingFile) {
     return (
       <FileEditor
@@ -200,15 +225,16 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
         path={currentPath} 
         onNavigate={handleNavigate} 
       />
-      
+
       <FileToolbar
-        selectedCount={selectedFiles.size}
-        onCreateFolder={handleCreateFolder}
-        onUpload={() => setIsUploading(true)}
-        onDownload={handleDownload}
-        onDelete={handleDelete}
-        onCompress={handleCompress}
-        onRefresh={loadFiles}
+          selectedCount={selectedFiles.size}
+          onCreateFolder={handleCreateFolder}
+          onUpload={() => setIsUploading(true)}
+          onDownload={handleDownload}
+          onDelete={handleDelete}
+          onCompress={handleCompress}
+          onRefresh={loadFiles}
+          onCopy={handleCopy}
       />
 
       {isLoading ? (

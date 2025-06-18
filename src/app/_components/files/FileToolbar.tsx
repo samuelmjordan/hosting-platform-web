@@ -36,6 +36,7 @@ interface FileToolbarProps {
   onDelete: () => void;
   onCompress: () => void;
   onRefresh: () => void;
+  onCopy: () => void;
 }
 
 export function FileToolbar({
@@ -46,6 +47,7 @@ export function FileToolbar({
   onDelete,
   onCompress,
   onRefresh,
+  onCopy,
 }: FileToolbarProps) {
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
   const [folderName, setFolderName] = useState('');
@@ -83,40 +85,50 @@ export function FileToolbar({
           </Button>
 
           {selectedCount > 0 && (
-            <>
-              <div className="h-6 w-px bg-border" />
-              
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onDownload}
-                disabled={selectedCount !== 1}
-                className="gap-2"
-              >
-                <Download className="h-4 w-4" />
-                <span className="hidden sm:inline">Download</span>
-              </Button>
+              <>
+                <div className="h-6 w-px bg-border" />
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onCompress}
-                className="gap-2"
-              >
-                <Archive className="h-4 w-4" />
-                <span className="hidden sm:inline">Compress</span>
-              </Button>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={onCopy}
+                    className="gap-2"
+                >
+                  <Copy className="h-4 w-4" />
+                  <span className="hidden sm:inline">Duplicate</span>
+                </Button>
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onDelete}
-                className="gap-2 text-destructive hover:text-destructive"
-              >
-                <Trash2 className="h-4 w-4" />
-                <span className="hidden sm:inline">Delete</span>
-              </Button>
-            </>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={onDownload}
+                    disabled={selectedCount !== 1}
+                    className="gap-2"
+                >
+                  <Download className="h-4 w-4" />
+                  <span className="hidden sm:inline">Download</span>
+                </Button>
+
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={onCompress}
+                    className="gap-2"
+                >
+                  <Archive className="h-4 w-4" />
+                  <span className="hidden sm:inline">Compress</span>
+                </Button>
+
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={onDelete}
+                    className="gap-2 text-destructive hover:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  <span className="hidden sm:inline">Delete</span>
+                </Button>
+              </>
           )}
         </div>
 
@@ -143,10 +155,6 @@ export function FileToolbar({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem disabled>
-                <Copy className="h-4 w-4 mr-2" />
-                Copy
-              </DropdownMenuItem>
               <DropdownMenuItem disabled>
                 <Edit className="h-4 w-4 mr-2" />
                 Rename
