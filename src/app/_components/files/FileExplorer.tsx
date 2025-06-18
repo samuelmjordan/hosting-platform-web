@@ -11,6 +11,7 @@ import { UploadDialog } from './UploadDialog';
 import { useToast } from '@/hooks/use-toast';
 import { Card } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
+import {isEditable} from "@/app/_components/files/utils/helpers";
 
 interface FileExplorerProps {
   userId: string;
@@ -68,7 +69,7 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
       return;
     }
 
-    if (file.is_editable) {
+    if (isEditable(file)) {
       try {
         const content = await client.getFileContents(`${currentPath}/${file.name}`.replace('//', '/'));
         setEditingFile({

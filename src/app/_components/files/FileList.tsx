@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
+import {isEditable} from "@/app/_components/files/utils/helpers";
 
 interface FileListProps {
   files: FileObject[];
@@ -46,7 +47,7 @@ export function FileList({
     if (mime.includes('zip') || mime.includes('tar') || ['zip', 'tar', 'gz', 'rar', '7z'].includes(ext || '')) {
       return <FileArchive className="h-5 w-5 text-yellow-500" />;
     }
-    if (file.is_editable || ['txt', 'md', 'yml', 'yaml', 'json', 'xml'].includes(ext || '')) {
+    if (isEditable(file) || ['txt', 'md', 'yml', 'yaml', 'json', 'xml'].includes(ext || '')) {
       return <FileText className="h-5 w-5 text-blue-400" />;
     }
     if (['js', 'ts', 'jsx', 'tsx', 'py', 'java', 'cpp', 'c', 'h'].includes(ext || '')) {
