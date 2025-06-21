@@ -1,10 +1,9 @@
 import { useState } from "react"
-import { Server, Plan, Region } from "@/app/types"
-import { toast } from "@/hooks/use-toast"
+import { Server, Plan } from "@/app/types"
+import { toast } from "sonner"
 import {
   changeServerAddress,
   changeServerTitle,
-  changeServerRegion,
   changeServerSpecification,
 } from "@/app/_services/subscriptionClientService"
 import { FIXED_DOMAIN, MAX_SUBDOMAIN_LENGTH, MAX_TITLE_LENGTH } from "../utils/constants"
@@ -23,19 +22,15 @@ export function useServerManagement(
     if (!server) return
 
     if (name.length > MAX_TITLE_LENGTH) {
-      toast({
-        title: "Error",
-        description: `Server name must be ${MAX_TITLE_LENGTH} characters or less.`,
-        variant: "destructive",
+      toast("Error", {
+        description: `Server name must be ${MAX_TITLE_LENGTH} characters or less.`
       })
       throw new Error("Invalid server name")
     }
 
     if (address && !validateSubdomain(address, MAX_SUBDOMAIN_LENGTH)) {
-      toast({
-        title: "Error",
-        description: `Subdomain must be 1-${MAX_SUBDOMAIN_LENGTH} characters, contain only letters, numbers, and hyphens, and cannot start or end with a hyphen.`,
-        variant: "destructive",
+      toast("Error", {
+        description: `Subdomain must be 1-${MAX_SUBDOMAIN_LENGTH} characters, contain only letters, numbers, and hyphens, and cannot start or end with a hyphen.`
       })
       throw new Error("Invalid subdomain")
     }
@@ -66,15 +61,12 @@ export function useServerManagement(
         })
       )
 
-      toast({
-        title: "Server updated",
-        description: "Server details have been updated successfully.",
+      toast("Server updated", {
+        description: "Server details have been updated successfully."
       })
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update server details. Please try again.",
-        variant: "destructive",
+      toast("Error", {
+        description: "Failed to update server details. Please try again."
       })
       throw error
     }
@@ -102,15 +94,12 @@ export function useServerManagement(
         )
       }
 
-      toast({
-        title: "Server upgraded",
-        description: "Your server specification has been updated.",
+      toast("Server upgraded", {
+        description: "Your server specification has been updated."
       })
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to upgrade server. Please try again.",
-        variant: "destructive",
+      toast("Error", {
+        description: "Failed to upgrade server. Please try again."
       })
       throw error
     }
