@@ -8,11 +8,10 @@ import Link from "next/link"
 interface ActionFooterProps {
   plans: Plan[]
   server: Server
-  onChangeRegion: () => void
   onUpgrade: () => void
 }
 
-export function ActionFooter({ plans, server, onChangeRegion, onUpgrade }: ActionFooterProps) {
+export function ActionFooter({ plans, server, onUpgrade }: ActionFooterProps) {
   const router = useRouter()
   const planUpgrades: Plan[] = server 
     ? plans.filter((plan) => 
@@ -40,15 +39,6 @@ export function ActionFooter({ plans, server, onChangeRegion, onUpgrade }: Actio
       <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 mt-auto">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="bg-white text-xs"
-              onClick={onChangeRegion}
-            >
-              <MapPin className="h-3 w-3 mr-1" />
-              Region
-            </Button>
             {hasUpgrades ? upgradeButton : (
               <Tooltip>
                 <TooltipTrigger asChild>

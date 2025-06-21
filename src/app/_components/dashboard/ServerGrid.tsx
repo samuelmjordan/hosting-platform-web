@@ -17,7 +17,6 @@ interface ServerGridProps {
   copiedId: string | null
   onEditServer: (server: Server) => void
   onRefreshStatus: (server: Server) => void
-  onChangeRegion: (server: Server) => void
   onUpgradeServer: (server: Server) => void
 }
 
@@ -30,7 +29,6 @@ export function ServerGrid({
   copiedId,
   onEditServer,
   onRefreshStatus,
-  onChangeRegion,
   onUpgradeServer,
 }: ServerGridProps) {
   const filteredServers = servers.filter((server) => {
@@ -93,7 +91,6 @@ export function ServerGrid({
             onCopy={onCopyAddress}
             onEdit={onEditServer}
             onRefresh={onRefreshStatus}
-            onChangeRegion={onChangeRegion}
             onUpgrade={onUpgradeServer}
           />
         )

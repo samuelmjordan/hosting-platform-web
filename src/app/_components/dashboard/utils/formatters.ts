@@ -15,11 +15,11 @@ export const formatCurrency = (amount: CurrencyAmount, locale?: string): string 
 }
 
 export const getRegionFlag = (regionCode: string) => {
-  return REGION_FLAGS[regionCode] || "🌐"
+  return "🇪🇺"
 }
 
 export const formatRegion = (regionCode: string) => {
-  return REGION_NAMES[regionCode] || regionCode
+  return "Europe"
 }
 
 export const getPlanColor = (planName: string) => {

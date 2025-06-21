@@ -16,7 +16,6 @@ export function useServerManagement(
 ) {
   const [servers, setServers] = useState(initialServers)
   const [editingServer, setEditingServer] = useState<Server | null>(null)
-  const [regionChangeServer, setRegionChangeServer] = useState<Server | null>(null)
   const [upgradeServer, setUpgradeServer] = useState<Server | null>(null)
 
   const handleEditServer = async (serverId: string, name: string, address: string) => {
@@ -81,33 +80,6 @@ export function useServerManagement(
     }
   }
 
-  const handleChangeRegion = async (serverId: string, regionCode: string) => {
-    try {
-      await changeServerRegion(serverId, regionCode as any)
-
-      setServers(prevServers =>
-        prevServers.map(server => {
-          if (server.subscription_id === serverId) {
-            return { ...server, region_code: regionCode }
-          }
-          return server
-        })
-      )
-
-      toast({
-        title: "Region changed",
-        description: "Server region has been updated. Your server will be migrated shortly.",
-      })
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to change server region. Please try again.",
-        variant: "destructive",
-      })
-      throw error
-    }
-  }
-
   const handleUpgradeServer = async (serverId: string, specificationId: string) => {
     try {
       await changeServerSpecification(serverId, specificationId)
@@ -148,12 +120,9 @@ export function useServerManagement(
     servers,
     editingServer,
     setEditingServer,
-    regionChangeServer,
-    setRegionChangeServer,
     upgradeServer,
     setUpgradeServer,
     handleEditServer,
-    handleChangeRegion,
     handleUpgradeServer,
   }
 }

@@ -15,7 +15,6 @@ interface ServerCardProps {
   onCopy: (text: string, id: string) => void
   onEdit: (server: Server) => void
   onRefresh: (server: Server) => void
-  onChangeRegion: (server: Server) => void
   onUpgrade: (server: Server) => void
 }
 
@@ -27,7 +26,6 @@ export function ServerCard({
   onCopy,
   onEdit,
   onRefresh,
-  onChangeRegion,
   onUpgrade,
 }: ServerCardProps) {
   const isOnline = status.machineOnline && status.minecraftOnline
@@ -65,7 +63,6 @@ export function ServerCard({
       <ActionFooter
         plans={plans}
         server={server}
-        onChangeRegion={() => onChangeRegion(server)}
         onUpgrade={() => onUpgrade(server)}
       />
     </Card>

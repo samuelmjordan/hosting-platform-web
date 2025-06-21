@@ -1,8 +1,8 @@
-export async function startCheckout(price_id: string, region: string): Promise<string> {
+export async function startCheckout(price_id: string): Promise<string> {
     const response = await fetch('/api/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ price_id, region })
+      body: JSON.stringify({ price_id })
     });
 
     if (!response.ok) {

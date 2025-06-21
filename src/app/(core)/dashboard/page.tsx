@@ -7,11 +7,10 @@ import { Plan, Region, Server } from '@/app/types';
 export default async function DashboardPage() {
   const servers: Server[] = await fetchServers();
   const plans: Plan[] = await fetchPlans('GAME_SERVER');
-  const regions: Region[] = await fetchRegions();
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <DashboardTable servers={servers} plans={plans} regions={regions} />
+      <DashboardTable servers={servers} plans={plans} />
     </div>
   );
 }

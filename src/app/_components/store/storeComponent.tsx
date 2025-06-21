@@ -16,14 +16,12 @@ import { fetchUserCurrency } from "@/app/_services/currencyService"
 
 interface StoreProps {
   plans: Plan[];
-  regions: Region[];
 }
 
-export function StoreComponent({ plans, regions }: StoreProps) {
+export function StoreComponent({ plans }: StoreProps) {
   const router = useRouter();
   const { userId } = useAuth();
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
-  const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
   const [currency, setCurrency] = useState('EUR');
   const [isLockedCurrency, setIsLockedCurrency] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -72,8 +70,8 @@ export function StoreComponent({ plans, regions }: StoreProps) {
   }
 
   const handleCheckout = async () => {
-    if (!selectedPlan || !selectedRegion) {
-      setError('Please select both a product and region before proceeding');
+    if (!selectedPlan) {
+      setError('Please select a product before proceeding');
       return;
     }
 
@@ -86,7 +84,7 @@ export function StoreComponent({ plans, regions }: StoreProps) {
     setError(null);
   
     try {
-      const checkoutUrl = await startCheckout(selectedPlan.price.price_id, selectedRegion.region_code);
+      const checkoutUrl = await startCheckout(selectedPlan.price.price_id);
       console.log(checkoutUrl);
       router.push(checkoutUrl);
     } catch (error) {
@@ -184,47 +182,11 @@ export function StoreComponent({ plans, regions }: StoreProps) {
               </div>
             </section>
 
-            <section>
-              <h3 className="text-lg font-medium mb-4">2. Select Region</h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                {regions.map((region) => (
-                  <TooltipProvider key={region.region_code}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Card
-                            className={`cursor-pointer transition-colors ${
-                              selectedRegion?.region_code === region.region_code
-                                ? "border-pink-500 bg-pink-50"
-                                : "hover:border-pink-500"
-                            }`}
-                            onClick={() => setSelectedRegion(region)}
-                          >
-                          <CardContent className="p-4">
-                            <div className="flex justify-between items-center">
-                              <div>
-                                <h4 className="font-medium">{region.continent}</h4>
-                                <p className="text-sm text-gray-500">{region.city}</p>
-                                <p className="text-xs text-gray-400">Region: {region.region_code}</p>
-                              </div>
-                              <Globe className="h-8 w-8 text-gray-400" />
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Tooltip</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                ))}
-              </div>
-            </section>
-
             <section className="flex justify-end">
               <StoreCheckout
                 isLoading={isLoading}
                 error={error}
-                disabled={!selectedPlan || !selectedRegion || !userId}
+                disabled={!selectedPlan || !userId}
                 onCheckout={handleCheckout}
               />
             </section>

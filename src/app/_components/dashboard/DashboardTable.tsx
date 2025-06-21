@@ -17,10 +17,9 @@ import { useServerManagement } from "./hooks/useServerManagement"
 interface DashboardTableProps {
   servers: Server[]
   plans: Plan[]
-  regions: Region[]
 }
 
-export function DashboardTable({ servers: initialServers, plans, regions }: DashboardTableProps) {
+export function DashboardTable({ servers: initialServers, plans }: DashboardTableProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [copiedId, setCopiedId] = useState<string | null>(null)
 
@@ -30,12 +29,9 @@ export function DashboardTable({ servers: initialServers, plans, regions }: Dash
     servers,
     editingServer,
     setEditingServer,
-    regionChangeServer,
-    setRegionChangeServer,
     upgradeServer,
     setUpgradeServer,
     handleEditServer,
-    handleChangeRegion,
     handleUpgradeServer,
   } = useServerManagement(initialServers, plans)
 
@@ -103,7 +99,6 @@ export function DashboardTable({ servers: initialServers, plans, regions }: Dash
           copiedId={copiedId}
           onEditServer={setEditingServer}
           onRefreshStatus={refreshStatus}
-          onChangeRegion={setRegionChangeServer}
           onUpgradeServer={setUpgradeServer}
         />
       </div>
@@ -114,14 +109,6 @@ export function DashboardTable({ servers: initialServers, plans, regions }: Dash
         isOpen={editingServer !== null}
         onClose={() => setEditingServer(null)}
         onSave={handleEditServer}
-      />
-
-      <ChangeRegionDialog
-        server={regionChangeServer}
-        regions={regions}
-        isOpen={regionChangeServer !== null}
-        onClose={() => setRegionChangeServer(null)}
-        onSave={handleChangeRegion}
       />
 
       <UpgradeServerDialog
