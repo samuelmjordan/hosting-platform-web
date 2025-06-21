@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { ClerkProvider } from '@clerk/nextjs'
+import { Toaster } from '@/components/ui/sonner'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -11,18 +12,21 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({
-  children,
+ children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <ClerkProvider>
-      <html>
-        <head />
-        <body>
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+      <ClerkProvider>
+        <html>
+            <head />
+            <body>
+                <main>
+                    {children}
+                </main>
+                <Toaster />
+          </body>
+        </html>
+      </ClerkProvider>
   )
 }

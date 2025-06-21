@@ -17,9 +17,9 @@ export default function RootLayout({
       <div>
         <Navbar items={menuItems}/>
       </div>
-      <main className="flex-1">
+      <div className="flex-1">
         {children}
-      </main>
+      </div>
       <div>
         <Footer />
       </div>
