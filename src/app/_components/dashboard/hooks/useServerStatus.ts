@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react"
 import { Server } from "@/app/types"
-import { STATUS_CHECK_INTERVAL, STATUS_CHECK_DELAY } from "../utils/constants"
+import { STATUS_CHECK_INTERVAL } from "../utils/constants"
 
 export interface Player {
   name: string
@@ -32,7 +32,7 @@ const pingMachine = async (address: string): Promise<boolean> => {
 }
 
 const checkMinecraftServer = async (
-  address: string
+    address: string
 ): Promise<{
   online: boolean
   playerCount?: number
@@ -71,10 +71,10 @@ const checkMinecraftServer = async (
         lastUpdated: new Date(data.retrieved_at).toISOString(),
         duration: `${Date.now() - data.retrieved_at}ms`,
         players:
-          data.players?.list?.map((player: any) => ({
-            name: player.name_clean || player.name_raw,
-            id: player.uuid || "",
-          })) || [],
+            data.players?.list?.map((player: any) => ({
+              name: player.name_clean || player.name_raw,
+              id: player.uuid || "",
+            })) || [],
       }
     }
   } catch (apiError) {
@@ -108,8 +108,10 @@ export const useServerStatus = (servers: Server[]) => {
     }))
 
     try {
-      const machineOnline = await pingMachine(server.cname_record_name)
-      const minecraftStatus = await checkMinecraftServer(server.cname_record_name)
+      const [machineOnline, minecraftStatus] = await Promise.all([
+        pingMachine(server.cname_record_name),
+        checkMinecraftServer(server.cname_record_name)
+      ])
 
       setServerStatuses((prev) => ({
         ...prev,
@@ -145,11 +147,10 @@ export const useServerStatus = (servers: Server[]) => {
   const checkAllServerStatuses = useCallback(async () => {
     const serversWithAddresses = servers.filter((server) => server.cname_record_name)
 
-    for (let i = 0; i < serversWithAddresses.length; i++) {
-      setTimeout(() => {
-        checkServerStatus(serversWithAddresses[i])
-      }, i * STATUS_CHECK_DELAY)
-    }
+    // fire all checks in parallel instead of sequential with delays
+    await Promise.allSettled(
+        serversWithAddresses.map(server => checkServerStatus(server))
+    )
   }, [servers, checkServerStatus])
 
   useEffect(() => {
