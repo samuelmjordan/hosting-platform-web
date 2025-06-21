@@ -1,6 +1,5 @@
 import { DashboardTable } from '@/app/_components/dashboard/DashboardTable';
 import { fetchPlans } from '@/app/_services/planService';
-import { fetchRegions } from '@/app/_services/regionService';
 import { fetchServers } from '@/app/_services/serverService';
 import { Plan, Region, Server } from '@/app/types';
 

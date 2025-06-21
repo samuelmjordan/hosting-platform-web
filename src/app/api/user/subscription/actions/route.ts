@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const { title, address, region, action, subscriptionId, specificationId: specification_id } = await request.json();
+  const { title, address, action, subscriptionId, specificationId: specification_id } = await request.json();
   const stripeBasePath = `${process.env.API_URL}/api/stripe/user/${userId}/subscription/${subscriptionId}`
   const basePath = `${process.env.API_URL}/api/user/${userId}/subscription/${subscriptionId}`
 
@@ -48,19 +48,6 @@ export async function POST(request: Request) {
         
         if (!specificationResponse.ok) {
           throw new Error('Failed to change subscription specification');
-        }
-        
-        return NextResponse.json({ success: true });
-
-      case "change-region":
-        const changeRegionResponse = await fetch(`${basePath}/region`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ region })
-        });
-        
-        if (!changeRegionResponse.ok) {
-          throw new Error('Failed to make change server region request');
         }
         
         return NextResponse.json({ success: true });

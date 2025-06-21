@@ -26,17 +26,8 @@ export interface Plan {
   specification: Specification
 }
 
-export interface Region {
-  region_id: string;
-  region_code: string;
-  continent: string;
-  continent_code: string;
-  city: string;
-}
-
 export interface StoreSelection {
   price: Price | null;
-  region: Region | null;
 }
 
 export interface Server {

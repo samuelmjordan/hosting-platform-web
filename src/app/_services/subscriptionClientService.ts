@@ -22,18 +22,6 @@ export async function uncancelSubscription(subscriptionId: string): Promise<void
   }
 }
 
-export async function changeServerRegion(subscriptionId: string, region: string): Promise<void> {
-  const response = await fetch('/api/user/subscription/actions', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'change-region', subscriptionId, region })
-  });
-  
-  if (!response.ok) {
-    throw new Error('Failed to make change region request');
-  }
-}
-
 export async function changeServerAddress(subscriptionId: string, address: string): Promise<void> {
   const response = await fetch('/api/user/subscription/actions', {
     method: 'POST',
