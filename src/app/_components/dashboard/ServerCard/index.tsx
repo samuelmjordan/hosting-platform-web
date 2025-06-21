@@ -48,7 +48,7 @@ export function ServerCard({
             server={server}
             status={status}
             isOnline={isOnline}
-            isProvisioning={isProvisioning}
+            statusReady={!status.isChecking}
             copiedId={copiedId}
             onCopy={onCopy}
           />

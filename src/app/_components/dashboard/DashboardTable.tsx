@@ -24,7 +24,11 @@ export function DashboardTable({ servers: initialServers, plans }: DashboardTabl
   const [copiedId, setCopiedId] = useState<string | null>(null)
 
   // custom hooks
-  const { serverStatuses, refreshStatus, checkAllServerStatuses } = useServerStatus(initialServers)
+  const {
+    serverStatuses,
+    refreshStatus,
+    checkAllServerStatuses
+  } = useServerStatus(initialServers)
   const {
     servers,
     editingServer,

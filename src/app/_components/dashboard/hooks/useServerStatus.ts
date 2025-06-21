@@ -92,20 +92,26 @@ const checkMinecraftServer = async (
 }
 
 export const useServerStatus = (servers: Server[]) => {
-  const [serverStatuses, setServerStatuses] = useState<Record<string, ServerStatus>>({})
+  const [serverStatuses, setServerStatuses] = useState<Record<string, ServerStatus>>(() => {
+    const initialStatuses: Record<string, ServerStatus> = {}
+    servers.forEach(server => {
+      if (server.cname_record_name) {
+        initialStatuses[server.cname_record_name] = {
+          machineOnline: false,
+          minecraftOnline: false,
+          isChecking: true,
+          lastChecked: null,
+          players: [],
+        }
+      }
+    })
+    return initialStatuses
+  })
 
   const checkServerStatus = useCallback(async (server: Server) => {
     if (!server.cname_record_name) return
 
     const serverId = server.cname_record_name
-
-    setServerStatuses((prev) => ({
-      ...prev,
-      [serverId]: {
-        ...prev[serverId],
-        isChecking: true,
-      },
-    }))
 
     try {
       const [machineOnline, minecraftStatus] = await Promise.all([

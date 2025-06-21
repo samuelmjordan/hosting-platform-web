@@ -2,8 +2,7 @@
 export const FIXED_DOMAIN = ".samuelmjordan.dev"
 export const MAX_SUBDOMAIN_LENGTH = 32
 export const MAX_TITLE_LENGTH = 32
-export const STATUS_CHECK_INTERVAL = 5 * 60 * 1000 // 5 minutes
-export const STATUS_CHECK_DELAY = 1000 // 1 second between checks
+export const STATUS_CHECK_INTERVAL = 1000 * 10 // 10 seconds
 
 // Region mappings
 export const REGION_FLAGS: Record<string, string> = {
