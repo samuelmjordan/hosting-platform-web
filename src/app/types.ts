@@ -46,6 +46,7 @@ export interface Server {
   specification_title: string;
   ram_gb: number;
   vcpu: number;
+  ssd_gb: number;
   current_period_end: number;
   current_period_start: number;
   cancel_at_period_end: boolean;
