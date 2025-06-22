@@ -18,9 +18,7 @@ export function ConsoleOutput({ logs, error, isConnected, onSendCommand }: Conso
     const logsEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
-        if (logsEndRef.current) {
-            logsEndRef.current.scrollTop = logsEndRef.current.scrollHeight;
-        }
+        logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
     useEffect(() => {
