@@ -14,15 +14,15 @@ interface ConnectionStatusProps {
 }
 
 export function ConnectionStatus({
-     isConnected,
-     serverStatus,
-     uptime,
-     onConnect,
-     onDisconnect,
-     isAuthenticated
-}: ConnectionStatusProps) {
+                                     isConnected,
+                                     serverStatus,
+                                     uptime,
+                                     onConnect,
+                                     onDisconnect,
+                                     isAuthenticated
+                                 }: ConnectionStatusProps) {
     return (
-        <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700/50 shadow-2xl">
+        <Card className="bg-card/50 backdrop-blur-sm border-border shadow-2xl">
             <CardHeader>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
@@ -37,12 +37,12 @@ export function ConnectionStatus({
                             )}
                         </div>
                         <div>
-                            <CardTitle className="text-xl font-bold text-white">server console</CardTitle>
+                            <CardTitle className="text-xl font-bold text-foreground">server console</CardTitle>
                             <div className="flex items-center gap-3 mt-1 text-sm">
                                 <Badge variant={getStatusBadgeVariant(serverStatus)}>
                                     {serverStatus.toUpperCase()}
                                 </Badge>
-                                <div className="flex items-center gap-1 text-slate-400">
+                                <div className="flex items-center gap-1 text-muted-foreground">
                                     <Clock className="h-3 w-3" />
                                     <span>uptime: {uptime}</span>
                                 </div>
@@ -55,7 +55,7 @@ export function ConnectionStatus({
                             onClick={onConnect}
                             disabled={isConnected || !isAuthenticated}
                             variant="default"
-                            className="bg-emerald-600 hover:bg-emerald-700"
+                            className="bg-emerald-100 hover:bg-emerald-600 border-emerald-300 text-foreground hover:text-white dark:bg-emerald-600 dark:hover:bg-emerald-700"
                         >
                             connect
                         </Button>
@@ -63,6 +63,7 @@ export function ConnectionStatus({
                             onClick={onDisconnect}
                             disabled={!isConnected}
                             variant="destructive"
+                            className="bg-red-100 hover:bg-red-600 border-red-300 text-foreground hover:text-white dark:bg-red-600 dark:hover:bg-red-700"
                         >
                             disconnect
                         </Button>

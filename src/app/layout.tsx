@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { ClerkProvider } from '@clerk/nextjs'
 import { Toaster } from "@/components/ui/toaster"
 import './globals.css'
+import {ThemeProvider} from "next-themes";
 
 export const metadata: Metadata = {
   title: {
@@ -21,10 +22,17 @@ export default function RootLayout({
         <html>
             <head />
             <body>
+                <ThemeProvider
+                    attribute="class"
+                    defaultTheme="dark"
+                    enableSystem
+                    disableTransitionOnChange
+                >
                 <main>
                     {children}
                 </main>
                 <Toaster />
+                </ThemeProvider>
           </body>
         </html>
       </ClerkProvider>

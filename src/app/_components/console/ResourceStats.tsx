@@ -12,9 +12,9 @@ export function ResourceStats({ stats }: ResourceStatsProps) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
             {/* CPU */}
-            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700/50">
+            <Card className="bg-card/50 backdrop-blur-sm border-border">
                 <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-slate-300 flex items-center gap-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                         <Cpu className="h-4 w-4 text-blue-400" />
                         cpu load
                     </CardTitle>
@@ -33,9 +33,9 @@ export function ResourceStats({ stats }: ResourceStatsProps) {
             </Card>
 
             {/* Memory */}
-            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700/50">
+            <Card className="bg-card/50 backdrop-blur-sm border-border">
                 <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-slate-300 flex items-center gap-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                         <MemoryStick className="h-4 w-4 text-emerald-400" />
                         memory
                     </CardTitle>
@@ -51,7 +51,7 @@ export function ResourceStats({ stats }: ResourceStatsProps) {
                             value={(stats.memory_bytes / stats.memory_limit_bytes) * 100}
                             className="h-2"
                         />
-                        <div className="text-xs text-slate-400">
+                        <div className="text-xs text-muted-foreground">
                             of {formatBytes(stats.memory_limit_bytes)}
                         </div>
                     </div>
@@ -59,9 +59,9 @@ export function ResourceStats({ stats }: ResourceStatsProps) {
             </Card>
 
             {/* Disk */}
-            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700/50">
+            <Card className="bg-card/50 backdrop-blur-sm border-border">
                 <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-slate-300 flex items-center gap-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                         <HardDrive className="h-4 w-4 text-amber-400" />
                         disk usage
                     </CardTitle>
@@ -80,9 +80,9 @@ export function ResourceStats({ stats }: ResourceStatsProps) {
             </Card>
 
             {/* Network */}
-            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700/50">
+            <Card className="bg-card/50 backdrop-blur-sm border-border">
                 <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-slate-300 flex items-center gap-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                         <Network className="h-4 w-4 text-purple-400" />
                         network
                     </CardTitle>
@@ -90,11 +90,11 @@ export function ResourceStats({ stats }: ResourceStatsProps) {
                 <CardContent>
                     <div className="space-y-2 text-xs">
                         <div className="flex justify-between items-center">
-                            <span className="text-slate-400">↓ download</span>
+                            <span className="text-muted-foreground">↓ download</span>
                             <span className="text-purple-400 font-bold">{formatBytes(stats.network.rx_bytes)}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-slate-400">↑ upload</span>
+                            <span className="text-muted-foreground">↑ upload</span>
                             <span className="text-pink-400 font-bold">{formatBytes(stats.network.tx_bytes)}</span>
                         </div>
                     </div>

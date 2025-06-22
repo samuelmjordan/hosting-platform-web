@@ -18,7 +18,7 @@ export function ConsoleOutput({ logs, error, isConnected, onSendCommand }: Conso
     const logsEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
-        logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        logsEndRef.current?.scrollIntoView({ behavior: "auto" });
     };
 
     useEffect(() => {
@@ -42,7 +42,7 @@ export function ConsoleOutput({ logs, error, isConnected, onSendCommand }: Conso
         const spans = parseAnsiString(log);
 
         return (
-            <div key={index} className="hover:bg-green-400/5 px-2 py-0.5 rounded transition-colors">
+            <div key={index} className="hover:bg-accent/5 px-2 py-0.5 rounded transition-colors">
                 {spans.map((span, spanIndex) => (
                     <span key={spanIndex} className={span.className}>
             {span.text}
@@ -55,7 +55,7 @@ export function ConsoleOutput({ logs, error, isConnected, onSendCommand }: Conso
     return (
         <div className="space-y-4">
             {error && (
-                <Alert variant="destructive" className="bg-red-900/50 border-red-500/50">
+                <Alert variant="destructive" className="bg-destructive/10 border-destructive/50">
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
                         error: {error}
@@ -63,25 +63,25 @@ export function ConsoleOutput({ logs, error, isConnected, onSendCommand }: Conso
                 </Alert>
             )}
 
-            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700/50 shadow-2xl">
-                <CardHeader className="bg-slate-900/50 border-b border-slate-700/50">
-                    <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
+            <Card className="bg-card/50 backdrop-blur-sm border-border shadow-2xl">
+                <CardHeader className="bg-muted/50 border-b border-border">
+                    <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
                         <Terminal className="h-5 w-5 text-green-400" />
                         console output
                     </CardTitle>
                 </CardHeader>
 
                 <CardContent className="p-0">
-                    <div className="h-96 overflow-y-auto p-4 bg-black/50 font-mono text-sm leading-relaxed">
+                    <div className="h-96 overflow-y-auto p-4 bg-black font-mono text-sm leading-relaxed">
                         {logs.length === 0 ? (
-                            <div className="text-slate-500 italic">no console output yet. connect to start receiving logs...</div>
+                            <div className="text-muted-foreground italic">no console output yet. connect to start receiving logs...</div>
                         ) : (
                             logs.map((log, i) => renderLogLine(log, i))
                         )}
                         <div ref={logsEndRef} />
                     </div>
 
-                    <div className="border-t border-slate-700/50 bg-slate-900/50 p-4">
+                    <div className="border-t border-border bg-muted/50 p-4">
                         <div className="flex gap-2">
                             <Input
                                 type="text"
@@ -90,8 +90,7 @@ export function ConsoleOutput({ logs, error, isConnected, onSendCommand }: Conso
                                 onKeyPress={handleKeyPress}
                                 placeholder="type a command..."
                                 disabled={!isConnected}
-                                className="flex-1 bg-slate-800/50 border-slate-600/50 text-white placeholder-slate-400
-                  focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 font-mono"
+                                className="flex-1 bg-background/50 border-border text-foreground placeholder-muted-foreground focus:ring-2 focus:ring-ring font-mono"
                             />
                             <Button
                                 onClick={handleSendCommand}
