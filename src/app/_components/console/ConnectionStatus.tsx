@@ -22,7 +22,7 @@ export function ConnectionStatus({
     isAuthenticated
 }: ConnectionStatusProps) {
     return (
-        <Card className="bg-card/50 backdrop-blur-sm border-border shadow-2xl">
+        <Card className="bg-card/50 backdrop-blur-sm border-border">
             <CardHeader>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
