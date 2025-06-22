@@ -45,7 +45,7 @@ export function EditServerDialog({ server, isOpen, onClose, onSave }: EditServer
 
     const nameChanged = serverName.trim() !== server.server_name
     const addressChanged =
-      serverAddress.trim().toLowerCase() !== (server.cname_record_name?.replace(FIXED_DOMAIN, "") || "")
+        serverAddress.trim().toLowerCase() !== (server.cname_record_name?.replace(FIXED_DOMAIN, "") || "")
 
     return nameChanged || addressChanged
   }
@@ -63,67 +63,66 @@ export function EditServerDialog({ server, isOpen, onClose, onSave }: EditServer
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Edit Server Details</DialogTitle>
-          <DialogDescription>Update your server name and address.</DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="server-name">
-              Server Name{" "}
-              <span className="text-xs text-slate-500">
+      <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Server Details</DialogTitle>
+            <DialogDescription>Update your server name and address.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="server-name">
+                Server Name{" "}
+                <span className="text-xs text-muted-foreground">
                 ({serverName.length}/{MAX_TITLE_LENGTH})
               </span>
-            </Label>
-            <Input
-              id="server-name"
-              value={serverName}
-              onChange={(e) => setServerName(e.target.value)}
-              placeholder="Enter server name"
-              maxLength={MAX_TITLE_LENGTH}
-              autoFocus
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="server-address">
-              Server Address{" "}
-              <span className="text-xs text-slate-500">
+              </Label>
+              <Input
+                  id="server-name"
+                  value={serverName}
+                  onChange={(e) => setServerName(e.target.value)}
+                  placeholder="Enter server name"
+                  maxLength={MAX_TITLE_LENGTH}
+                  autoFocus
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="server-address">
+                Server Address{" "}
+                <span className="text-xs text-muted-foreground">
                 ({serverAddress.length}/{MAX_SUBDOMAIN_LENGTH})
               </span>
-            </Label>
-            <div className="flex items-center">
-              <Input
-                id="server-address"
-                value={serverAddress}
-                onChange={(e) => setServerAddress(e.target.value.toLowerCase())}
-                placeholder="subdomain"
-                maxLength={MAX_SUBDOMAIN_LENGTH}
-                className="rounded-r-none"
-              />
-              <div className="bg-slate-50 border border-l-0 border-slate-200 px-3 py-2 text-sm text-slate-600 rounded-r-md">
-                {FIXED_DOMAIN}
+              </Label>
+              <div className="flex items-center">
+                <Input
+                    id="server-address"
+                    value={serverAddress}
+                    onChange={(e) => setServerAddress(e.target.value.toLowerCase())}
+                    placeholder="subdomain"
+                    maxLength={MAX_SUBDOMAIN_LENGTH}
+                    className="rounded-r-none"
+                />
+                <div className="bg-muted border border-l-0 border-input px-3 py-2 text-sm text-muted-foreground rounded-r-md">
+                  {FIXED_DOMAIN}
+                </div>
               </div>
+              <p className="text-xs text-muted-foreground">
+                Leave empty to remove address. Use only letters, numbers, and hyphens.
+              </p>
             </div>
-            <p className="text-xs text-slate-500">
-              Leave empty to remove address. Use only letters, numbers, and hyphens.
-            </p>
           </div>
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSave}
-            disabled={isSubmitting || !isFormValid()}
-            className="bg-pink-600 hover:bg-pink-700"
-          >
-            {isSubmitting ? "Saving..." : "Save Changes"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter>
+            <Button variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button
+                onClick={handleSave}
+                disabled={isSubmitting || !isFormValid()}
+            >
+              {isSubmitting ? "Saving..." : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
   )
 }

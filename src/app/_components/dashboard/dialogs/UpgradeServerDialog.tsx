@@ -49,101 +49,100 @@ export function UpgradeServerDialog({ server, plans, isOpen, onClose, onSave }: 
     }
   }
 
-  const filteredPlans = server 
-    ? plans.filter((plan) => plan.price.currency === server.currency)
-    : []
+  const filteredPlans = server
+      ? plans.filter((plan) => plan.price.currency === server.currency)
+      : []
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>Upgrade Server</DialogTitle>
-          <DialogDescription>
-            Choose a new plan for your server. Changes will take effect immediately.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="py-4">
-          <RadioGroup value={selectedSpecification} onValueChange={setSelectedSpecification}>
-            {filteredPlans.map((plan) => {
-              const isCurrentPlan = plan.specification.title === server?.specification_title
-              const currentPrice = server?.minor_amount || 0
-              const newPrice = plan.price.minor_amount
-              const isDowngrade = newPrice < currentPrice
+      <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Upgrade Server</DialogTitle>
+            <DialogDescription>
+              Choose a new plan for your server. Changes will take effect immediately.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <RadioGroup value={selectedSpecification} onValueChange={setSelectedSpecification}>
+              {filteredPlans.map((plan) => {
+                const isCurrentPlan = plan.specification.title === server?.specification_title
+                const currentPrice = server?.minor_amount || 0
+                const newPrice = plan.price.minor_amount
+                const isDowngrade = newPrice < currentPrice
 
-              return (
-                <div
-                  key={plan.specification.specification_id}
-                  className={`flex items-center space-x-3 p-4 rounded-lg border ${
-                    isCurrentPlan ? "border-pink-500 bg-pink-50" : "border-slate-200 hover:bg-slate-50"
-                  }`}
-                >
-                  <RadioGroupItem 
-                    value={plan.specification.specification_id} 
-                    id={plan.specification.specification_id} 
-                    disabled={isCurrentPlan} 
-                  />
-                  <Label htmlFor={plan.specification.specification_id} className="flex-grow cursor-pointer">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold">{plan.specification.title}</span>
-                          {isCurrentPlan && (
-                            <Badge variant="outline" className="text-xs">
-                              Current Plan
-                            </Badge>
-                          )}
-                          {isDowngrade && !isCurrentPlan && (
-                            <Badge variant="outline" className="text-xs text-orange-600 border-orange-600">
-                              Downgrade
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-xs text-slate-500 mt-0.5">{plan.specification.caption}</p>
-                        <div className="flex items-center gap-4 text-sm text-slate-600 mt-1">
+                return (
+                    <div
+                        key={plan.specification.specification_id}
+                        className={`flex items-center space-x-3 p-4 rounded-lg border transition-colors ${
+                            isCurrentPlan ? "border-primary bg-primary/5" : "border-border hover:bg-accent/50"
+                        }`}
+                    >
+                      <RadioGroupItem
+                          value={plan.specification.specification_id}
+                          id={plan.specification.specification_id}
+                          disabled={isCurrentPlan}
+                      />
+                      <Label htmlFor={plan.specification.specification_id} className="flex-grow cursor-pointer">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold">{plan.specification.title}</span>
+                              {isCurrentPlan && (
+                                  <Badge variant="secondary" className="text-xs">
+                                    Current Plan
+                                  </Badge>
+                              )}
+                              {isDowngrade && !isCurrentPlan && (
+                                  <Badge variant="outline" className="text-xs text-orange-600 border-orange-600">
+                                    Downgrade
+                                  </Badge>
+                              )}
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-0.5">{plan.specification.caption}</p>
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                           <span className="flex items-center gap-1">
                             <Cpu className="h-3 w-3" />
                             {plan.specification.cpu} vCPU
                           </span>
-                          <span className="flex items-center gap-1">
+                              <span className="flex items-center gap-1">
                             <MemoryStick className="h-3 w-3" />
-                            {plan.specification.ram_gb} GB RAM
+                                {plan.specification.ram_gb} GB RAM
                           </span>
-                          <span className="flex items-center gap-1">
+                              <span className="flex items-center gap-1">
                             <HardDrive className="h-3 w-3" />
-                            {plan.specification.ssd_gb} GB SSD
+                                {plan.specification.ssd_gb} GB SSD
                           </span>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="font-semibold">
+                              {formatCurrency({ type: server?.currency || "USD", value: newPrice })}
+                            </div>
+                            <div className="text-xs text-muted-foreground">per month</div>
+                          </div>
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-semibold">
-                          {formatCurrency({ type: server?.currency || "USD", value: newPrice })}
-                        </div>
-                        <div className="text-xs text-slate-600">per month</div>
-                      </div>
+                      </Label>
                     </div>
-                  </Label>
-                </div>
-              )
-            })}
-          </RadioGroup>
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSave}
-            disabled={
-              isSubmitting ||
-              !selectedSpecification ||
-              plans.find(plan => plan.specification.specification_id === selectedSpecification)?.specification.title === server?.specification_title
-            }
-            className="bg-pink-600 hover:bg-pink-700"
-          >
-            {isSubmitting ? "Upgrading..." : "Confirm Upgrade"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+                )
+              })}
+            </RadioGroup>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button
+                onClick={handleSave}
+                disabled={
+                    isSubmitting ||
+                    !selectedSpecification ||
+                    plans.find(plan => plan.specification.specification_id === selectedSpecification)?.specification.title === server?.specification_title
+                }
+            >
+              {isSubmitting ? "Upgrading..." : "Confirm Upgrade"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
   )
 }
