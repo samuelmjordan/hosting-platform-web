@@ -51,59 +51,56 @@ export function DashboardTable({ servers: initialServers, plans }: DashboardTabl
   }, 0)
 
   return (
-      <div className="min-h-screen bg-background p-4 md:p-6">
-        <div className="max-w-7xl mx-auto space-y-6">
-          {/* Header */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground">Server Dashboard</h1>
-              <p className="text-muted-foreground mt-1">
-                {servers.length} servers • {activeServers.length} active • {totalPlayers} players online
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                    placeholder="Search servers..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 w-64"
-                />
-              </div>
-              <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={checkAllServerStatuses}
-              >
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Refresh
-              </Button>
-              <Link href="/store">
-                <Button>
-                  <ServerIcon className="mr-2 h-4 w-4" />
-                  New Server
-                </Button>
-              </Link>
-            </div>
+      <div className="max-w-6xl mx-auto space-y-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Server Dashboard</h1>
+            <p className="text-muted-foreground mt-1">
+              {servers.length} servers • {activeServers.length} active • {totalPlayers} players online
+            </p>
           </div>
-
-          {/* Stats Cards */}
-          <StatsCards servers={servers} serverStatuses={serverStatuses} />
-
-          {/* Server Grid */}
-          <ServerGrid
-              plans={plans}
-              servers={servers}
-              serverStatuses={serverStatuses}
-              searchQuery={searchQuery}
-              onCopyAddress={handleCopy}
-              copiedId={copiedId}
-              onEditServer={setEditingServer}
-              onRefreshStatus={refreshStatus}
-              onUpgradeServer={setUpgradeServer}
-          />
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                  placeholder="Search servers..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 w-64"
+              />
+            </div>
+            <Button
+                variant="outline"
+                size="sm"
+                onClick={checkAllServerStatuses}
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </Button>
+            <Link href="/store">
+              <Button>
+                <ServerIcon className="mr-2 h-4 w-4" />
+                New Server
+              </Button>
+            </Link>
+          </div>
         </div>
+
+        {/* Stats Cards */}
+        <StatsCards servers={servers} serverStatuses={serverStatuses} />
+
+        {/* Server Grid */}
+        <ServerGrid
+            plans={plans}
+            servers={servers}
+            serverStatuses={serverStatuses}
+            searchQuery={searchQuery}
+            onCopyAddress={handleCopy}
+            copiedId={copiedId}
+            onEditServer={setEditingServer}
+            onRefreshStatus={refreshStatus}
+            onUpgradeServer={setUpgradeServer}
+        />
 
         {/* Dialogs */}
         <EditServerDialog
