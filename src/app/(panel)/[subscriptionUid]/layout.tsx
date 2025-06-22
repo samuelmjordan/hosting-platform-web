@@ -10,7 +10,7 @@ export default async function RootLayout({ children, params }: { children: React
         { label: 'Dashboard', href: `/dashboard` },
         { label: 'Console', href: `/${subscriptionUid}/console` },
         { label: 'Files', href: `/${subscriptionUid}/files` },
-        { label: 'SFTP', href: `/${subscriptionUid}/files` },
+        { label: 'SFTP', href: `/${subscriptionUid}/sftp` },
         { label: 'Backups', href: `/${subscriptionUid}/backups` },
         { label: 'Settings', href: `/${subscriptionUid}/settings` }
     ];
