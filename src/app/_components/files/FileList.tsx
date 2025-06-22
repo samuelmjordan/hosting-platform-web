@@ -91,10 +91,10 @@ export function FileList({
                 }}
               />
             </th>
-            <th className="text-left p-3 font-medium">Name</th>
-            <th className="text-left p-3 font-medium hidden sm:table-cell">Size</th>
-            <th className="text-left p-3 font-medium hidden md:table-cell">Modified</th>
-            <th className="text-left p-3 font-medium hidden lg:table-cell">Permissions</th>
+            <th className="text-left p-3 font-medium">name</th>
+            <th className="text-left p-3 font-medium hidden sm:table-cell">size</th>
+            <th className="text-left p-3 font-medium hidden md:table-cell">modified</th>
+            <th className="text-left p-3 font-medium hidden lg:table-cell">permissions</th>
           </tr>
         </thead>
         <tbody>

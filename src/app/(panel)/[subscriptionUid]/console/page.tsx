@@ -8,7 +8,7 @@ export default async function Console({ params }: { params: Promise<Params> }) {
   const { subscriptionUid } = await params;
 
   return (
-    <main className="flex-1 p-4">
+    <main className="flex-1 p-6">
       <PterodactylConsole subscriptionUid={subscriptionUid} />
     </main>
   );

@@ -14,13 +14,13 @@ interface ConnectionStatusProps {
 }
 
 export function ConnectionStatus({
-                                     isConnected,
-                                     serverStatus,
-                                     uptime,
-                                     onConnect,
-                                     onDisconnect,
-                                     isAuthenticated
-                                 }: ConnectionStatusProps) {
+    isConnected,
+    serverStatus,
+    uptime,
+    onConnect,
+    onDisconnect,
+    isAuthenticated
+}: ConnectionStatusProps) {
     return (
         <Card className="bg-card/50 backdrop-blur-sm border-border shadow-2xl">
             <CardHeader>
@@ -37,7 +37,6 @@ export function ConnectionStatus({
                             )}
                         </div>
                         <div>
-                            <CardTitle className="text-xl font-bold text-foreground">server console</CardTitle>
                             <div className="flex items-center gap-3 mt-1 text-sm">
                                 <Badge variant={getStatusBadgeVariant(serverStatus)}>
                                     {serverStatus.toUpperCase()}

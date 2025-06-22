@@ -205,13 +205,10 @@ export default function BackupsPage({ subscriptionId, userId }: BackupsScreenPro
     }
 
     return (
-        <div className="min-h-screen p-6">
+        <div>
             <div className="max-w-6xl mx-auto space-y-6">
                 <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold">backups</h1>
-                        <p className="text-muted-foreground">manage your server backups</p>
-                    </div>
+                    <h1 className="text-2xl font-bold">backups</h1>
                     <Button
                         variant="outline"
                         size="sm"
@@ -372,6 +369,7 @@ export default function BackupsPage({ subscriptionId, userId }: BackupsScreenPro
                         <AlertDialogTitle>delete backup</AlertDialogTitle>
                         <AlertDialogDescription>
                             are you sure you want to delete "{deleteDialog.backup?.name}"?
+                            <br />
                             this action cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
@@ -395,8 +393,9 @@ export default function BackupsPage({ subscriptionId, userId }: BackupsScreenPro
                     <AlertDialogHeader>
                         <AlertDialogTitle>restore backup</AlertDialogTitle>
                         <AlertDialogDescription>
-                            restore backup "{restoreDialog.backup?.name}"? this will overwrite
-                            all current server data and cannot be undone.
+                            restore backup "{restoreDialog.backup?.name}"?
+                            <br />
+                            this will overwrite all current server data and cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

@@ -12,7 +12,7 @@ interface PterodactylConsoleProps {
   className?: string;
 }
 
-export default function PterodactylConsole({ subscriptionUid, className = "" }: PterodactylConsoleProps) {
+export default function PterodactylConsole({ subscriptionUid }: PterodactylConsoleProps) {
   const { user } = useUser();
   const {
     isConnected,
@@ -28,31 +28,33 @@ export default function PterodactylConsole({ subscriptionUid, className = "" }: 
   } = useWebSocket(subscriptionUid);
 
   return (
-      <div className={`min-h-screen bg-gradient-to-br from-background via-muted/50 to-background ${className}`}>
-        <div className="container mx-auto p-6 space-y-6">
-          <ConnectionStatus
-              isConnected={isConnected}
-              serverStatus={serverStatus}
-              uptime={uptime}
-              onConnect={connect}
-              onDisconnect={disconnect}
-              isAuthenticated={!!user?.id}
-          />
+      <div className="space-y-6">
+          <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold">console</h1>
+          </div>
 
-          {stats && <ResourceStats stats={stats} />}
+        <ConnectionStatus
+            isConnected={isConnected}
+            serverStatus={serverStatus}
+            uptime={uptime}
+            onConnect={connect}
+            onDisconnect={disconnect}
+            isAuthenticated={!!user?.id}
+        />
 
-          <PowerControls
-              isConnected={isConnected}
-              onPowerSignal={sendPowerSignal}
-          />
+        {stats && <ResourceStats stats={stats} />}
 
-          <ConsoleOutput
-              logs={logs}
-              error={error}
-              isConnected={isConnected}
-              onSendCommand={sendCommand}
-          />
-        </div>
+        <PowerControls
+            isConnected={isConnected}
+            onPowerSignal={sendPowerSignal}
+        />
+
+        <ConsoleOutput
+            logs={logs}
+            error={error}
+            isConnected={isConnected}
+            onSendCommand={sendCommand}
+        />
       </div>
   );
 }

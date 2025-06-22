@@ -4,7 +4,7 @@ import { useState, useTransition, useEffect } from 'react';
 import { Eye, EyeOff, Copy, Server, RefreshCw, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
@@ -153,13 +153,9 @@ export default function SftpPage({ subscriptionId }: SftpPageProps) {
     );
 
     return (
-        <div className="max-w-2xl mx-auto space-y-6">
+        <div className="space-y-6">
             <div className="flex items-center gap-3">
-                <Server className="w-6 h-6 text-primary" />
-                <div>
-                    <h1 className="text-2xl font-bold">sftp credentials</h1>
-                    <p className="text-muted-foreground">access your files via sftp</p>
-                </div>
+                <h1 className="text-2xl font-bold">sftp credentials</h1>
             </div>
 
             {isPending && (
@@ -193,13 +189,7 @@ export default function SftpPage({ subscriptionId }: SftpPageProps) {
             {credentials && (
                 <div className="space-y-6">
                     <Card>
-                        <CardHeader>
-                            <CardTitle className="text-lg">connection details</CardTitle>
-                            <CardDescription>
-                                use these credentials with any sftp client
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 mx-auto p-6">
                             <CredentialField
                                 label="connection string"
                                 value={credentials.connectionString}
@@ -224,8 +214,7 @@ export default function SftpPage({ subscriptionId }: SftpPageProps) {
                     <Alert>
                         <CheckCircle2 className="h-4 w-4" />
                         <AlertDescription>
-                            compatible with filezilla, winscp, cyberduck, or terminal clients like{' '}
-                            <code className="text-sm">sftp</code> and <code className="text-sm">scp</code>
+                            try using filezilla, winscp, cyberduck, or terminal clients like sftp and scp
                         </AlertDescription>
                     </Alert>
                 </div>

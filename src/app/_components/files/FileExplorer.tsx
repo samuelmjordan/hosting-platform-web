@@ -220,56 +220,62 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
   }
 
   return (
-    <Card className="flex flex-col h-[calc(100vh-12rem)]">
-      <FileBreadcrumb 
-        path={currentPath} 
-        onNavigate={handleNavigate} 
-      />
-
-      <FileToolbar
-          selectedCount={selectedFiles.size}
-          onCreateFolder={handleCreateFolder}
-          onUpload={() => setIsUploading(true)}
-          onDownload={handleDownload}
-          onDelete={handleDelete}
-          onCompress={handleCompress}
-          onRefresh={loadFiles}
-          onCopy={handleCopy}
-      />
-
-      {isLoading ? (
-        <div className="flex-1 flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <div className="space-y-6">
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-bold">file explorer</h1>
         </div>
-      ) : (
-        <FileList
-          files={files}
-          selectedFiles={selectedFiles}
-          onFileSelect={(fileName, isSelected) => {
-            const newSelected = new Set(selectedFiles);
-            if (isSelected) {
-              newSelected.add(fileName);
-            } else {
-              newSelected.delete(fileName);
-            }
-            setSelectedFiles(newSelected);
-          }}
-          onFileOpen={handleFileOpen}
-          currentPath={currentPath}
-        />
-      )}
 
-      <UploadDialog
-        open={isUploading}
-        onClose={() => setIsUploading(false)}
-        onUpload={async (files) => {
-          // Handle file upload
-          setIsUploading(false);
-          await loadFiles();
-        }}
-        userId={userId}
-        subscriptionId={subscriptionId}
-      />
-    </Card>
+        <Card>
+          <FileBreadcrumb
+              path={currentPath}
+              onNavigate={handleNavigate}
+          />
+
+          <FileToolbar
+              selectedCount={selectedFiles.size}
+              onCreateFolder={handleCreateFolder}
+              onUpload={() => setIsUploading(true)}
+              onDownload={handleDownload}
+              onDelete={handleDelete}
+              onCompress={handleCompress}
+              onRefresh={loadFiles}
+              onCopy={handleCopy}
+          />
+
+          {isLoading ? (
+              <div className="flex-1 flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              </div>
+          ) : (
+              <FileList
+                  files={files}
+                  selectedFiles={selectedFiles}
+                  onFileSelect={(fileName, isSelected) => {
+                    const newSelected = new Set(selectedFiles);
+                    if (isSelected) {
+                      newSelected.add(fileName);
+                    } else {
+                      newSelected.delete(fileName);
+                    }
+                    setSelectedFiles(newSelected);
+                  }}
+                  onFileOpen={handleFileOpen}
+                  currentPath={currentPath}
+              />
+          )}
+
+          <UploadDialog
+              open={isUploading}
+              onClose={() => setIsUploading(false)}
+              onUpload={async (files) => {
+                // Handle file upload
+                setIsUploading(false);
+                await loadFiles();
+              }}
+              userId={userId}
+              subscriptionId={subscriptionId}
+          />
+        </Card>
+      </div>
   );
 }

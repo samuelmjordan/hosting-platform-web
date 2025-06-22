@@ -19,7 +19,7 @@ export function FileBreadcrumb({ path, onNavigate }: FileBreadcrumbProps) {
         onClick={() => onNavigate('/')}
       >
         <Home className="h-4 w-4" />
-        <span className="hidden sm:inline">Home</span>
+        <span className="hidden sm:inline">home</span>
       </Button>
       
       {segments.map((segment, index) => {

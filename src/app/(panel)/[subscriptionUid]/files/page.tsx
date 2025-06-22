@@ -12,13 +12,6 @@ export default async function Files({ params }: { params: Promise<Params> }) {
 
   return (
     <main className="flex-1 p-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">File Manager</h1>
-        <p className="text-muted-foreground mt-2">
-          Manage your server files and configurations
-        </p>
-      </div>
-      
       <FileExplorer 
         userId={userId || "null"} 
         subscriptionId={subscriptionUid} 

@@ -19,8 +19,10 @@ export default async function RootLayout({ children, params }: { children: React
         <div>
             <Navbar items={menuItems}/>
         </div>
-        <div className="flex-1">
-            {children}
+        <div className={`min-h-screen bg-gradient-to-br from-background via-muted/50 to-background`}>
+            <div className="container mx-auto p-6 space-y-6">
+                {children}
+            </div>
         </div>
         <div>
             <Footer />

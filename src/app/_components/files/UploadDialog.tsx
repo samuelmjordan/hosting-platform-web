@@ -148,10 +148,7 @@ export function UploadDialog({ open, onClose, onUpload, userId, subscriptionId }
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Upload Files</DialogTitle>
-          <DialogDescription>
-            Drag and drop files or click to browse
-          </DialogDescription>
+          <DialogTitle>upload Files</DialogTitle>
         </DialogHeader>
 
         <div
@@ -169,7 +166,7 @@ export function UploadDialog({ open, onClose, onUpload, userId, subscriptionId }
         >
           <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
           <p className="text-sm text-muted-foreground mb-2">
-            Drag and drop files here, or click to select
+            drag and drop files here, or click to select
           </p>
           <input
             type="file"
@@ -180,7 +177,7 @@ export function UploadDialog({ open, onClose, onUpload, userId, subscriptionId }
           />
           <Button asChild variant="outline" size="sm">
             <label htmlFor="file-upload" className="cursor-pointer">
-              Browse Files
+              browse files
             </label>
           </Button>
         </div>
@@ -227,13 +224,13 @@ export function UploadDialog({ open, onClose, onUpload, userId, subscriptionId }
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            cancel
           </Button>
           <Button 
             onClick={uploadFiles} 
             disabled={files.length === 0 || files.some(f => f.status === 'uploading')}
           >
-            Upload {files.length > 0 && `(${files.length})`}
+            upload {files.length > 0 && `(${files.length})`}
           </Button>
         </DialogFooter>
       </DialogContent>
