@@ -1,7 +1,13 @@
 'use client'
 
 import { useState, useTransition, useEffect } from 'react';
-import { Eye, EyeOff, Check, Server } from 'lucide-react';
+import { Eye, EyeOff, Copy, Server, RefreshCw, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
 import { getSftpCredentials } from './utils/actions';
 
 interface SftpCredentials {
@@ -15,20 +21,51 @@ interface SftpPageProps {
     subscriptionId: string;
 }
 
+type ErrorType = 'network' | 'auth' | 'server' | 'unknown';
+
+interface ApiError extends Error {
+    status?: number;
+    code?: string;
+}
+
 export default function SftpPage({ subscriptionId }: SftpPageProps) {
     const [credentials, setCredentials] = useState<SftpCredentials | null>(null);
     const [showPassword, setShowPassword] = useState(false);
-    const [copiedField, setCopiedField] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<{ type: ErrorType; message: string } | null>(null);
     const [isPending, startTransition] = useTransition();
+    const { toast } = useToast();
 
     useEffect(() => {
         loadCredentials();
     }, []);
 
+    const getErrorType = (err: unknown): { type: ErrorType; message: string } => {
+        if (err instanceof Error) {
+            const apiError = err as ApiError;
+
+            if (apiError.status === 401 || apiError.status === 403) {
+                return { type: 'auth', message: 'access denied - check your permissions' };
+            }
+
+            if (apiError.status === 404) {
+                return { type: 'server', message: 'subscription not found' };
+            }
+
+            if (apiError.status && apiError.status >= 500) {
+                return { type: 'server', message: 'server error - try again later' };
+            }
+
+            if (apiError.name === 'NetworkError' || apiError.message.includes('fetch')) {
+                return { type: 'network', message: 'connection failed - check your internet' };
+            }
+
+            return { type: 'unknown', message: apiError.message };
+        }
+
+        return { type: 'unknown', message: 'something went wrong' };
+    };
+
     const loadCredentials = async () => {
-        setIsLoading(true);
         setError(null);
 
         startTransition(async () => {
@@ -36,137 +73,161 @@ export default function SftpPage({ subscriptionId }: SftpPageProps) {
                 const creds = await getSftpCredentials(subscriptionId);
                 setCredentials(creds);
             } catch (err) {
-                setError(err instanceof Error ? err.message : 'failed to load credentials');
-            } finally {
-                setIsLoading(false);
+                setError(getErrorType(err));
             }
         });
     };
 
-    const copyToClipboard = async (text: string, field: string) => {
+    const copyToClipboard = async (text: string, fieldName: string) => {
         try {
             await navigator.clipboard.writeText(text);
-            setCopiedField(field);
-            setTimeout(() => setCopiedField(null), 2000);
+            toast({
+                description: `${fieldName} copied to clipboard`,
+                duration: 2000,
+            });
         } catch (err) {
-            console.error('copy failed:', err);
+            toast({
+                variant: "destructive",
+                description: "failed to copy - try selecting manually",
+                duration: 3000,
+            });
         }
     };
 
-    const maskPassword = (password: string) => {
-        return showPassword ? password : '•'.repeat(password.length);
+    const getErrorIcon = (type: ErrorType) => {
+        switch (type) {
+            case 'auth':
+            case 'server':
+                return <AlertCircle className="h-4 w-4" />;
+            default:
+                return <AlertCircle className="h-4 w-4" />;
+        }
     };
+
+    const CredentialField = ({
+                                 label,
+                                 value,
+                                 type = 'text',
+                                 showToggle = false
+                             }: {
+        label: string;
+        value: string;
+        type?: 'text' | 'password';
+        showToggle?: boolean;
+    }) => (
+        <div className="space-y-2">
+            <Label htmlFor={label.toLowerCase().replace(' ', '-')}>{label}</Label>
+            <div className="flex">
+                <Input
+                    id={label.toLowerCase().replace(' ', '-')}
+                    type={type === 'password' && !showPassword ? 'password' : 'text'}
+                    value={value}
+                    readOnly
+                    className="font-mono text-sm"
+                    aria-label={`${label} field`}
+                />
+                <div className="flex ml-2 gap-1">
+                    {showToggle && (
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => setShowPassword(!showPassword)}
+                            aria-label={showPassword ? 'hide password' : 'show password'}
+                        >
+                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </Button>
+                    )}
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => copyToClipboard(value, label)}
+                        aria-label={`copy ${label}`}
+                    >
+                        <Copy className="h-4 w-4" />
+                    </Button>
+                </div>
+            </div>
+        </div>
+    );
 
     return (
         <div className="max-w-2xl mx-auto space-y-6">
-            <div className="flex items-center gap-3 mb-6">
-                <Server className="w-6 h-6 text-blue-600" />
-                <h1 className="text-2xl font-bold text-gray-900">sftp credentials</h1>
+            <div className="flex items-center gap-3">
+                <Server className="w-6 h-6 text-primary" />
+                <div>
+                    <h1 className="text-2xl font-bold">sftp credentials</h1>
+                    <p className="text-muted-foreground">access your files via sftp</p>
+                </div>
             </div>
 
-            {isLoading && (
-                <div className="text-center py-12">
-                    <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-                    <p className="text-gray-600">fetching your credentials...</p>
-                </div>
+            {isPending && (
+                <Card>
+                    <CardContent className="flex items-center justify-center py-12">
+                        <div className="flex flex-col items-center gap-4">
+                            <RefreshCw className="h-8 w-8 animate-spin text-primary" />
+                            <p className="text-muted-foreground">loading credentials...</p>
+                        </div>
+                    </CardContent>
+                </Card>
             )}
 
             {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                    <p className="text-red-800 font-medium">error loading credentials</p>
-                    <p className="text-red-600 text-sm mt-1">{error}</p>
-                    <button
-                        onClick={loadCredentials}
-                        className="mt-3 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-                    >
-                        retry
-                    </button>
-                </div>
+                <Alert variant={error.type === 'auth' ? 'destructive' : 'default'}>
+                    {getErrorIcon(error.type)}
+                    <AlertDescription className="flex items-center justify-between">
+                        <span>{error.message}</span>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={loadCredentials}
+                            disabled={isPending}
+                        >
+                            retry
+                        </Button>
+                    </AlertDescription>
+                </Alert>
             )}
 
             {credentials && (
-                <div className="space-y-4">
-                    <div className="bg-white border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-2">
-                            <label className="text-sm font-medium text-gray-700">
-                                connection string
-                            </label>
-                            <div className="flex items-center gap-1">
-                                {copiedField === 'connection' && <Check className="w-4 h-4 text-green-600" />}
-                            </div>
-                        </div>
-                        <code
-                            className="block bg-gray-50 px-3 py-2 rounded text-sm font-mono break-all cursor-pointer hover:bg-gray-100 transition-colors"
-                            onClick={() => copyToClipboard(credentials.connectionString, 'connection')}
-                            title="click to copy"
-                        >
-                            {credentials.connectionString}
-                        </code>
-                    </div>
+                <div className="space-y-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-lg">connection details</CardTitle>
+                            <CardDescription>
+                                use these credentials with any sftp client
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <CredentialField
+                                label="connection string"
+                                value={credentials.connectionString}
+                            />
+                            <CredentialField
+                                label="username"
+                                value={credentials.username}
+                            />
+                            <CredentialField
+                                label="password"
+                                value={credentials.password}
+                                type="password"
+                                showToggle={true}
+                            />
+                            <CredentialField
+                                label="port"
+                                value={credentials.port.toString()}
+                            />
+                        </CardContent>
+                    </Card>
 
-                    <div className="bg-white border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-2">
-                            <label className="text-sm font-medium text-gray-700">username</label>
-                            <div className="flex items-center gap-1">
-                                {copiedField === 'username' && <Check className="w-4 h-4 text-green-600" />}
-                            </div>
-                        </div>
-                        <code
-                            className="block bg-gray-50 px-3 py-2 rounded text-sm font-mono cursor-pointer hover:bg-gray-100 transition-colors"
-                            onClick={() => copyToClipboard(credentials.username, 'username')}
-                            title="click to copy"
-                        >
-                            {credentials.username}
-                        </code>
-                    </div>
-
-                    <div className="bg-white border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-2">
-                            <label className="text-sm font-medium text-gray-700">
-                                password
-                            </label>
-                            <div className="flex items-center gap-2">
-                                <div className="flex items-center gap-1">
-                                    {copiedField === 'password' && <Check className="w-4 h-4 text-green-600" />}
-                                </div>
-                                <button
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="p-1 text-gray-400 hover:text-gray-600"
-                                >
-                                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                </button>
-                            </div>
-                        </div>
-                        <code
-                            className="block bg-gray-50 px-3 py-2 rounded text-sm font-mono break-all cursor-pointer hover:bg-gray-100 transition-colors"
-                            onClick={() => copyToClipboard(credentials.password, 'password')}
-                            title="click to copy"
-                        >
-                            {maskPassword(credentials.password)}
-                        </code>
-                    </div>
-
-                    <div className="bg-white border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-2">
-                            <label className="text-sm font-medium text-gray-700">port</label>
-                            <div className="flex items-center gap-1">
-                                {copiedField === 'port' && <Check className="w-4 h-4 text-green-600" />}
-                            </div>
-                        </div>
-                        <code
-                            className="block bg-gray-50 px-3 py-2 rounded text-sm font-mono cursor-pointer hover:bg-gray-100 transition-colors"
-                            onClick={() => copyToClipboard(credentials.port.toString(), 'port')}
-                            title="click to copy"
-                        >
-                            {credentials.port}
-                        </code>
-                    </div>
-
-                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                        <p className="text-amber-800 text-sm">
-                            Use these credentials with any sftp client like filezilla, winscp, or your terminal
-                        </p>
-                    </div>
+                    <Alert>
+                        <CheckCircle2 className="h-4 w-4" />
+                        <AlertDescription>
+                            compatible with filezilla, winscp, cyberduck, or terminal clients like{' '}
+                            <code className="text-sm">sftp</code> and <code className="text-sm">scp</code>
+                        </AlertDescription>
+                    </Alert>
                 </div>
             )}
         </div>

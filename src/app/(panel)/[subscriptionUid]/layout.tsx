@@ -1,7 +1,6 @@
 import Navbar from "@/app/_components/navbar"
 import Footer from "@/app/_components/footer"
 import { Params } from "next/dist/server/request/params";
-import {Toaster} from "@/components/ui/sonner";
 
 export default async function RootLayout({ children, params }: { children: React.ReactNode; params: Promise<Params>; }) {
     const { subscriptionUid } = await params;
