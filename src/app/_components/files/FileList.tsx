@@ -1,10 +1,10 @@
 import { FileObject } from '@/app/_components/files/utils/types';
 import { Checkbox } from '@/components/ui/checkbox';
-import { 
-  File, 
-  Folder, 
-  FileText, 
-  FileCode, 
+import {
+  File,
+  Folder,
+  FileText,
+  FileCode,
   FileArchive,
   Image,
   Film,
@@ -17,21 +17,21 @@ import {isEditable} from "@/app/_components/files/utils/helpers";
 interface FileListProps {
   files: FileObject[];
   selectedFiles: Set<string>;
-  onFileSelect: (fileName: string, isSelected: boolean) => void;
+  onFileSelect: (fileName: string, isSelected: boolean, shiftKey?: boolean) => void;
+  onSelectAll: (selectAll: boolean) => void;
   onFileOpen: (file: FileObject) => void;
-  currentPath: string;
 }
 
-export function FileList({ 
-  files, 
-  selectedFiles, 
-  onFileSelect, 
-  onFileOpen,
-  currentPath 
+export function FileList({
+   files,
+   selectedFiles,
+   onFileSelect,
+   onSelectAll,
+   onFileOpen
 }: FileListProps) {
   const getFileIcon = (file: FileObject) => {
     if (!file.is_file) return <Folder className="h-5 w-5 text-blue-500" />;
-    
+
     const ext = file.name.split('.').pop()?.toLowerCase();
     const mime = file.mimetype.toLowerCase();
 
@@ -53,7 +53,7 @@ export function FileList({
     if (['js', 'ts', 'jsx', 'tsx', 'py', 'java', 'cpp', 'c', 'h'].includes(ext || '')) {
       return <FileCode className="h-5 w-5 text-orange-500" />;
     }
-    
+
     return <File className="h-5 w-5 text-gray-500" />;
   };
 
@@ -73,22 +73,21 @@ export function FileList({
     return a.name.localeCompare(b.name);
   });
 
+  const handleSelectAll = (checked: boolean) => {
+    onSelectAll(!!checked);
+  };
+
+  const isAllSelected = files.length > 0 && selectedFiles.size === files.length;
+
   return (
-    <div className="flex-1 overflow-auto">
-      <table className="w-full">
-        <thead className="sticky top-0 bg-background border-b">
+      <div className="flex-1 overflow-auto">
+        <table className="w-full">
+          <thead className="sticky top-0 bg-background border-b">
           <tr className="text-sm text-muted-foreground">
             <th className="w-12 p-3">
               <Checkbox
-                checked={selectedFiles.size === files.length && files.length > 0}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    onFileSelect('*', true);
-                    files.forEach(f => onFileSelect(f.name, true));
-                  } else {
-                    files.forEach(f => onFileSelect(f.name, false));
-                  }
-                }}
+                  checked={isAllSelected}
+                  onCheckedChange={handleSelectAll}
               />
             </th>
             <th className="text-left p-3 font-medium">name</th>
@@ -96,54 +95,59 @@ export function FileList({
             <th className="text-left p-3 font-medium hidden md:table-cell">modified</th>
             <th className="text-left p-3 font-medium hidden lg:table-cell">permissions</th>
           </tr>
-        </thead>
-        <tbody>
+          </thead>
+          <tbody>
           {sortedFiles.map((file) => (
-            <tr
-              key={file.name}
-              className={cn(
-                "border-b transition-colors hover:bg-muted/50 cursor-pointer",
-                selectedFiles.has(file.name) && "bg-muted/30"
-              )}
-              onDoubleClick={() => onFileOpen(file)}
-            >
-              <td className="p-3">
-                <Checkbox
-                  checked={selectedFiles.has(file.name)}
-                  onCheckedChange={(checked) => onFileSelect(file.name, !!checked)}
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </td>
-              <td className="p-3">
-                <div className="flex items-center gap-3">
-                  {getFileIcon(file)}
-                  <span className="font-medium truncate max-w-xs">
+              <tr
+                  key={file.name}
+                  className={cn(
+                      "border-b transition-colors hover:bg-muted/50 cursor-pointer",
+                      selectedFiles.has(file.name) && "bg-muted/30"
+                  )}
+                  onDoubleClick={() => onFileOpen(file)}
+              >
+                <td className="p-3">
+                  <Checkbox
+                      checked={selectedFiles.has(file.name)}
+                      onCheckedChange={(checked) => {
+                        // this gets called without shift info, so we ignore it
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onFileSelect(file.name, !selectedFiles.has(file.name), e.shiftKey);
+                      }}
+                  />
+                </td>
+                <td className="p-3">
+                  <div className="flex items-center gap-3">
+                    {getFileIcon(file)}
+                    <span className="font-medium truncate max-w-xs">
                     {file.name}
                   </span>
-                </div>
-              </td>
-              <td className="p-3 text-sm text-muted-foreground hidden sm:table-cell">
-                {file.is_file ? formatFileSize(file.size) : '-'}
-              </td>
-              <td className="p-3 text-sm text-muted-foreground hidden md:table-cell">
-                {formatDistanceToNow(new Date(file.modified_at), { addSuffix: true })}
-              </td>
-              <td className="p-3 text-sm font-mono text-muted-foreground hidden lg:table-cell">
-                {file.mode}
-              </td>
-            </tr>
+                  </div>
+                </td>
+                <td className="p-3 text-sm text-muted-foreground hidden sm:table-cell">
+                  {file.is_file ? formatFileSize(file.size) : '-'}
+                </td>
+                <td className="p-3 text-sm text-muted-foreground hidden md:table-cell">
+                  {formatDistanceToNow(new Date(file.modified_at), { addSuffix: true })}
+                </td>
+                <td className="p-3 text-sm font-mono text-muted-foreground hidden lg:table-cell">
+                  {file.mode}
+                </td>
+              </tr>
           ))}
-        </tbody>
-      </table>
-      
-      {files.length === 0 && (
-        <div className="flex items-center justify-center h-64 text-muted-foreground">
-          <div className="text-center">
-            <Folder className="h-12 w-12 mx-auto mb-4 opacity-20" />
-            <p>This folder is empty</p>
-          </div>
-        </div>
-      )}
-    </div>
+          </tbody>
+        </table>
+
+        {files.length === 0 && (
+            <div className="flex items-center justify-center h-64 text-muted-foreground">
+              <div className="text-center">
+                <Folder className="h-12 w-12 mx-auto mb-4 opacity-20" />
+                <p>This folder is empty</p>
+              </div>
+            </div>
+        )}
+      </div>
   );
 }

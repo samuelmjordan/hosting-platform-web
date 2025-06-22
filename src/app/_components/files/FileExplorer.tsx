@@ -22,18 +22,19 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
   const [currentPath, setCurrentPath] = useState('/');
   const [files, setFiles] = useState<FileObject[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
+  const [lastClickedFile, setLastClickedFile] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [editingFile, setEditingFile] = useState<{ path: string; content: string } | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
 
   const client = useMemo(
-    () => new PterodactylFileClient(
-      process.env.NEXT_PUBLIC_API_URL || '',
-      userId,
-      subscriptionId
-    ),
-    [userId, subscriptionId]
+      () => new PterodactylFileClient(
+          process.env.NEXT_PUBLIC_API_URL || '',
+          userId,
+          subscriptionId
+      ),
+      [userId, subscriptionId]
   );
 
   const loadFiles = useCallback(async () => {
@@ -61,6 +62,7 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
   const handleNavigate = (path: string) => {
     setCurrentPath(path);
     setSelectedFiles(new Set());
+    setLastClickedFile(null);
   };
 
   const handleFileOpen = async (file: FileObject) => {
@@ -86,16 +88,72 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
     }
   };
 
+  const handleFileSelect = (fileName: string, isSelected: boolean, shiftKey = false) => {
+    if (shiftKey && lastClickedFile && lastClickedFile !== fileName) {
+      // find the range between lastClickedFile and fileName
+      const sortedFileNames = files
+          .sort((a, b) => {
+            if (!a.is_file && b.is_file) return -1;
+            if (a.is_file && !b.is_file) return 1;
+            return a.name.localeCompare(b.name);
+          })
+          .map(f => f.name);
+
+      const startIdx = sortedFileNames.indexOf(lastClickedFile);
+      const endIdx = sortedFileNames.indexOf(fileName);
+
+      if (startIdx !== -1 && endIdx !== -1) {
+        const rangeStart = Math.min(startIdx, endIdx);
+        const rangeEnd = Math.max(startIdx, endIdx);
+        const filesToSelect = sortedFileNames.slice(rangeStart, rangeEnd + 1);
+
+        setSelectedFiles(prev => {
+          const newSelected = new Set(prev);
+          filesToSelect.forEach(name => {
+            if (isSelected) {
+              newSelected.add(name);
+            } else {
+              newSelected.delete(name);
+            }
+          });
+          return newSelected;
+        });
+      }
+    } else {
+      // normal single selection
+      setSelectedFiles(prev => {
+        const newSelected = new Set(prev);
+        if (isSelected) {
+          newSelected.add(fileName);
+        } else {
+          newSelected.delete(fileName);
+        }
+        return newSelected;
+      });
+    }
+
+    setLastClickedFile(fileName);
+  };
+
+  const handleSelectAll = (selectAll: boolean) => {
+    if (selectAll) {
+      setSelectedFiles(new Set(files.map(f => f.name)));
+    } else {
+      setSelectedFiles(new Set());
+    }
+    setLastClickedFile(null);
+  };
+
   const handleDownload = async () => {
     if (selectedFiles.size !== 1) return;
-    
+
     const fileName = Array.from(selectedFiles)[0];
     const file = files.find(f => f.name === fileName);
     if (!file || !file.is_file) return;
 
     try {
       const { attributes } = await client.getDownloadLink(
-        `${currentPath}/${fileName}`.replace('//', '/')
+          `${currentPath}/${fileName}`.replace('//', '/')
       );
       window.open(attributes.url, '_blank');
     } catch (error) {
@@ -210,12 +268,12 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
 
   if (editingFile) {
     return (
-      <FileEditor
-        filePath={editingFile.path}
-        initialContent={editingFile.content}
-        onSave={handleFileSave}
-        onClose={() => setEditingFile(null)}
-      />
+        <FileEditor
+            filePath={editingFile.path}
+            initialContent={editingFile.content}
+            onSave={handleFileSave}
+            onClose={() => setEditingFile(null)}
+        />
     );
   }
 
@@ -250,17 +308,9 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
               <FileList
                   files={files}
                   selectedFiles={selectedFiles}
-                  onFileSelect={(fileName, isSelected) => {
-                    const newSelected = new Set(selectedFiles);
-                    if (isSelected) {
-                      newSelected.add(fileName);
-                    } else {
-                      newSelected.delete(fileName);
-                    }
-                    setSelectedFiles(newSelected);
-                  }}
+                  onFileSelect={handleFileSelect}
+                  onSelectAll={handleSelectAll}
                   onFileOpen={handleFileOpen}
-                  currentPath={currentPath}
               />
           )}
 
