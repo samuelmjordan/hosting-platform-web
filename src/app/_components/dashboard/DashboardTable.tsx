@@ -78,7 +78,10 @@ export function DashboardTable({ servers: initialServers, plans }: DashboardTabl
               Refresh
             </Button>
             <Link href="/store">
-              <Button>
+              <Button
+                  size="sm"
+                  className="bg-accent hover:bg-accent/90 text-accent-foreground disabled:opacity-50"
+              >
                 <ServerIcon className="mr-2 h-4 w-4" />
                 New Server
               </Button>

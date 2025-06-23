@@ -13,13 +13,13 @@ interface ServerStatusDisplayProps {
 }
 
 export function ServerStatusDisplay({
-                                        server,
-                                        status,
-                                        isOnline,
-                                        statusReady,
-                                        copiedId,
-                                        onCopy,
-                                    }: ServerStatusDisplayProps) {
+    server,
+    status,
+    isOnline,
+    statusReady,
+    copiedId,
+    onCopy,
+}: ServerStatusDisplayProps) {
     const serverId = server.cname_record_name || server.server_name
     const isProvisioned = server.cname_record_name != null
 

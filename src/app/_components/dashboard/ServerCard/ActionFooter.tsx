@@ -23,9 +23,8 @@ export function ActionFooter({ plans, server, onUpgrade }: ActionFooterProps) {
 
   const upgradeButton = (
       <Button
-          variant="outline"
           size="sm"
-          className="text-xs"
+          className="bg-accent hover:bg-accent/90 text-accent-foreground disabled:opacity-50"
           onClick={hasUpgrades ? onUpgrade : undefined}
           disabled={!hasUpgrades}
       >
@@ -39,6 +38,26 @@ export function ActionFooter({ plans, server, onUpgrade }: ActionFooterProps) {
         <div className="px-6 py-4 bg-muted/30 border-t border-border mt-auto">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
+              <Link href={`/${server.subscription_id}/console`}>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-xs">
+                  <ArrowUpRight className="h-3 w-3 mr-1" />
+                  Manage
+                </Button>
+              </Link>
+              <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-xs"
+                  onClick={() => router.push("/billing?tab=subscription")}
+              >
+                <DollarSign className="h-3 w-3 mr-1" />
+                Billing
+              </Button>
+            </div>
+            <div className="flex items-center gap-2">
               {hasUpgrades ? upgradeButton : (
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -51,23 +70,6 @@ export function ActionFooter({ plans, server, onUpgrade }: ActionFooterProps) {
                     </TooltipContent>
                   </Tooltip>
               )}
-              <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-xs"
-                  onClick={() => router.push("/billing?tab=subscription")}
-              >
-                <DollarSign className="h-3 w-3 mr-1" />
-                Billing
-              </Button>
-            </div>
-            <div className="flex items-center gap-2">
-              <Link href={`/${server.subscription_id}/console`}>
-                <Button size="sm" className="bg-foreground text-background hover:bg-foreground/90">
-                  <ArrowUpRight className="h-3 w-3 mr-1" />
-                  Manage
-                </Button>
-              </Link>
             </div>
           </div>
         </div>
