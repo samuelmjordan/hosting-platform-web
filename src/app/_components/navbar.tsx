@@ -18,13 +18,17 @@ interface NavbarProps {
 const Navbar = ({ items }: NavbarProps) => {
     const { isLoaded } = useUser();
 
+
     const UserButtonWithLoader = () => {
-        if (!isLoaded) {
-            return (
-                <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
-            );
-        }
-        return <UserButton />;
+        return (
+            <div className="h-8 w-8 flex items-center justify-center">
+                {!isLoaded ? (
+                    <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
+                ) : (
+                    <UserButton />
+                )}
+            </div>
+        );
     };
 
     return (
