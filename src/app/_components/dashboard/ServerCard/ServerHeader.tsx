@@ -65,7 +65,7 @@ export function ServerHeader({
                     </button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Edit server details</p>
+                    <p>edit server details</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -76,12 +76,12 @@ export function ServerHeader({
                 {formatRegion(server.region_code)}
               </Badge>
               <Badge variant="secondary" className="text-xs">
-                {server.specification_title}
+                {server.specification_title.toLowerCase()}
               </Badge>
               {status.isChecking ? (
-                  <Badge variant="outline" className="text-xs">
-                    <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                    Checking
+                  <Badge variant="outline" className="text-xs text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-600 bg-amber-50 dark:bg-amber-900/20">
+                    <Loader2 className="h-3 w-3 mr-1 animate-spin text-amber-600 dark:text-amber-400" />
+                    checking
                   </Badge>
               ) : (
                   <Badge
@@ -92,22 +92,28 @@ export function ServerHeader({
                                 ? "secondary"
                                 : "destructive"
                       }
-                      className="text-xs"
+                      className={`text-xs ${
+                          isOnline
+                              ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300 border-green-300 dark:border-green-700"
+                              : isProvisioning
+                                  ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-700"
+                                  : "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300 border-red-300 dark:border-red-700"
+                      }`}
                   >
                     {isOnline ? (
                         <>
-                          <CheckCircle2 className="h-3 w-3 mr-1" />
-                          Online
+                          <CheckCircle2 className="h-3 w-3 mr-1 text-green-600 dark:text-green-400" />
+                          online
                         </>
                     ) : isProvisioning ? (
                         <>
-                          <Clock className="h-3 w-3 mr-1" />
-                          Provisioning
+                          <Clock className="h-3 w-3 mr-1 text-blue-600 dark:text-blue-400" />
+                          provisioning
                         </>
                     ) : (
                         <>
-                          <XCircle className="h-3 w-3 mr-1" />
-                          Offline
+                          <XCircle className="h-3 w-3 mr-1 text-red-600 dark:text-red-400" />
+                          offline
                         </>
                     )}
                   </Badge>

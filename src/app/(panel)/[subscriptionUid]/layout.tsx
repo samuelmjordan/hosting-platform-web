@@ -6,12 +6,12 @@ export default async function RootLayout({ children, params }: { children: React
     const { subscriptionUid } = await params;
     
     const menuItems = [
-        { label: 'Dashboard', href: `/dashboard` },
-        { label: 'Console', href: `/${subscriptionUid}/console` },
-        { label: 'Files', href: `/${subscriptionUid}/files` },
+        { label: 'dashboard', href: `/dashboard` },
+        { label: 'console', href: `/${subscriptionUid}/console` },
+        { label: 'files', href: `/${subscriptionUid}/files` },
         { label: 'SFTP', href: `/${subscriptionUid}/sftp` },
-        { label: 'Backups', href: `/${subscriptionUid}/backups` },
-        { label: 'Settings', href: `/${subscriptionUid}/settings` }
+        { label: 'backups', href: `/${subscriptionUid}/backups` },
+        { label: 'settings', href: `/${subscriptionUid}/settings` }
     ];
 
     return (

@@ -58,7 +58,7 @@ export function ServerStatusDisplay({
 
         const getSubtext = () => {
             if (!statusReady) return 'Fetching server info'
-            return isOnline ? `Version ${status.version}` : 'Unable to connect'
+            return isOnline ? `version ${status.version}` : 'Unable to connect'
         }
 
         const getTextColor = () => {
@@ -74,7 +74,6 @@ export function ServerStatusDisplay({
         return (
             <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
-                    <StatusIcon />
                     <div>
                         <h4 className={`font-semibold ${getTextColor()}`}>
                             {getStatusText()}
@@ -94,7 +93,7 @@ export function ServerStatusDisplay({
                             !statusReady ? 'text-amber-700 dark:text-amber-300' :
                                 isOnline ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'
                         }`}>
-              {!statusReady ? 'Checking' : isOnline ? 'Online' : 'Offline'}
+              {!statusReady ? 'checking' : isOnline ? 'online' : 'offline'}
             </span>
                     </div>
                     {(isOnline ? status.lastUpdated : status.lastChecked) && statusReady && (
@@ -102,7 +101,7 @@ export function ServerStatusDisplay({
                             !statusReady ? 'text-amber-600 dark:text-amber-400' :
                                 isOnline ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
                         }`}>
-                            {isOnline ? 'Updated' : 'Checked'} {formatTime(isOnline ? status.lastUpdated! : status.lastChecked!)}
+                            {isOnline ? 'updated' : 'checked'} {formatTime(isOnline ? status.lastUpdated! : status.lastChecked!)}
                         </div>
                     )}
                 </div>
@@ -127,13 +126,13 @@ export function ServerStatusDisplay({
                     <div className={`font-semibold text-lg ${getStatsTextColor()}`}>
                         {!statusReady ? '...' : isOnline ? `${status.playerCount}/${status.maxPlayers}` : '0/0'}
                     </div>
-                    <div className={`text-xs ${getStatsSubtextColor()}`}>Players Online</div>
+                    <div className={`text-xs ${getStatsSubtextColor()}`}>players online</div>
                 </div>
                 <div className="bg-background/60 rounded-lg p-3 text-center">
                     <div className={`font-semibold text-lg ${getStatsTextColor()}`}>
-                        {!statusReady ? '...' : isOnline ? status.version : 'Unknown'}
+                        {!statusReady ? '...' : isOnline ? status.version : 'unknown'}
                     </div>
-                    <div className={`text-xs ${getStatsSubtextColor()}`}>Version</div>
+                    <div className={`text-xs ${getStatsSubtextColor()}`}>version</div>
                 </div>
             </div>
         )
@@ -145,7 +144,7 @@ export function ServerStatusDisplay({
                 <div className="bg-background/60 rounded-lg p-3">
                     <div className="flex items-center justify-center gap-2 text-amber-600 dark:text-amber-400">
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        <span className="text-sm">Loading player list...</span>
+                        <span className="text-sm">loading player list...</span>
                     </div>
                 </div>
             )
@@ -194,7 +193,7 @@ export function ServerStatusDisplay({
                 ) : (
                     <div className={`flex items-center justify-center gap-2 ${getPlayerTextColor()}`}>
                         <Users className="h-4 w-4" />
-                        <span className="text-sm">No players currently online</span>
+                        <span className="text-sm">no players currently online</span>
                     </div>
                 )}
             </div>

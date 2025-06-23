@@ -10,9 +10,9 @@ export function CreateServerCard() {
           <div className="w-16 h-16 rounded-xl bg-accent /10 ring-2 ring-accent flex items-center justify-center shadow-sm mb-4 group-hover:bg-accent/80 transition-colors">
             <Plus className="h-8 w-8 text-accent-foreground" />
           </div>
-          <h3 className="text-xl font-semibold text-foreground mb-2">Create New Server</h3>
+          <h3 className="text-xl font-semibold text-foreground mb-2">create new server</h3>
           <p className="text-muted-foreground mb-6 max-w-sm">
-            Deploy a new Minecraft server in minutes. Choose from our optimized plans and get started instantly.
+            deploy a new minecraft server in minutes
           </p>
         </div>
 

@@ -59,7 +59,7 @@ const checkMinecraftServer = async (
     if (response.ok) {
       const data = await response.json()
 
-      const motdText = data.motd?.clean || data.motd?.raw || "A Minecraft Server"
+      const motdText = data.motd?.clean || data.motd?.raw || "a minecraft server"
       const versionName = data.version?.name_clean || data.version?.name_raw || "Unknown"
 
       return {

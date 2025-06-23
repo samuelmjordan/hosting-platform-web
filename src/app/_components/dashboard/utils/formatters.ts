@@ -1,5 +1,5 @@
 import { CurrencyAmount } from "@/app/types"
-import { REGION_FLAGS, REGION_NAMES, PLAN_COLORS } from "./constants"
+import { PLAN_COLORS } from "./constants"
 
 export const formatDate = (timestamp: number) => {
   if (!timestamp) return "N/A"
@@ -19,7 +19,7 @@ export const getRegionFlag = (regionCode: string) => {
 }
 
 export const formatRegion = (regionCode: string) => {
-  return "Europe"
+  return "europe"
 }
 
 export const getPlanColor = (planName: string) => {
