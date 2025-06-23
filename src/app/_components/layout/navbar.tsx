@@ -9,7 +9,7 @@ import {
     CollapsibleContent,
     CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { NavbarItem } from '../types';
+import { NavbarItem } from '../../types';
 
 interface NavbarProps {
     items: NavbarItem[]

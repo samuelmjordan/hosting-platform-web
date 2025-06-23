@@ -1,5 +1,5 @@
 
-import {FileObject} from "@/app/_components/files/utils/types";
+import {FileObject} from "@/app/_components/page/files/utils/types";
 
 export const isEditable = (file: FileObject) => {
     // not a file = not editable

@@ -1,4 +1,4 @@
-import {Backup, BackupApiClient} from "@/app/_components/backups/utils/types";
+import {Backup, BackupApiClient} from "@/app/_components/page/backups/utils/types";
 
 export class PterodactylBackupClient implements BackupApiClient {
     constructor(

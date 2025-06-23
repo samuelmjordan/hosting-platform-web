@@ -1,4 +1,4 @@
-import { DashboardTable } from '@/app/_components/dashboard/DashboardTable';
+import { DashboardTable } from '@/app/_components/page/dashboard/DashboardTable';
 import { fetchPlans } from '@/app/_services/planService';
 import { fetchServers } from '@/app/_services/serverService';
 import { Plan, Server } from '@/app/types';

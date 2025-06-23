@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Play, Square, RotateCcw, X, Zap } from "lucide-react";
-import { PowerSignal } from "@/app/_components/console/utils/types";
+import { PowerSignal } from "@/app/_components/page/console/utils/types";
 
 interface PowerControlsProps {
     isConnected: boolean;

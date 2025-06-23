@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { FileObject } from '@/app/_components/files/utils/types';
-import { PterodactylFileClient } from '@/app/_components/files/utils/client';
+import { FileObject } from '@/app/_components/page/files/utils/types';
+import { PterodactylFileClient } from '@/app/_components/page/files/utils/client';
 import { FileList } from './FileList';
 import { FileToolbar } from './FileToolbar';
 import { FileBreadcrumb } from './FileBreadcrumb';
@@ -11,7 +11,7 @@ import { UploadDialog } from './UploadDialog';
 import { useToast } from '@/hooks/use-toast';
 import { Card } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
-import {isEditable} from "@/app/_components/files/utils/helpers";
+import {isEditable} from "@/app/_components/page/files/utils/helpers";
 
 interface FileExplorerProps {
   userId: string;

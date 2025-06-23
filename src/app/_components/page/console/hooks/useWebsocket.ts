@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
-import {PowerSignal, ServerStats, ServerStatus} from "@/app/_components/console/utils/types";
+import {PowerSignal, ServerStats, ServerStatus} from "@/app/_components/page/console/utils/types";
 
 export function useWebSocket(subscriptionUid: string) {
     const [isConnected, setIsConnected] = useState(false);

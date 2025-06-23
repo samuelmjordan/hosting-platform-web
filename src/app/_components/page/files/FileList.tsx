@@ -1,4 +1,4 @@
-import { FileObject } from '@/app/_components/files/utils/types';
+import { FileObject } from '@/app/_components/page/files/utils/types';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   File,
@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
-import {isEditable} from "@/app/_components/files/utils/helpers";
+import {isEditable} from "@/app/_components/page/files/utils/helpers";
 
 interface FileListProps {
   files: FileObject[];

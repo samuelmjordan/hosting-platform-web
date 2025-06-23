@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Terminal, Send, AlertCircle } from "lucide-react";
-import { parseAnsiString } from "@/app/_components/console/utils/ansiParser";
+import { parseAnsiString } from "@/app/_components/page/console/utils/ansiParser";
 
 interface ConsoleOutputProps {
     logs: string[];

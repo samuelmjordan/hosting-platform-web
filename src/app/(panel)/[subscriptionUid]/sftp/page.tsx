@@ -1,4 +1,4 @@
-import SftpPage from "@/app/_components/sftp/SftpPage";
+import SftpPage from "@/app/_components/page/sftp/SftpPage";
 
 type Params = {
     subscriptionUid: string;

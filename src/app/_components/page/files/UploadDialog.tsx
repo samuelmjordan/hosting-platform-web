@@ -12,7 +12,7 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { Upload, File, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { SignedUrl } from '@/app/_components/files/utils/types';
+import { SignedUrl } from '@/app/_components/page/files/utils/types';
 
 interface UploadDialogProps {
   open: boolean;

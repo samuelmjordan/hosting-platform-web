@@ -1,4 +1,4 @@
-import { AnsiSpan } from "@/app/_components/console/utils/types";
+import { AnsiSpan } from "@/app/_components/page/console/utils/types";
 
 const defaultColour = 'text-white';
 

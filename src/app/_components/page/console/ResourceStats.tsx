@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Cpu, MemoryStick, HardDrive, Network } from "lucide-react";
-import { ServerStats } from "@/app/_components/console/utils/types";
-import { formatBytes } from "@/app/_components/console/utils/utils";
+import { ServerStats } from "@/app/_components/page/console/utils/types";
+import { formatBytes } from "@/app/_components/page/console/utils/utils";
 
 interface ResourceStatsProps {
     stats: ServerStats;

@@ -1,4 +1,4 @@
-import { FileExplorer } from '@/app/_components/files/FileExplorer';
+import { FileExplorer } from '@/app/_components/page/files/FileExplorer';
 import { auth } from '@clerk/nextjs/server';
 
 type Params = {

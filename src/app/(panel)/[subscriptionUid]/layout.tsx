@@ -1,5 +1,5 @@
-import Navbar from "@/app/_components/navbar"
-import Footer from "@/app/_components/footer"
+import Navbar from "@/app/_components/layout/navbar"
+import Footer from "@/app/_components/layout/footer"
 import { Params } from "next/dist/server/request/params";
 
 export default async function RootLayout({ children, params }: { children: React.ReactNode; params: Promise<Params>; }) {

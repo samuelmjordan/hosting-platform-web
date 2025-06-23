@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import BackupsPage from "@/app/_components/backups/BackupsPage";
+import BackupsPage from "@/app/_components/page/backups/BackupsPage";
 
 type Params = {
     subscriptionUid: string;

@@ -1,4 +1,4 @@
-import { FileObject, SignedUrl, RenameItem, FileApiClient } from '@/app/_components/files/utils/types';
+import { FileObject, SignedUrl, RenameItem, FileApiClient } from '@/app/_components/page/files/utils/types';
 
 export class PterodactylFileClient implements FileApiClient {
   constructor(

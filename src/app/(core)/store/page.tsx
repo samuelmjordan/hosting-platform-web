@@ -1,4 +1,4 @@
-import { StoreComponent } from "@/app/_components/store/StoreComponent";
+import { StoreComponent } from "@/app/_components/page/store/StoreComponent";
 import { fetchPlans } from "@/app/_services/planService";
 import { Plan } from "@/app/types";
 

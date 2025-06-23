@@ -1,7 +1,7 @@
 "use client"
 
 import { useUser } from '@clerk/nextjs';
-import { useWebSocket } from '@/app/_components/console/hooks/useWebsocket';
+import { useWebSocket } from '@/app/_components/page/console/hooks/useWebsocket';
 import { ConnectionStatus } from './ConnectionStatus';
 import { ResourceStats } from './ResourceStats';
 import { PowerControls } from './PowerControls';
