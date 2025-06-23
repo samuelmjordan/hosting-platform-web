@@ -323,7 +323,7 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
                               value={formData.environment[key] || ''}
                               onChange={(e) => updateEnvironmentVariable(key, e.target.value)}
                               className="flex-1"
-                              placeholder={`default: ${getDefaultValue(key)}`}
+                              placeholder={`null`}
                           />
                           <Button
                               variant="outline"

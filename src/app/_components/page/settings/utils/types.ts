@@ -30,43 +30,43 @@ export const EGG_OPTIONS: Egg[] = [
         id: 1,
         name: 'Sponge Minecraft',
         requiredEnvVars: {
-            'MINECRAFT_VERSION': 'latest',
-            'SERVER_JARFILE': 'spongevanilla.jar',
-            'MEMORY_LIMIT': '2048'
+            'SERVER_JARFILE': 'server.jar',
+            'SPONGE_VERSION': '1.12.2-7.3.0'
         }
     },
     {
         id: 2,
         name: 'Vanilla Minecraft',
         requiredEnvVars: {
-            'MINECRAFT_VERSION': 'latest',
-            'MEMORY_LIMIT': '2048'
+            'SERVER_JARFILE': 'server.jar',
+            'VANILLA_VERSION': 'latest'
         }
     },
     {
         id: 3,
         name: 'Paper Minecraft',
         requiredEnvVars: {
+            'SERVER_JARFILE': 'server.jar',
             'MINECRAFT_VERSION': 'latest',
-            'BUILD_NUMBER': 'latest',
-            'MEMORY_LIMIT': '2048'
+            'BUILD_NUMBER': 'latest'
         }
     },
     {
         id: 4,
         name: 'BungeeCord Minecraft',
         requiredEnvVars: {
-            'BUNGEE_VERSION': 'latest',
-            'MEMORY_LIMIT': '1024'
+            'SERVER_JARFILE': 'bungeecord.jar',
+            'BUNGEE_VERSION': 'latest'
         }
     },
     {
         id: 5,
         name: 'Forge Minecraft',
         requiredEnvVars: {
-            'MINECRAFT_VERSION': '1.20.4',
-            'FORGE_VERSION': '49.0.31',
-            'MEMORY_LIMIT': '2048'
+            'SERVER_JARFILE': 'server.jar',
+            'MC_VERSION': 'latest',
+            'BUILD_TYPE': 'recommended',
+            'FORGE_VERSION': ''
         }
     },
 ];
