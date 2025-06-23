@@ -85,7 +85,7 @@ export function useServerManagement(
                 ...server,
                 specification_title: newPlan.specification.title,
                 ram_gb: newPlan.specification.ram_gb,
-                vcpu: newPlan.specification.cpu,
+                vcpu: newPlan.specification.vcpu,
                 minor_amount: newPlan.price.minor_amount,
               }
             }

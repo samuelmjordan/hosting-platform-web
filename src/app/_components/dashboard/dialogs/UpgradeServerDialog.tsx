@@ -102,7 +102,7 @@ export function UpgradeServerDialog({ server, plans, isOpen, onClose, onSave }: 
                             <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                           <span className="flex items-center gap-1">
                             <Cpu className="h-3 w-3" />
-                            {plan.specification.cpu} vCPU
+                            {plan.specification.vcpu} vCPU
                           </span>
                               <span className="flex items-center gap-1">
                             <MemoryStick className="h-3 w-3" />

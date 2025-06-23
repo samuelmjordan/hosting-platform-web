@@ -1,13 +1,13 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Globe, Server } from "lucide-react"
+import {HardDrive, Server} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { CurrencyAmount, Plan, Region, SupportedCurrency } from "@/app/types"
+import { CurrencyAmount, Plan, SupportedCurrency } from "@/app/types"
 import { StoreCheckout } from "./storeCheckout"
 import { useAuth } from "@clerk/nextjs"
 import { startCheckout } from "@/app/_services/checkoutService"
@@ -156,11 +156,15 @@ export function StoreComponent({ plans }: StoreProps) {
                         <ul className="space-y-2">
                           <li className="flex items-center gap-2">
                             <Server className="h-4 w-4 text-gray-500" />
-                            <span>{plan.specification.ram_gb} RAM</span>
+                            <span>{plan.specification.ram_gb} GB RAM</span>
                           </li>
                           <li className="flex items-center gap-2">
                             <Server className="h-4 w-4 text-gray-500" />
-                            <span>{plan.specification.cpu} CPU</span>
+                            <span>{plan.specification.vcpu} vCPU</span>
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <HardDrive className="h-4 w-4 text-gray-500" />
+                            <span>{plan.specification.ssd_gb} GB SSD</span>
                           </li>
                         </ul>
                         <div className="mt-4">

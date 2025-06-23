@@ -4,7 +4,7 @@ export interface Specification {
   title: string;
   caption: string;
   ram_gb: number;
-  cpu: number;
+  vcpu: number;
   ssd_gb: number;
 }
 
