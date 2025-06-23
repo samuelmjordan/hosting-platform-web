@@ -31,6 +31,7 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [reinstalling, setReinstalling] = useState(false);
+  const [previousEggId, setPreviousEggId] = useState<number>(0);
   const { toast } = useToast();
 
   const client = new PterodactylServerSettingsClient(
@@ -53,11 +54,10 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
     loadSettings();
   }, [subscriptionId, userId]);
 
-  // handle egg changes - clean up old required vars and add new ones
   useEffect(() => {
     if (formData.eggId > 0 && settings) {
       const selectedEgg = EGG_OPTIONS.find(egg => egg.id === formData.eggId);
-      const previousEgg = EGG_OPTIONS.find(egg => egg.id === settings.egg_id);
+      const previousEgg = EGG_OPTIONS.find(egg => egg.id === previousEggId);
 
       if (selectedEgg) {
         setFormData(prev => {
@@ -79,9 +79,11 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
 
           return { ...prev, environment: newEnv };
         });
+
+        setPreviousEggId(formData.eggId);
       }
     }
-  }, [formData.eggId, settings]);
+  }, [formData.eggId, settings, previousEggId]);
 
   const loadSettings = async () => {
     try {
@@ -95,6 +97,8 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
         eggId: data.egg_id,
         environment: { ...data.environment }
       });
+
+      setPreviousEggId(data.egg_id);
     } catch (error) {
       toast({
         title: 'Error',
