@@ -21,7 +21,7 @@ export const formatDate = (timestamp: number): string => {
     year: "numeric",
     month: "long",
     day: "numeric",
-  })
+  }).toLowerCase()
 }
 
 /**
@@ -29,8 +29,8 @@ export const formatDate = (timestamp: number): string => {
  */
 export const formatRegion = (regionCode: string): string => {
   const regions: Record<string, string> = {
-    WEST_EUROPE: "West Europe",
-    EAST_EUROPE: "East Europe",
+    WEST_EUROPE: "west Europe",
+    EAST_EUROPE: "east Europe",
   }
   
   return regions[regionCode] ?? regionCode

@@ -40,7 +40,7 @@ const Navbar = ({ items }: NavbarProps) => {
                                 className="h-24"
                             />
                             <div className="absolute left-24 transform -translate-y-4">
-                                <span className="text-xl font-bold text-foreground">Axolhost</span>
+                                <span className="text-xl font-bold text-foreground">glowsquid</span>
                             </div>
                         </div>
                     </div>

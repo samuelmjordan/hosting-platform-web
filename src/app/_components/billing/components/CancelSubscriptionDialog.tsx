@@ -18,45 +18,55 @@ interface CancelSubscriptionDialogProps {
 }
 
 export function CancelSubscriptionDialog({
-  server,
-  open,
-  onOpenChange,
-  onConfirm
+   server,
+   open,
+   onOpenChange,
+   onConfirm
 }: CancelSubscriptionDialogProps) {
-  
+
   const handleCancel = () => {
     if (!server) return
-    
-    // Call the onConfirm callback if provided
+
+    // call the onConfirm callback if provided
     if (onConfirm) {
       onConfirm(server)
     }
-    
-    // Close dialog (toast is handled by the hook)
+
+    // close dialog (toast is handled by the hook)
     onOpenChange(false)
   }
-  
+
   if (!server) return null
-  
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Cancel your {server.server_name} subscription?</DialogTitle>
-          <DialogDescription>
-            Your subscription will remain active until the end of your current billing period on{" "}
-            {formatDate(server.current_period_end)}.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Keep Subscription
-          </Button>
-          <Button variant="destructive" onClick={handleCancel}>
-            Cancel Subscription
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="bg-background border border-border">
+          <DialogHeader>
+            <DialogTitle className="text-foreground">
+              cancel your {server.server_name} subscription?
+            </DialogTitle>
+            <DialogDescription className="text-muted-foreground">
+              your subscription will remain active until the end of your current billing period on{" "}
+              {formatDate(server.current_period_end)}.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                className="border-border hover:bg-accent"
+            >
+              keep subscription
+            </Button>
+            <Button
+                variant="destructive"
+                onClick={handleCancel}
+                className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+            >
+              cancel subscription
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
   )
 }

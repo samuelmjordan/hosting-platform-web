@@ -3,25 +3,25 @@ import { CheckCircle2, AlertCircle, XCircle } from "lucide-react"
 // Status configurations
 export const SUBSCRIPTION_STATUS = {
   active: {
-    label: "Active",
+    label: "active",
     icon: CheckCircle2,
     className: "bg-green-100 text-green-800 border-green-200",
     iconClass: "text-green-500"
   },
   past_due: {
-    label: "Payment Past Due",
+    label: "payment past due",
     icon: AlertCircle,
     className: "bg-yellow-100 text-yellow-800 border-yellow-200",
     iconClass: "text-yellow-500"
   },
   unpaid: {
-    label: "Unpaid",
+    label: "unpaid",
     icon: AlertCircle,
     className: "bg-red-100 text-red-800 border-red-200",
     iconClass: "text-red-500"
   },
   canceled: {
-    label: "Canceled",
+    label: "canceled",
     icon: XCircle,
     className: "bg-red-100 text-red-800 border-red-200",
     iconClass: "text-red-500"
@@ -38,8 +38,8 @@ export const PLAN_STYLES = {
 
 // Region mappings
 export const REGIONS = {
-  WEST_EUROPE: { label: "West Europe", flag: "🇪🇺" },
-  EAST_EUROPE: { label: "East Europe", flag: "🇪🇺" },
+  WEST_EUROPE: { label: "europe", flag: "🇪🇺" },
+  EAST_EUROPE: { label: "europe", flag: "🇪🇺" },
   default: { label: "Unknown", flag: "🌐" }
 } as const
 
@@ -85,9 +85,9 @@ export const WALLET_CONFIG = {
 
 // Tab configuration
 export const BILLING_TABS = {
-  subscription: "Subscriptions",
-  payment: "Payment Methods",
-  history: "Billing History"
+  subscription: "subscriptions",
+  payment: "payment methods",
+  history: "billing history"
 } as const
 
 export type BillingTab = keyof typeof BILLING_TABS

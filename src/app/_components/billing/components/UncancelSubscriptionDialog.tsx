@@ -18,45 +18,54 @@ interface UncancelSubscriptionDialogProps {
 }
 
 export function UncancelSubscriptionDialog({
-  server,
-  open,
-  onOpenChange,
-  onConfirm
-}: UncancelSubscriptionDialogProps) {
-  
+                                             server,
+                                             open,
+                                             onOpenChange,
+                                             onConfirm
+                                           }: UncancelSubscriptionDialogProps) {
+
   const handleUncancel = () => {
     if (!server) return
-    
-    // Call the onConfirm callback if provided
+
+    // call the onConfirm callback if provided
     if (onConfirm) {
       onConfirm(server)
     }
-    
-    // Close dialog
+
+    // close dialog
     onOpenChange(false)
   }
-  
+
   if (!server) return null
-  
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Resume your {server.server_name} subscription?</DialogTitle>
-          <DialogDescription>
-            Your subscription will renew at the end of your current billing period on{" "}
-            {formatDate(server.current_period_end)}.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button onClick={handleUncancel}>
-            Resume Subscription
-          </Button>
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Stay Canceled
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="bg-background border border-border">
+          <DialogHeader>
+            <DialogTitle className="text-foreground">
+              resume your {server.server_name} subscription?
+            </DialogTitle>
+            <DialogDescription className="text-muted-foreground">
+              your subscription will renew at the end of your current billing period on{" "}
+              {formatDate(server.current_period_end)}.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+                onClick={handleUncancel}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+            >
+              resume subscription
+            </Button>
+            <Button
+                variant="ghost"
+                onClick={() => onOpenChange(false)}
+                className="hover:bg-accent"
+            >
+              stay canceled
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
   )
 }
