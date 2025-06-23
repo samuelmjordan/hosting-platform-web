@@ -7,7 +7,6 @@ type Params = {
 
 export default async function Files({ params }: { params: Promise<Params> }) {
   const { subscriptionUid } = await params;
-  
   const { userId } = await auth();
 
   return (
