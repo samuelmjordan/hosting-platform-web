@@ -5,7 +5,11 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import type { Server } from "@/app/types"
 import { formatCurrency, formatDate } from "../utils/formatters"
-import { SUBSCRIPTION_STATUS, PLAN_STYLES, REGIONS } from "../utils/constants"
+import { REGIONS } from "../utils/constants"
+import PlanTierBadge from "@/app/_components/common/PlanTierBadge";
+import {StatusBadge} from "@/app/_components/common/StatusBadge";
+import {RegionBadge} from "@/app/_components/common/RegionBadge";
+import React from "react";
 
 interface SubscriptionCardProps {
   server: Server
@@ -15,11 +19,7 @@ interface SubscriptionCardProps {
 }
 
 export function SubscriptionCard({ server, onCancelClick, onUncancelClick, isLoading = false }: SubscriptionCardProps) {
-  const status = SUBSCRIPTION_STATUS[server.subscription_status as keyof typeof SUBSCRIPTION_STATUS] || SUBSCRIPTION_STATUS.active
-  const planStyle = PLAN_STYLES[server.specification_title as keyof typeof PLAN_STYLES] || PLAN_STYLES.default
   const region = REGIONS[server.region_code as keyof typeof REGIONS] || REGIONS.default
-
-  const StatusIcon = status.icon
 
   return (
       <Card className="overflow-hidden shadow-sm hover:shadow dark:shadow-xl dark:hover:shadow-2xl transition-all">
@@ -28,28 +28,14 @@ export function SubscriptionCard({ server, onCancelClick, onUncancelClick, isLoa
             <div>
               <CardTitle className="text-xl mb-2 text-foreground">{server.server_name}</CardTitle>
               <div className="flex flex-wrap gap-2">
-                {/* status badge */}
-                <Badge
-                    variant="outline"
-                    className={`inline-flex items-center gap-1 px-2 py-1 rounded-md ${status.className}`}
-                >
-                  <StatusIcon className="h-4 w-4" />
-                  {status.label}
-                </Badge>
-
                 {/* region badge */}
-                <Badge variant="outline" className="inline-flex items-center gap-1 px-2 py-1 rounded-md border-border">
-                  <span className="text-base leading-none">{region.flag}</span>
-                  {region.label}
-                </Badge>
+                <RegionBadge region="europe" />
 
                 {/* plan badge */}
-                <Badge
-                    variant="outline"
-                    className={`inline-flex items-center gap-1 px-2 py-1 rounded-md ${planStyle} border-border`}
-                >
-                  {server.specification_title.toLowerCase()}
-                </Badge>
+                <PlanTierBadge specificationTitle={`${server.specification_title.toLowerCase()}`} />
+
+                {/* status badge */}
+                <StatusBadge status={server.subscription_status} />
               </div>
             </div>
 

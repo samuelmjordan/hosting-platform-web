@@ -1,24 +1,8 @@
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import {
   Edit2,
-  EllipsisVertical,
-  Play,
-  PowerOff,
-  RefreshCw,
   ServerIcon,
-  Settings,
-  Terminal,
-  Trash2,
   Clock,
   CheckCircle2,
   XCircle,
@@ -26,7 +10,9 @@ import {
 } from "lucide-react"
 import { Server } from "@/app/types"
 import { ServerStatus } from "../hooks/useServerStatus"
-import { getPlanColor, getRegionFlag, formatRegion } from "../utils/formatters"
+import PlanTierBadge from "@/app/_components/common/PlanTierBadge";
+import React from "react";
+import {RegionBadge} from "@/app/_components/common/RegionBadge";
 
 interface ServerHeaderProps {
   server: Server
@@ -38,13 +24,13 @@ interface ServerHeaderProps {
 }
 
 export function ServerHeader({
-                               server,
-                               status,
-                               isOnline,
-                               isProvisioning,
-                               onEdit,
-                               onRefresh,
-                             }: ServerHeaderProps) {
+   server,
+   status,
+   isOnline,
+   isProvisioning,
+   onEdit,
+   onRefresh,
+}: ServerHeaderProps) {
   return (
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -71,13 +57,8 @@ export function ServerHeader({
               </TooltipProvider>
             </div>
             <div className="flex items-center gap-2 mt-1">
-              <Badge variant="outline" className="text-xs">
-                <span className="mr-1">{getRegionFlag(server.region_code)}</span>
-                {formatRegion(server.region_code)}
-              </Badge>
-              <Badge variant="secondary" className="text-xs">
-                {server.specification_title.toLowerCase()}
-              </Badge>
+              <RegionBadge region="europe" />
+              <PlanTierBadge specificationTitle={`${server.specification_title.toLowerCase()}`} />
               {status.isChecking ? (
                   <Badge variant="outline" className="text-xs text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-600 bg-amber-50 dark:bg-amber-900/20">
                     <Loader2 className="h-3 w-3 mr-1 animate-spin text-amber-600 dark:text-amber-400" />
@@ -121,51 +102,6 @@ export function ServerHeader({
             </div>
           </div>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-              <EllipsisVertical className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={onEdit}>
-              <Edit2 className="mr-2 h-4 w-4" />
-              Edit Details
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={onRefresh}>
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Refresh Status
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Terminal className="mr-2 h-4 w-4" />
-              Console
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Settings className="mr-2 h-4 w-4" />
-              Settings
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              {isOnline ? (
-                  <>
-                    <PowerOff className="mr-2 h-4 w-4 text-red-500" />
-                    <span className="text-red-500">Stop</span>
-                  </>
-              ) : (
-                  <>
-                    <Play className="mr-2 h-4 w-4 text-green-500" />
-                    <span className="text-green-500">Start</span>
-                  </>
-              )}
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-500">
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
   )
 }

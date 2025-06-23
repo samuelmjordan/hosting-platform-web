@@ -14,14 +14,6 @@ export const formatCurrency = (amount: CurrencyAmount, locale?: string): string 
   }).format(amount.value / 100)
 }
 
-export const getRegionFlag = (regionCode: string) => {
-  return "🇪🇺"
-}
-
-export const formatRegion = (regionCode: string) => {
-  return "europe"
-}
-
 export const getPlanColor = (planName: string) => {
   return PLAN_COLORS[planName] || PLAN_COLORS.default
 }
