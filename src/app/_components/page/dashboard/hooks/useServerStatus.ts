@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useState} from "react"
 import {Server} from "@/app/types"
 import {STATUS_CHECK_INTERVAL} from "../utils/constants"
-import {ProvisioningStatus} from "@/app/_services/serverDetailsService";
+import {McHostDashboardClient, ProvisioningStatus} from "@/app/_services/serverDetailsService";
 
 export interface Player {
   name: string
@@ -102,8 +102,23 @@ const checkMinecraftServer = async (address: string | null): Promise<MinecraftSt
 }
 
 const checkProvisioningStatus = async (subscriptionId: string | null, userId: string): Promise<ProvisioningStatus> => {
-  return ProvisioningStatus.ERROR;
-}
+  if (!subscriptionId) {
+    return ProvisioningStatus.ERROR;
+  }
+
+  try {
+    const client = new McHostDashboardClient(
+        process.env.NEXT_PUBLIC_API_URL || '',
+        userId
+    );
+
+    const response = await client.getProvisioningStatus(subscriptionId);
+    return response.status;
+  } catch (error) {
+    console.error('failed to fetch provisioning status:', error);
+    return ProvisioningStatus.ERROR;
+  }
+};
 
 export const useServerStatus = (servers: Server[], userId: string) => {
   const [serverStatuses, setServerStatuses] = useState<Record<string, ServerStatus>>(() => {

@@ -50,29 +50,34 @@ const getProvisioningStatusInfo = (status: ProvisioningStatus): ProvisioningStat
                 label: 'Pending',
                 description: 'Server request is queued and waiting to start'
             };
-        default:
+        case ProvisioningStatus.ERROR:
             return {
                 label: 'Error',
                 description: 'Server encountered an error and needs attention'
             };
+        default:
+            return {
+                label: 'Unknown',
+                description: 'Status not recognized'
+            };
     }
 };
 
-const getStatusVariant = (status: ProvisioningStatus) => {
+const getStatusStyles = (status: ProvisioningStatus) => {
     switch (status) {
         case ProvisioningStatus.READY:
-            return "default"; // green
+            return "bg-green-100 text-green-800 border-green-200 dark:bg-green-950 dark:text-green-400 dark:border-green-800";
         case ProvisioningStatus.PROVISIONING:
         case ProvisioningStatus.MIGRATING:
         case ProvisioningStatus.PENDING:
-            return "secondary"; // yellow/amber
+            return "bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-950 dark:text-yellow-400 dark:border-yellow-800";
         case ProvisioningStatus.INACTIVE:
         case ProvisioningStatus.DESTROYING:
         case ProvisioningStatus.FAILED:
         case ProvisioningStatus.ERROR:
-            return "destructive"; // red
+            return "bg-red-100 text-red-800 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-800";
         default:
-            return "outline"; // neutral
+            return "bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700";
     }
 };
 
@@ -107,14 +112,14 @@ interface ProvisioningStatusBadgeProps {
 
 export const ProvisioningStatusBadge = ({ status }: ProvisioningStatusBadgeProps) => {
     const statusInfo = getProvisioningStatusInfo(status);
-    const variant = getStatusVariant(status);
+    const styles = getStatusStyles(status);
     const icon = getStatusIcon(status);
 
     return (
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <Badge variant={variant} className="inline-flex items-center">
+                    <Badge className={`inline-flex items-center border ${styles}`}>
                         {icon}
                         {statusInfo.label}
                     </Badge>
