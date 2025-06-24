@@ -2,16 +2,17 @@ import { Invoice } from "@/app/types";
 import { auth } from "@clerk/nextjs/server";
 
 export async function fetchInvoices(): Promise<Invoice[]> {
+  const { getToken } = await auth();
+  const token = await getToken();
 
-  const { userId } = await auth();
-
-  if (!userId) {
-    throw new Error("Not authenticated");
+  if (!token) {
+    return [];
   }
 
-  const response = await fetch(`${process.env.API_URL}/api/user/${userId}/invoice`, {
+  const response = await fetch(`${process.env.API_URL}/api/user/invoice`, {
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
     }
   });
 

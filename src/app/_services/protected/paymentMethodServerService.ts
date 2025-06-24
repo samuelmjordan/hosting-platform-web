@@ -2,15 +2,17 @@ import { PaymentMethod } from "@/app/types";
 import { auth } from "@clerk/nextjs/server";
 
 export async function fetchPaymentMethods(): Promise<PaymentMethod[]> {
-  const { userId } = await auth();
+  const { getToken } = await auth();
+  const token = await getToken();
 
-  if (!userId) {
-    throw new Error("Not authenticated");
+  if (!token) {
+    return [];
   }
 
-  const response = await fetch(`${process.env.API_URL}/api/user/${userId}/payment-method`, {
+  const response = await fetch(`${process.env.API_URL}/api/user/payment-method`, {
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
     }
   });
 
