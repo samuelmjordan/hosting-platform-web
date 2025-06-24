@@ -6,7 +6,7 @@ import {
   setDefaultPaymentMethod,
   removeDefaultPaymentMethod,
   removePaymentMethod
-} from "@/app/_services/paymentMethodClientService"
+} from "@/app/_services/protected/paymentMethodClientService"
 
 interface UsePaymentMethodsReturn {
   methods: PaymentMethod[]

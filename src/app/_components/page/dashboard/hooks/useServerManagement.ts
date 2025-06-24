@@ -5,7 +5,7 @@ import {
   changeServerAddress,
   changeServerTitle,
   changeServerSpecification,
-} from "@/app/_services/subscriptionClientService"
+} from "@/app/_services/protected/subscriptionClientService"
 import { FIXED_DOMAIN, MAX_SUBDOMAIN_LENGTH, MAX_TITLE_LENGTH } from "../utils/constants"
 import { validateSubdomain } from "../utils/formatters"
 

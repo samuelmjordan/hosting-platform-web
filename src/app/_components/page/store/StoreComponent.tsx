@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation"
 import { StoreHeader } from "./StoreHeader"
 import { PlansGrid } from "./PlansGrid"
 import { CheckoutButton } from "./CheckoutButton"
-import { startCheckout } from "@/app/_services/checkoutService"
-import { fetchUserCurrency } from "@/app/_services/currencyService"
+import { startCheckout } from "@/app/_services/protected/checkoutService"
+import { fetchUserCurrency } from "@/app/_services/protected/currencyService"
 import {CurrencyAmount, Plan, SupportedCurrency} from "@/app/types";
 
 interface StoreComponentProps {

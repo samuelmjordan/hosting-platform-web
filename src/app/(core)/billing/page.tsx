@@ -1,6 +1,6 @@
-import { fetchServers } from "@/app/_services/serverService"
-import { fetchInvoices } from "@/app/_services/invoiceService"
-import { fetchPaymentMethods } from "@/app/_services/paymentMethodServerService"
+import { fetchServers } from "@/app/_services/protected/serverService"
+import { fetchInvoices } from "@/app/_services/protected/invoiceService"
+import { fetchPaymentMethods } from "@/app/_services/protected/paymentMethodServerService"
 import { BillingPage } from "@/app/_components/page/billing/BillingPage"
 
 export default async function BillingRoute() {

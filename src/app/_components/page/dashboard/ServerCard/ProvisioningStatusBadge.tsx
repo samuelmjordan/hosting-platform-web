@@ -11,7 +11,7 @@ import {
     Timer,
     AlertCircle
 } from "lucide-react";
-import { ProvisioningStatus, ProvisioningStatusInfo } from "@/app/_services/serverDetailsService";
+import { ProvisioningStatus, ProvisioningStatusInfo } from "@/app/_services/protected/serverDetailsService";
 
 const getProvisioningStatusInfo = (status: ProvisioningStatus): ProvisioningStatusInfo => {
     switch (status) {

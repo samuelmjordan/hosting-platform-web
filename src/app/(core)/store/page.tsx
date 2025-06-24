@@ -1,5 +1,5 @@
 import { StoreComponent } from "@/app/_components/page/store/StoreComponent";
-import { fetchPlans } from "@/app/_services/planService";
+import { fetchPlans } from "@/app/_services/public/planService";
 import { Plan } from "@/app/types";
 
 export default async function StorePage() {

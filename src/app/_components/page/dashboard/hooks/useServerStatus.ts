@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useState} from "react"
 import {Server} from "@/app/types"
 import {STATUS_CHECK_INTERVAL} from "../utils/constants"
-import {McHostDashboardClient, ProvisioningStatus} from "@/app/_services/serverDetailsService";
+import {McHostDashboardClient, ProvisioningStatus} from "@/app/_services/protected/serverDetailsService";
 
 export interface Player {
   name: string
