@@ -136,8 +136,6 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
 
   const reinstallServer = async () => {
     try {
-      setReinstalling(true);
-
       await client.reinstallServer();
 
       toast({
@@ -152,8 +150,6 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
         description: 'reinstall failed',
         variant: 'destructive'
       });
-    } finally {
-      setReinstalling(false);
     }
   };
 
@@ -173,8 +169,6 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
         description: 'recreate failed',
         variant: 'destructive'
       });
-    } finally {
-
     }
   };
 
