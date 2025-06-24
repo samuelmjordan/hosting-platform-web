@@ -1,17 +1,15 @@
-import { useState, useCallback, useEffect } from "react"
-import { Server } from "@/app/types"
-import { STATUS_CHECK_INTERVAL } from "../utils/constants"
+import {useCallback, useEffect, useState} from "react"
+import {Server} from "@/app/types"
+import {STATUS_CHECK_INTERVAL} from "../utils/constants"
+import {ProvisioningStatus} from "@/app/_services/serverDetailsService";
 
 export interface Player {
   name: string
   id: string
 }
 
-export interface ServerStatus {
-  machineOnline: boolean
+export interface MinecraftStatus {
   minecraftOnline: boolean
-  isChecking: boolean
-  lastChecked: number | null
   playerCount?: number
   maxPlayers?: number
   version?: string
@@ -21,7 +19,19 @@ export interface ServerStatus {
   players?: Player[]
 }
 
-const pingMachine = async (address: string): Promise<boolean> => {
+export interface ServerStatus {
+  provisioningStatus: ProvisioningStatus
+  machineOnline: boolean
+  minecraftStatus: MinecraftStatus
+  isChecking: boolean
+  lastChecked: number | null
+}
+
+const pingMachine = async (address: string | null): Promise<boolean> => {
+  if (!address) {
+    return false
+  }
+
   try {
     const response = await fetch(`/api/ping?address=${encodeURIComponent(address)}`)
     const data = await response.json()
@@ -31,20 +41,20 @@ const pingMachine = async (address: string): Promise<boolean> => {
   }
 }
 
-const checkMinecraftServer = async (
-    address: string
-): Promise<{
-  online: boolean
-  playerCount?: number
-  maxPlayers?: number
-  version?: string
-  motd?: string
-  lastUpdated?: string
-  duration?: string
-  players?: Player[]
-}> => {
+const checkMinecraftServer = async (address: string | null): Promise<MinecraftStatus> => {
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), 10000)
+
+  if (!address) {
+    return {
+      minecraftOnline: false,
+      playerCount: 0,
+      maxPlayers: 0,
+      version: "Unknown",
+      motd: "Connection Failed",
+      players: [],
+    }
+  }
 
   try {
     const response = await fetch(`https://api.mcstatus.io/v2/status/java/${address}`, {
@@ -63,7 +73,7 @@ const checkMinecraftServer = async (
       const versionName = data.version?.name_clean || data.version?.name_raw || "Unknown"
 
       return {
-        online: data.online || false,
+        minecraftOnline: data.online || false,
         playerCount: data.players?.online || 0,
         maxPlayers: data.players?.max || 0,
         version: versionName,
@@ -82,7 +92,7 @@ const checkMinecraftServer = async (
   }
 
   return {
-    online: false,
+    minecraftOnline: false,
     playerCount: 0,
     maxPlayers: 0,
     version: "Unknown",
@@ -91,71 +101,84 @@ const checkMinecraftServer = async (
   }
 }
 
-export const useServerStatus = (servers: Server[]) => {
+const checkProvisioningStatus = async (subscriptionId: string | null, userId: string): Promise<ProvisioningStatus> => {
+  return ProvisioningStatus.ERROR;
+}
+
+export const useServerStatus = (servers: Server[], userId: string) => {
   const [serverStatuses, setServerStatuses] = useState<Record<string, ServerStatus>>(() => {
     const initialStatuses: Record<string, ServerStatus> = {}
     servers.forEach(server => {
-      if (server.cname_record_name) {
-        initialStatuses[server.cname_record_name] = {
-          machineOnline: false,
+      initialStatuses[server.subscription_id] = {
+        provisioningStatus: ProvisioningStatus.PENDING,
+        machineOnline: false,
+        minecraftStatus: {
           minecraftOnline: false,
-          isChecking: true,
-          lastChecked: null,
+          playerCount: 0,
+          maxPlayers: 0,
+          version: "Unknown",
+          motd: "Connection Failed",
           players: [],
-        }
+        },
+        isChecking: true,
+        lastChecked: null
       }
     })
     return initialStatuses
   })
 
   const checkServerStatus = useCallback(async (server: Server) => {
-    if (!server.cname_record_name) return
-
-    const serverId = server.cname_record_name
-
     try {
-      const [machineOnline, minecraftStatus] = await Promise.all([
+      const [machineOnline, minecraftStatus, provisioningStatus] = await Promise.all([
         pingMachine(server.cname_record_name),
-        checkMinecraftServer(server.cname_record_name)
+        checkMinecraftServer(server.cname_record_name),
+        checkProvisioningStatus(server.subscription_id, userId)
       ])
 
       setServerStatuses((prev) => ({
         ...prev,
-        [serverId]: {
+        [server.subscription_id]: {
+          provisioningStatus,
           machineOnline,
-          minecraftOnline: minecraftStatus.online,
+          minecraftStatus: {
+            minecraftOnline: minecraftStatus.minecraftOnline,
+            playerCount: minecraftStatus.playerCount,
+            maxPlayers: minecraftStatus.maxPlayers,
+            version: minecraftStatus.version,
+            motd: minecraftStatus.motd,
+            lastUpdated: minecraftStatus.lastUpdated,
+            duration: minecraftStatus.duration,
+            players: minecraftStatus.players
+          },
           isChecking: false,
-          lastChecked: Date.now(),
-          playerCount: minecraftStatus.playerCount,
-          maxPlayers: minecraftStatus.maxPlayers,
-          version: minecraftStatus.version,
-          motd: minecraftStatus.motd,
-          lastUpdated: minecraftStatus.lastUpdated,
-          duration: minecraftStatus.duration,
-          players: minecraftStatus.players,
+          lastChecked: Date.now()
         },
       }))
     } catch (error) {
       console.error("Error checking server status:", error)
       setServerStatuses((prev) => ({
         ...prev,
-        [serverId]: {
+        [server.subscription_id]: {
+          provisioningStatus: ProvisioningStatus.ERROR,
           machineOnline: false,
-          minecraftOnline: false,
-          isChecking: false,
-          lastChecked: Date.now(),
-          players: [],
+          minecraftStatus: {
+            minecraftOnline: false,
+            playerCount: 0,
+            maxPlayers: 0,
+            version: "Unknown",
+            motd: "Connection Failed",
+            players: [],
+          },
+          isChecking: true,
+          lastChecked: null
         },
       }))
     }
   }, [])
 
   const checkAllServerStatuses = useCallback(async () => {
-    const serversWithAddresses = servers.filter((server) => server.cname_record_name)
-
-    // fire all checks in parallel instead of sequential with delays
     await Promise.allSettled(
-        serversWithAddresses.map(server => checkServerStatus(server))
+        servers.map(server => checkServerStatus(server))
     )
   }, [servers, checkServerStatus])
 

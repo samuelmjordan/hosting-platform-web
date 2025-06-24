@@ -16,18 +16,18 @@ import { useServerManagement } from "./hooks/useServerManagement"
 interface DashboardTableProps {
   servers: Server[]
   plans: Plan[]
+  userId: string
 }
 
-export function DashboardTable({ servers: initialServers, plans }: DashboardTableProps) {
+export function DashboardTable({ servers: initialServers, plans, userId }: DashboardTableProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [copiedId, setCopiedId] = useState<string | null>(null)
 
-  // custom hooks
   const {
     serverStatuses,
     refreshStatus,
     checkAllServerStatuses
-  } = useServerStatus(initialServers)
+  } = useServerStatus(initialServers, userId)
   const {
     servers,
     editingServer,
@@ -46,8 +46,8 @@ export function DashboardTable({ servers: initialServers, plans }: DashboardTabl
 
   const activeServers = servers.filter((server) => server.subscription_status === "active")
   const totalPlayers = activeServers.reduce((sum, server) => {
-    const status = serverStatuses[server.cname_record_name || ""]
-    return sum + (status?.playerCount || 0)
+    const status = serverStatuses[server.subscription_id]
+    return sum + (status?.minecraftStatus.playerCount || 0)
   }, 0)
 
   return (
@@ -90,7 +90,10 @@ export function DashboardTable({ servers: initialServers, plans }: DashboardTabl
         </div>
 
         {/* Stats Cards */}
-        <StatsCards servers={servers} serverStatuses={serverStatuses} />
+        <StatsCards
+            servers={servers}
+            serverStatuses={serverStatuses}
+        />
 
         {/* Server Grid */}
         <ServerGrid

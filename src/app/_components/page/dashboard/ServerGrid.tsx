@@ -21,16 +21,16 @@ interface ServerGridProps {
 }
 
 export function ServerGrid({
-                             plans,
-                             servers,
-                             serverStatuses,
-                             searchQuery,
-                             onCopyAddress,
-                             copiedId,
-                             onEditServer,
-                             onRefreshStatus,
-                             onUpgradeServer,
-                           }: ServerGridProps) {
+     plans,
+     servers,
+     serverStatuses,
+     searchQuery,
+     onCopyAddress,
+     copiedId,
+     onEditServer,
+     onRefreshStatus,
+     onUpgradeServer,
+}: ServerGridProps) {
   const filteredServers = servers.filter((server) => {
     if (!searchQuery) return true
     return (
@@ -73,7 +73,7 @@ export function ServerGrid({
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
         {filteredServers.map((server) => {
           const serverId = server.cname_record_name || server.server_name
-          const status = serverStatuses[server.cname_record_name || ""] || {
+          const status = serverStatuses[server.subscription_id] || {
             machineOnline: false,
             minecraftOnline: false,
             isChecking: false,

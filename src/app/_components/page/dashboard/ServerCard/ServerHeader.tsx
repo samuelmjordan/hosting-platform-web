@@ -13,6 +13,7 @@ import { ServerStatus } from "../hooks/useServerStatus"
 import PlanTierBadge from "@/app/_components/common/PlanTierBadge";
 import React from "react";
 import {RegionBadge} from "@/app/_components/common/RegionBadge";
+import {ProvisioningStatusBadge} from "@/app/_components/page/dashboard/ServerCard/ProvisioningStatusBadge";
 
 interface ServerHeaderProps {
   server: Server
@@ -58,47 +59,8 @@ export function ServerHeader({
             </div>
             <div className="flex items-center gap-2 mt-1">
               <RegionBadge region="europe" />
-              <PlanTierBadge specificationTitle={`${server.specification_title.toLowerCase()}`} />
-              {status.isChecking ? (
-                  <Badge variant="outline" className="text-xs text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-600 bg-amber-50 dark:bg-amber-900/20">
-                    <Loader2 className="h-3 w-3 mr-1 animate-spin text-amber-600 dark:text-amber-400" />
-                    checking
-                  </Badge>
-              ) : (
-                  <Badge
-                      variant={
-                        isOnline
-                            ? "default"
-                            : isProvisioning
-                                ? "secondary"
-                                : "destructive"
-                      }
-                      className={`text-xs ${
-                          isOnline
-                              ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300 border-green-300 dark:border-green-700"
-                              : isProvisioning
-                                  ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-700"
-                                  : "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300 border-red-300 dark:border-red-700"
-                      }`}
-                  >
-                    {isOnline ? (
-                        <>
-                          <CheckCircle2 className="h-3 w-3 mr-1 text-green-600 dark:text-green-400" />
-                          online
-                        </>
-                    ) : isProvisioning ? (
-                        <>
-                          <Clock className="h-3 w-3 mr-1 text-blue-600 dark:text-blue-400" />
-                          provisioning
-                        </>
-                    ) : (
-                        <>
-                          <XCircle className="h-3 w-3 mr-1 text-red-600 dark:text-red-400" />
-                          offline
-                        </>
-                    )}
-                  </Badge>
-              )}
+              <PlanTierBadge specificationTitle={`${server.specification_title}`} />
+              <ProvisioningStatusBadge status={status.provisioningStatus} />
             </div>
           </div>
         </div>

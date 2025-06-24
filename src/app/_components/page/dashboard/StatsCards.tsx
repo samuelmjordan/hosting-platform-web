@@ -13,13 +13,13 @@ export function StatsCards({ servers, serverStatuses }: StatsCardsProps) {
   const activeServers = servers.filter((server) => server.subscription_status === "active")
 
   const onlineServers = servers.filter((server) => {
-    const status = serverStatuses[server.cname_record_name || ""]
-    return status?.minecraftOnline
+    const status = serverStatuses[server.subscription_id]
+    return status?.minecraftStatus.minecraftOnline
   })
 
   const totalPlayers = activeServers.reduce((sum, server) => {
-    const status = serverStatuses[server.cname_record_name || ""]
-    return sum + (status?.playerCount || 0)
+    const status = serverStatuses[server.subscription_id]
+    return sum + (status?.minecraftStatus.playerCount || 0)
   }, 0)
 
   const monthlyCost = servers.reduce((sum, server) => sum + server.minor_amount, 0)

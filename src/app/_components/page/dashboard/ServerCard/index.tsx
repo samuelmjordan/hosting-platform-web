@@ -28,7 +28,7 @@ export function ServerCard({
    onRefresh,
    onUpgrade,
 }: ServerCardProps) {
-  const isOnline = status.machineOnline && status.minecraftOnline
+  const isOnline = status.machineOnline && status.minecraftStatus.minecraftOnline
   const isProvisioning = !server.cname_record_name
 
   return (

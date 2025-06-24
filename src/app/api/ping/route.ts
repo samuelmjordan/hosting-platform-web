@@ -16,7 +16,6 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    console.log("ping")
     const { stdout } = await execAsync(`ping -c 1 -W 3 ${address}`)
     const isAlive = stdout.includes('bytes of data')
     

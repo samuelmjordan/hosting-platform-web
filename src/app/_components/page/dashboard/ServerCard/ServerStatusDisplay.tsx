@@ -26,39 +26,15 @@ export function ServerStatusDisplay({
     const formatTime = (timestamp: string | number) =>
         new Date(typeof timestamp === 'string' ? parseInt(timestamp) * 1000 : timestamp).toLocaleTimeString()
 
-    const StatusIcon = () => {
-        if (!statusReady) {
-            return (
-                <div className="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
-                    <div className="w-6 h-6 bg-amber-500 border-amber-400 rounded border-2 flex items-center justify-center">
-                        <Loader2 className="w-3 h-3 text-amber-50 animate-spin" />
-                    </div>
-                </div>
-            )
-        }
-
-        return (
-            <div className={`w-10 h-10 ${isOnline ? 'bg-green-500/20' : 'bg-red-500/20'} rounded-lg flex items-center justify-center`}>
-                <div className={`w-6 h-6 ${isOnline ? 'bg-green-500 border-green-400' : 'bg-red-500 border-red-400'} rounded border-2 flex items-center justify-center`}>
-                    {isOnline ? (
-                        <div className="w-3 h-3 bg-white rounded-sm" />
-                    ) : (
-                        <XCircle className="w-3 h-3 text-white" />
-                    )}
-                </div>
-            </div>
-        )
-    }
-
     const StatusHeader = () => {
         const getStatusText = () => {
             if (!statusReady) return 'Checking...'
-            return isOnline ? status.motd : 'Server Offline'
+            return isOnline ? status.minecraftStatus.motd : 'Server Offline'
         }
 
         const getSubtext = () => {
             if (!statusReady) return 'Fetching server info'
-            return isOnline ? `version ${status.version}` : 'Unable to connect'
+            return isOnline ? `version ${status.minecraftStatus.version}` : 'Unable to connect'
         }
 
         const getTextColor = () => {
@@ -96,12 +72,12 @@ export function ServerStatusDisplay({
               {!statusReady ? 'checking' : isOnline ? 'online' : 'offline'}
             </span>
                     </div>
-                    {(isOnline ? status.lastUpdated : status.lastChecked) && statusReady && (
+                    {(isOnline ? status.minecraftStatus.lastUpdated : status.lastChecked) && statusReady && (
                         <div className={`text-xs ${
                             !statusReady ? 'text-amber-600 dark:text-amber-400' :
                                 isOnline ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
                         }`}>
-                            {isOnline ? 'updated' : 'checked'} {formatTime(isOnline ? status.lastUpdated! : status.lastChecked!)}
+                            {isOnline ? 'updated' : 'checked'} {formatTime(isOnline ? status.minecraftStatus.lastUpdated! : status.lastChecked!)}
                         </div>
                     )}
                 </div>
@@ -124,13 +100,13 @@ export function ServerStatusDisplay({
             <div className="grid grid-cols-2 gap-3 mb-3">
                 <div className="bg-background/60 rounded-lg p-3 text-center">
                     <div className={`font-semibold text-lg ${getStatsTextColor()}`}>
-                        {!statusReady ? '...' : isOnline ? `${status.playerCount}/${status.maxPlayers}` : '0/0'}
+                        {!statusReady ? '...' : isOnline ? `${status.minecraftStatus.playerCount}/${status.minecraftStatus.maxPlayers}` : '0/0'}
                     </div>
                     <div className={`text-xs ${getStatsSubtextColor()}`}>players online</div>
                 </div>
                 <div className="bg-background/60 rounded-lg p-3 text-center">
                     <div className={`font-semibold text-lg ${getStatsTextColor()}`}>
-                        {!statusReady ? '...' : isOnline ? status.version : 'unknown'}
+                        {!statusReady ? '...' : isOnline ? status.minecraftStatus.version : 'unknown'}
                     </div>
                     <div className={`text-xs ${getStatsSubtextColor()}`}>version</div>
                 </div>
@@ -150,7 +126,7 @@ export function ServerStatusDisplay({
             )
         }
 
-        const hasPlayers = isOnline && (status.players?.length ?? 0) > 0
+        const hasPlayers = isOnline && (status.minecraftStatus.players?.length ?? 0) > 0
         const getPlayerTextColor = () => {
             return isOnline ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
         }
@@ -168,7 +144,7 @@ export function ServerStatusDisplay({
                             <span className={`font-medium text-sm ${isOnline ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'}`}>Player Sample</span>
                         </div>
                         <div className="flex flex-wrap gap-1">
-                            {status.players!.slice(0, 3).map((player) => (
+                            {status.minecraftStatus.players!.slice(0, 3).map((player) => (
                                 <TooltipProvider key={player.id}>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
@@ -183,9 +159,9 @@ export function ServerStatusDisplay({
                                     </Tooltip>
                                 </TooltipProvider>
                             ))}
-                            {status.players!.length > 3 && (
+                            {status.minecraftStatus.players!.length > 3 && (
                                 <div className="flex items-center gap-1 bg-muted text-muted-foreground px-2 py-1 rounded text-xs">
-                                    +{status.players!.length - 3} more
+                                    +{status.minecraftStatus.players!.length - 3} more
                                 </div>
                             )}
                         </div>

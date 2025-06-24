@@ -4,53 +4,15 @@ export enum ProvisioningStatus {
     PROVISIONING = 'PROVISIONING',
     DESTROYING = 'DESTROYING',
     MIGRATING = 'MIGRATING',
-    FAILED = 'FAILED'
+    FAILED = 'FAILED',
+    PENDING = 'PENDING',
+    ERROR = 'ERROR',
 }
 
 export interface ProvisioningStatusInfo {
     label: string;
     description: string;
 }
-
-export const getProvisioningStatusInfo = (status: ProvisioningStatus): ProvisioningStatusInfo => {
-    switch (status) {
-        case ProvisioningStatus.READY:
-            return {
-                label: 'Ready',
-                description: 'Server is online and ready to use'
-            };
-        case ProvisioningStatus.INACTIVE:
-            return {
-                label: 'Inactive',
-                description: 'Server is offline or suspended'
-            };
-        case ProvisioningStatus.PROVISIONING:
-            return {
-                label: 'Setting Up',
-                description: 'Server is being created and configured'
-            };
-        case ProvisioningStatus.DESTROYING:
-            return {
-                label: 'Removing',
-                description: 'Server is being deleted'
-            };
-        case ProvisioningStatus.MIGRATING:
-            return {
-                label: 'Migrating',
-                description: 'Server is being moved to new hardware'
-            };
-        case ProvisioningStatus.FAILED:
-            return {
-                label: 'Failed',
-                description: 'Something went wrong - contact support'
-            };
-        default:
-            return {
-                label: 'Unknown',
-                description: 'Status not recognized'
-            };
-    }
-};
 
 export interface ProvisioningStatusResponse {
     subscriptionId: string;
