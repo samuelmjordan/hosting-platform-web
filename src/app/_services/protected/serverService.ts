@@ -1,17 +1,19 @@
 import { Server } from "@/app/types";
 import { auth } from "@clerk/nextjs/server";
+import {NextResponse} from "next/server";
 
 export async function fetchServers(): Promise<Server[]> {
+  const { getToken } = await auth();
+  const token = await getToken();
 
-  const { userId } = await auth();
-
-  if (!userId) {
-    throw new Error("Not authenticated");
+  if (!token) {
+    return [];
   }
 
-  const response = await fetch(`${process.env.API_URL}/api/user/${userId}/subscription/server`, {
+  const response = await fetch(`${process.env.API_URL}/api/user/subscription`, {
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
     }
   });
 
