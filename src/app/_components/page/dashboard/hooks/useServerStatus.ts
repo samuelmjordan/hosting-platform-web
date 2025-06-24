@@ -1,13 +1,17 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
-import { ProvisioningStatus, McHostDashboardClient, ProvisioningStatusResponse } from '@/app/_services/serverDetailsService'
+import { useState, useCallback, useEffect } from "react"
+import { Server } from "@/app/types"
+import { STATUS_CHECK_INTERVAL } from "../utils/constants"
 
 export interface Player {
   name: string
   id: string
 }
 
-export interface MinecraftStatus {
-  online: boolean
+export interface ServerStatus {
+  machineOnline: boolean
+  minecraftOnline: boolean
+  isChecking: boolean
+  lastChecked: number | null
   playerCount?: number
   maxPlayers?: number
   version?: string
@@ -17,27 +21,28 @@ export interface MinecraftStatus {
   players?: Player[]
 }
 
-export interface ServerStatuses {
-  provisioningStatus: ProvisioningStatus
-  machineOnline: boolean
-  minecraftStatus: MinecraftStatus
-  isChecking: boolean
-  lastChecked: number | null
+const pingMachine = async (address: string): Promise<boolean> => {
+  try {
+    const response = await fetch(`/api/ping?address=${encodeURIComponent(address)}`)
+    const data = await response.json()
+    return data.status === "up"
+  } catch (error) {
+    return false
+  }
 }
 
-export interface ServerInput {
-  address: string
-  subscriptionId: string
-}
-
-interface UseServerStatusReturn {
-  serverStatuses: Record<string, ServerStatuses>
-  refreshStatus: (server: ServerInput) => Promise<void>
-  refreshAllStatuses: (servers: ServerInput[]) => Promise<void>
-  isAnyChecking: boolean
-}
-
-const checkMinecraftStatus = async (address: string): Promise<MinecraftStatus> => {
+const checkMinecraftServer = async (
+    address: string
+): Promise<{
+  online: boolean
+  playerCount?: number
+  maxPlayers?: number
+  version?: string
+  motd?: string
+  lastUpdated?: string
+  duration?: string
+  players?: Player[]
+}> => {
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), 10000)
 
@@ -73,7 +78,7 @@ const checkMinecraftStatus = async (address: string): Promise<MinecraftStatus> =
       }
     }
   } catch (apiError) {
-    console.warn("minecraft status api failed:", apiError)
+    console.warn("Minecraft status API failed:", apiError)
   }
 
   return {
@@ -86,209 +91,89 @@ const checkMinecraftStatus = async (address: string): Promise<MinecraftStatus> =
   }
 }
 
-export function useServerStatus(
-    userId: string,
-    initialServers: ServerInput[] = [],
-    refreshInterval: number = 30000
-): UseServerStatusReturn {
-  const [serverStatuses, setServerStatuses] = useState<Record<string, ServerStatuses>>({})
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
-  const mountedRef = useRef(true)
-
-  // initialize api client
-  const apiClient = useMemo(() => {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL
-    if (!baseUrl) {
-      throw new Error('NEXT_PUBLIC_API_URL not configured')
-    }
-    return new McHostDashboardClient(baseUrl, userId)
-  }, [userId])
-
-  // initialize statuses for all servers
-  useEffect(() => {
-    const initStatuses: Record<string, ServerStatuses> = {}
-
-    initialServers.forEach(server => {
-      initStatuses[server.address] = {
-        provisioningStatus: ProvisioningStatus.READY,
-        machineOnline: false,
-        minecraftStatus: {
-          online: false,
-          lastUpdated: ''
-        },
-        isChecking: false,
-        lastChecked: null
-      }
-    })
-
-    setServerStatuses(initStatuses)
-  }, [initialServers])
-
-  // batch status check for multiple servers
-  const checkBatchStatuses = useCallback(async (servers: ServerInput[]) => {
-    if (servers.length === 0) return
-
-    // set all to checking
-    setServerStatuses(prev => {
-      const updated = { ...prev }
-      servers.forEach(server => {
-        if (updated[server.address]) {
-          updated[server.address] = {
-            ...updated[server.address],
-            isChecking: true
-          }
+export const useServerStatus = (servers: Server[]) => {
+  const [serverStatuses, setServerStatuses] = useState<Record<string, ServerStatus>>(() => {
+    const initialStatuses: Record<string, ServerStatus> = {}
+    servers.forEach(server => {
+      if (server.cname_record_name) {
+        initialStatuses[server.cname_record_name] = {
+          machineOnline: false,
+          minecraftOnline: false,
+          isChecking: true,
+          lastChecked: null,
+          players: [],
         }
-      })
-      return updated
-    })
-
-    try {
-      // batch provisioning status
-      const subscriptionIds = servers.map(s => s.subscriptionId)
-      const provisioningResponse = await apiClient.getBatchProvisioningStatus(subscriptionIds)
-
-      // create map of subscription id to provisioning status
-      const provisioningMap: Record<string, ProvisioningStatus> = {}
-      provisioningResponse.statuses.forEach((status: ProvisioningStatusResponse) => {
-        provisioningMap[status.subscriptionId] = status.status
-      })
-
-      // check minecraft status for each server concurrently
-      const minecraftPromises = servers.map(async server => ({
-        address: server.address,
-        subscriptionId: server.subscriptionId,
-        minecraftStatus: await checkMinecraftStatus(server.address)
-      }))
-
-      const minecraftResults = await Promise.allSettled(minecraftPromises)
-
-      if (!mountedRef.current) return
-
-      // update all statuses at once
-      setServerStatuses(prev => {
-        const updated = { ...prev }
-
-        servers.forEach((server, index) => {
-          const minecraftResult = minecraftResults[index]
-          const provisioningStatus = provisioningMap[server.subscriptionId] || ProvisioningStatus.FAILED
-
-          updated[server.address] = {
-            provisioningStatus,
-            machineOnline: provisioningStatus === ProvisioningStatus.READY,
-            minecraftStatus: minecraftResult.status === 'fulfilled'
-                ? minecraftResult.value.minecraftStatus
-                : { online: false, lastUpdated: new Date().toISOString() },
-            isChecking: false,
-            lastChecked: Date.now()
-          }
-        })
-
-        return updated
-      })
-    } catch (error) {
-      console.error('batch status check failed:', error)
-
-      if (!mountedRef.current) return
-
-      // set all to not checking on error
-      setServerStatuses(prev => {
-        const updated = { ...prev }
-        servers.forEach(server => {
-          if (updated[server.address]) {
-            updated[server.address] = {
-              ...updated[server.address],
-              isChecking: false
-            }
-          }
-        })
-        return updated
-      })
-    }
-  }, [apiClient])
-
-  // single server status check
-  const refreshStatus = useCallback(async (server: ServerInput) => {
-    setServerStatuses(prev => ({
-      ...prev,
-      [server.address]: {
-        ...prev[server.address],
-        isChecking: true
       }
-    }))
+    })
+    return initialStatuses
+  })
+
+  const checkServerStatus = useCallback(async (server: Server) => {
+    if (!server.cname_record_name) return
+
+    const serverId = server.cname_record_name
 
     try {
-      // single provisioning status
-      const provisioningResponse = await apiClient.getProvisioningStatus(server.subscriptionId)
-      const minecraftStatus = await checkMinecraftStatus(server.address)
+      const [machineOnline, minecraftStatus] = await Promise.all([
+        pingMachine(server.cname_record_name),
+        checkMinecraftServer(server.cname_record_name)
+      ])
 
-      if (!mountedRef.current) return
-
-      setServerStatuses(prev => ({
+      setServerStatuses((prev) => ({
         ...prev,
-        [server.address]: {
-          provisioningStatus: provisioningResponse.status,
-          machineOnline: provisioningResponse.status === ProvisioningStatus.READY,
-          minecraftStatus,
+        [serverId]: {
+          machineOnline,
+          minecraftOnline: minecraftStatus.online,
           isChecking: false,
-          lastChecked: Date.now()
-        }
+          lastChecked: Date.now(),
+          playerCount: minecraftStatus.playerCount,
+          maxPlayers: minecraftStatus.maxPlayers,
+          version: minecraftStatus.version,
+          motd: minecraftStatus.motd,
+          lastUpdated: minecraftStatus.lastUpdated,
+          duration: minecraftStatus.duration,
+          players: minecraftStatus.players,
+        },
       }))
     } catch (error) {
-      console.error('single status check failed:', error)
-
-      if (!mountedRef.current) return
-
-      setServerStatuses(prev => ({
+      console.error("Error checking server status:", error)
+      setServerStatuses((prev) => ({
         ...prev,
-        [server.address]: {
-          ...prev[server.address],
-          isChecking: false
-        }
+        [serverId]: {
+          machineOnline: false,
+          minecraftOnline: false,
+          isChecking: false,
+          lastChecked: Date.now(),
+          players: [],
+        },
       }))
-    }
-  }, [apiClient])
-
-  // refresh all statuses (used for initial load and periodic refresh)
-  const refreshAllStatuses = useCallback(async (servers: ServerInput[]) => {
-    await checkBatchStatuses(servers)
-  }, [checkBatchStatuses])
-
-  // set up periodic refresh
-  useEffect(() => {
-    if (initialServers.length === 0) return
-
-    // initial fetch
-    refreshAllStatuses(initialServers)
-
-    // periodic refresh
-    intervalRef.current = setInterval(() => {
-      refreshAllStatuses(initialServers)
-    }, refreshInterval)
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-      }
-    }
-  }, [initialServers, refreshInterval, refreshAllStatuses])
-
-  // cleanup on unmount
-  useEffect(() => {
-    mountedRef.current = true
-    return () => {
-      mountedRef.current = false
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-      }
     }
   }, [])
 
-  const isAnyChecking = Object.values(serverStatuses).some(status => status.isChecking)
+  const checkAllServerStatuses = useCallback(async () => {
+    const serversWithAddresses = servers.filter((server) => server.cname_record_name)
+
+    // fire all checks in parallel instead of sequential with delays
+    await Promise.allSettled(
+        serversWithAddresses.map(server => checkServerStatus(server))
+    )
+  }, [servers, checkServerStatus])
+
+  useEffect(() => {
+    checkAllServerStatuses()
+    const interval = setInterval(checkAllServerStatuses, STATUS_CHECK_INTERVAL)
+    return () => clearInterval(interval)
+  }, [checkAllServerStatuses])
+
+  const refreshStatus = (server: Server) => {
+    if (server.cname_record_name) {
+      checkServerStatus(server)
+    }
+  }
 
   return {
     serverStatuses,
     refreshStatus,
-    refreshAllStatuses,
-    isAnyChecking
+    checkAllServerStatuses,
   }
 }
