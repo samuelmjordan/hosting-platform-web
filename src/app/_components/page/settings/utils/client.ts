@@ -91,6 +91,18 @@ export class PterodactylServerSettingsClient implements ServerSettingsApiClient 
             throw error;
         }
     }
+
+    async recreateServer(): Promise<void> {
+        console.log('recreating server');
+
+        try {
+            await this.request<void>('POST', '/nuclear');
+            console.log('recreate initiated successfully');
+        } catch (error) {
+            console.error('error in recreateServer:', error);
+            throw error;
+        }
+    }
 }
 
 export const formDataToRequest = (

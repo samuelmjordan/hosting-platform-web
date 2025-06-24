@@ -10,7 +10,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Save, RotateCcw, AlertTriangle, Lock } from 'lucide-react';
+import {Loader2, Save, RotateCcw, AlertTriangle, Lock} from 'lucide-react';
 import {
   StartupResponse,
   UpdateStartupRequest,
@@ -154,6 +154,27 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
       });
     } finally {
       setReinstalling(false);
+    }
+  };
+
+  const recreateServer = async () => {
+    try {
+      await client.recreateServer();
+
+      toast({
+        title: 'Success',
+        description: 'server re-creation initiated. please wait up to 20 minutes to complete',
+      });
+
+      await loadSettings();
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'recreate failed',
+        variant: 'destructive'
+      });
+    } finally {
+
     }
   };
 
@@ -392,36 +413,68 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
 
           {/* actions */}
           <div className="flex items-center justify-between">
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive" disabled={reinstalling}>
-                  {reinstalling && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  <RotateCcw className="mr-2 h-4 w-4" />
-                  reinstall server
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle className="flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-destructive" />
-                    confirm server reinstall
-                  </AlertDialogTitle>
-                  <AlertDialogDescription>
-                    this will completely wipe your server and reinstall it from scratch.
-                    ALL DATA WILL BE LOST. this action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                      onClick={reinstallServer}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  >
-                    yes, reinstall server
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <div className="space-x-4">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" disabled={reinstalling}>
+                    {reinstalling && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    <RotateCcw className="mr-2 h-4 w-4" />
+                    reinstall server
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5 text-destructive" />
+                      confirm server reinstall
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      this will completely wipe your server and reinstall it from scratch.
+                      ALL DATA WILL BE LOST. this action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                        onClick={reinstallServer}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      yes, reinstall server
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">
+                    {reinstalling && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    <AlertTriangle className="mr-2 h-4 w-4" />
+                    re-create server
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5 text-destructive" />
+                      confirm server re-create
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      this will destroy your server and create a new one. ALL DATA WILL BE LOST. this action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                        onClick={recreateServer}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      yes, recreate server
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
 
             <Button onClick={saveSettings} disabled={saving}>
               {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
