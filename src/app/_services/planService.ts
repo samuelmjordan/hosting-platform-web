@@ -1,7 +1,7 @@
 import { Plan, SpecificationType } from "@/app/types";
 
 export async function fetchPlans(specificationType: SpecificationType): Promise<Plan[]> {
-  const response = await fetch(`${process.env.API_URL}/api/plan/${specificationType}`, {
+  const response = await fetch(`${process.env.API_URL}/plan/${specificationType}`, {
     headers: {
       'Content-Type': 'application/json',
     }

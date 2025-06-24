@@ -7,12 +7,21 @@ const API_URL = process.env.API_URL;
 
 export async function GET() {
   try {
-    const { userId } = await auth();
+    const { getToken } = await auth();
+    const token = await getToken();
 
-    const response = await fetch(`${API_URL}/api/user/${userId}/currency`, {
+    if (!token) {
+      return NextResponse.json(
+          { error: 'unauthorized' },
+          { status: 401 }
+      );
+    }
+
+    const response = await fetch(`${API_URL}/api/user/currency`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       }
     });
 

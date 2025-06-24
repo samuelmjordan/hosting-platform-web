@@ -1,4 +1,4 @@
-'server only'
+'use server'
 
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from 'next/server';
@@ -8,13 +8,20 @@ const BASE_URL = process.env.BASE_URL;
 
 export async function POST(request: Request) {
   try {
-    const { userId } = await auth();
+    const { getToken } = await auth();
+    const token = await getToken();
+
+    if (!token) {
+      return NextResponse.json(
+          { error: 'unauthorized' },
+          { status: 401 }
+      );
+    }
 
     const { price_id } = await request.json();
 
     const checkoutData = {
       price_id,
-      user_id: userId,
       success: `${BASE_URL}/return`,
       cancel: `${BASE_URL}/return`
     };
@@ -24,7 +31,8 @@ export async function POST(request: Request) {
     const response = await fetch(`${API_URL}/api/stripe/checkout`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify(checkoutData)
     });
@@ -32,8 +40,8 @@ export async function POST(request: Request) {
     if (!response.ok) {
       const errorData = await response.json();
       return NextResponse.json(
-        { error: errorData.message || 'Checkout failed' },
-        { status: response.status }
+          { error: errorData.message || 'Checkout failed' },
+          { status: response.status }
       );
     }
 
@@ -43,8 +51,8 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Checkout error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+        { error: 'Internal server error' },
+        { status: 500 }
     );
   }
 }
