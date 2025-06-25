@@ -50,13 +50,13 @@ export function PaymentMethodCard({
                   {method.is_default && (
                       <Badge className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-blue-800">
                         <Check className="h-3 w-3 mr-1" />
-                        default
+                        Default
                       </Badge>
                   )}
 
                   {!method.is_active && (
                       <Badge variant="outline" className="bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800">
-                        inactive
+                        Inactive
                       </Badge>
                   )}
                 </div>
@@ -210,25 +210,25 @@ function PaymentMethodActions({
                 className="text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 border-border"
                 disabled={isLoading}
             >
-              remove
+              Remove
             </Button>
           </DialogTrigger>
           <DialogContent className="bg-background border border-border">
             <DialogHeader>
-              <DialogTitle className="text-foreground">remove payment method</DialogTitle>
+              <DialogTitle className="text-foreground">Remove payment method</DialogTitle>
               <DialogDescription className="text-muted-foreground">
-                are you sure you want to remove {method.display_name}? this action cannot be undone.
+                Are you sure you want to remove {method.display_name}? This action cannot be undone.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <Button variant="outline" className="border-border hover:bg-accent">cancel</Button>
+              <Button variant="outline" className="border-border hover:bg-accent">Cancel</Button>
               <Button
                   variant="destructive"
                   onClick={onRemove}
                   disabled={isLoading}
                   className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
               >
-                {isLoading ? "removing..." : "remove method"}
+                {isLoading ? "Removing..." : "Remove method"}
               </Button>
             </DialogFooter>
           </DialogContent>

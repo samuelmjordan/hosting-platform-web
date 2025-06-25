@@ -43,10 +43,10 @@ export function UncancelSubscriptionDialog({
         <DialogContent className="bg-background border border-border">
           <DialogHeader>
             <DialogTitle className="text-foreground">
-              resume your {server.server_name} subscription?
+              Resume your {server.server_name} subscription?
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
-              your subscription will renew at the end of your current billing period on{" "}
+              Your subscription will renew at the end of your current billing period on{" "}
               {formatDate(server.current_period_end)}.
             </DialogDescription>
           </DialogHeader>
@@ -55,14 +55,14 @@ export function UncancelSubscriptionDialog({
                 onClick={handleUncancel}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              resume subscription
+              Resume subscription
             </Button>
             <Button
                 variant="ghost"
                 onClick={() => onOpenChange(false)}
                 className="hover:bg-accent"
             >
-              stay canceled
+              Stay canceled
             </Button>
           </DialogFooter>
         </DialogContent>

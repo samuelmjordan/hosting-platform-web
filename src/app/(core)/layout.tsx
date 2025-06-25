@@ -7,9 +7,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
     const menuItems = [
-    { label: 'store', href: '/store' },
-    { label: 'dashboard', href: '/dashboard' },
-    { label: 'billing', href: '/billing' }
+    { label: 'Store', href: '/store' },
+    { label: 'Dashboard', href: '/dashboard' },
+    { label: 'Billing', href: '/billing' }
   ];
 
   return (

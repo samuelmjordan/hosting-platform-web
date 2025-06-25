@@ -26,9 +26,9 @@ export function PaymentMethodList({ initialMethods }: PaymentMethodListProps) {
                 <CardHeader>
                     <div className="flex justify-between items-center">
                         <div>
-                            <CardTitle className="text-foreground">payment methods</CardTitle>
+                            <CardTitle className="text-foreground">Payment methods</CardTitle>
                             <CardDescription className="text-muted-foreground">
-                                manage your payment methods and billing preferences
+                                Manage your payment methods and billing preferences
                             </CardDescription>
                         </div>
                         <Button
@@ -37,7 +37,7 @@ export function PaymentMethodList({ initialMethods }: PaymentMethodListProps) {
                             disabled={isLoading("add")}
                         >
                             <Package className="mr-2 h-4 w-4" />
-                            {isLoading("add") ? "adding..." : "add payment method"}
+                            {isLoading("add") ? "Adding..." : "Add payment method"}
                         </Button>
                     </div>
                 </CardHeader>

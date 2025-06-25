@@ -55,9 +55,9 @@ export function BillingPage({ servers, invoices, paymentMethods }: BillingPagePr
       <div className="container max-w-5xl py-10">
         {/* page header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">billing management</h1>
+          <h1 className="text-3xl font-bold text-foreground">Billing Management</h1>
           <p className="text-muted-foreground mt-2">
-            manage your subscription, payment methods, and billing history
+            Manage your subscription, payment methods, and billing history
           </p>
         </div>
 

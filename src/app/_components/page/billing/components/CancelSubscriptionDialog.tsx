@@ -43,10 +43,10 @@ export function CancelSubscriptionDialog({
         <DialogContent className="bg-background border border-border">
           <DialogHeader>
             <DialogTitle className="text-foreground">
-              cancel your {server.server_name} subscription?
+              Cancel your {server.server_name} subscription?
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
-              your subscription will remain active until the end of your current billing period on{" "}
+              Your subscription will remain active until the end of your current billing period on{" "}
               {formatDate(server.current_period_end)}.
             </DialogDescription>
           </DialogHeader>
@@ -56,14 +56,14 @@ export function CancelSubscriptionDialog({
                 onClick={() => onOpenChange(false)}
                 className="border-border hover:bg-accent"
             >
-              keep subscription
+              Keep subscription
             </Button>
             <Button
                 variant="destructive"
                 onClick={handleCancel}
                 className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
             >
-              cancel subscription
+              Cancel subscription
             </Button>
           </DialogFooter>
         </DialogContent>

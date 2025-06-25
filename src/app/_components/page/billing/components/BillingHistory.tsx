@@ -19,9 +19,9 @@ export function BillingHistory({ invoices }: BillingHistoryProps) {
     return (
         <Card className="shadow-sm dark:shadow-xl">
             <CardHeader>
-                <CardTitle className="text-foreground">billing history</CardTitle>
+                <CardTitle className="text-foreground">Billing history</CardTitle>
                 <CardDescription className="text-muted-foreground">
-                    view and download your past invoices across all subscriptions
+                    View and download your past invoices across all subscriptions
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -45,7 +45,6 @@ function InvoiceRow({ invoice }: { invoice: Invoice }) {
             <div>
                 <p className="font-medium text-foreground">{formatDate(invoice.created_at)}</p>
                 <p className="text-muted-foreground text-sm">{invoice.invoice_number}</p>
-                <p className="text-sm text-muted-foreground mt-1">{invoice.subscription_id}</p>
             </div>
 
             <div className="flex items-center mt-3 sm:mt-0">
@@ -57,7 +56,7 @@ function InvoiceRow({ invoice }: { invoice: Invoice }) {
                             : "bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-400 border-red-100 dark:border-red-800"
                     }`}
                 >
-                    {invoice.paid ? "paid" : "unpaid"}
+                    {invoice.paid ? "Paid" : "Unpaid"}
                 </Badge>
 
                 <p className="font-medium mr-4 text-foreground">
@@ -84,9 +83,9 @@ function EmptyState() {
             <div className="inline-flex items-center justify-center w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-full mb-4">
                 <Download className="h-6 w-6 text-gray-400 dark:text-gray-500" />
             </div>
-            <h3 className="text-lg font-medium text-foreground mb-1">no invoices yet</h3>
+            <h3 className="text-lg font-medium text-foreground mb-1">No invoices yet</h3>
             <p className="text-sm text-muted-foreground">
-                your billing history will appear here once you have active subscriptions.
+                Your billing history will appear here once you have active subscriptions.
             </p>
         </div>
     )

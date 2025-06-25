@@ -21,7 +21,7 @@ export const formatDate = (timestamp: number): string => {
     year: "numeric",
     month: "long",
     day: "numeric",
-  }).toLowerCase()
+  })
 }
 
 /**

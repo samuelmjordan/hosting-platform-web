@@ -4,7 +4,7 @@ import { PAYMENT_ICONS } from "../utils/constants"
 
 const paymentTypes = [
     {
-        name: "payment cards",
+        name: "Payment cards",
         icon: (
             <div className="w-8 h-8 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-md flex items-center justify-center">
                 <CreditCard className="h-5 w-5 text-gray-700 dark:text-gray-300" />
@@ -12,7 +12,7 @@ const paymentTypes = [
         )
     },
     {
-        name: "google pay",
+        name: "Google pay",
         icon: (
             <div className="w-8 h-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md flex items-center justify-center">
                 <img
@@ -24,7 +24,7 @@ const paymentTypes = [
         )
     },
     {
-        name: "apple pay",
+        name: "Apple pay",
         icon: (
             <div className="w-8 h-8 bg-black rounded-md flex items-center justify-center">
                 <img
@@ -37,7 +37,7 @@ const paymentTypes = [
         )
     },
     {
-        name: "samsung pay",
+        name: "Samsung pay",
         icon: (
             <img
                 src={PAYMENT_ICONS.samsung}

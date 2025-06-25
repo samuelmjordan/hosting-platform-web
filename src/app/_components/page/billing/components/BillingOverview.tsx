@@ -21,7 +21,7 @@ export function BillingOverview({ servers }: BillingOverviewProps) {
               {/* total monthly billing */}
               <div className="space-y-1">
                 <p className="text-sm font-medium text-muted-foreground">
-                  total monthly billing
+                  Total monthly billing
                 </p>
                 <p className="text-3xl font-bold text-foreground">
                   {formatCurrency({ type: currency, value: totalAmount })}
@@ -31,7 +31,7 @@ export function BillingOverview({ servers }: BillingOverviewProps) {
               {/* active subscriptions */}
               <div className="space-y-1">
                 <p className="text-sm font-medium text-muted-foreground">
-                  active subscriptions
+                  Active subscriptions
                 </p>
                 <p className="text-3xl font-bold text-foreground">{activeCount}</p>
               </div>
@@ -39,7 +39,7 @@ export function BillingOverview({ servers }: BillingOverviewProps) {
               {/* next payment */}
               <div className="space-y-1">
                 <p className="text-sm font-medium text-muted-foreground">
-                  next payment
+                  Next payment
                 </p>
                 <p className="text-3xl font-bold text-foreground">
                   {formatDate(nextServer?.current_period_end ?? 0)}

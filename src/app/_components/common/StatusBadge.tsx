@@ -30,22 +30,22 @@ const statusVariants = cva(
 
 const SUBSCRIPTION_STATUS = {
     active: {
-        label: "active",
+        label: "Active",
         icon: CheckCircle2,
         iconClass: "text-green-500 dark:text-green-400"
     },
     past_due: {
-        label: "payment past due",
+        label: "Payment past due",
         icon: AlertCircle,
         iconClass: "text-yellow-500 dark:text-yellow-400"
     },
     unpaid: {
-        label: "unpaid",
+        label: "Unpaid",
         icon: AlertCircle,
         iconClass: "text-red-500 dark:text-red-400"
     },
     canceled: {
-        label: "canceled",
+        label: "Canceled",
         icon: XCircle,
         iconClass: "text-red-500 dark:text-red-400"
     }

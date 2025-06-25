@@ -29,10 +29,10 @@ export function SubscriptionCard({ server, onCancelClick, onUncancelClick, isLoa
               <CardTitle className="text-xl mb-2 text-foreground">{server.server_name}</CardTitle>
               <div className="flex flex-wrap gap-2">
                 {/* region badge */}
-                <RegionBadge region="europe" />
+                <RegionBadge region="Europe" />
 
                 {/* plan badge */}
-                <PlanTierBadge specificationTitle={`${server.specification_title.toLowerCase()}`} />
+                <PlanTierBadge specificationTitle={`${server.specification_title}`} />
 
                 {/* status badge */}
                 <StatusBadge status={server.subscription_status} />
@@ -59,23 +59,23 @@ export function SubscriptionCard({ server, onCancelClick, onUncancelClick, isLoa
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <DetailRow label="subscription id" value={server.subscription_id} />
-                <DetailRow label="billing cycle" value="monthly" />
+                <DetailRow label="Subscription id" value={server.subscription_id} />
+                <DetailRow label="Billing cycle" value="monthly" />
               </div>
 
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">auto-renew</span>
+                  <span className="text-sm text-muted-foreground">Auto-renew</span>
                   <div className="flex items-center">
                     {!server.cancel_at_period_end ? (
                         <>
                           <CheckCircle2 className="h-4 w-4 mr-1.5 text-green-500 dark:text-green-400" />
-                          <span className="text-sm font-medium text-foreground">on</span>
+                          <span className="text-sm font-medium text-foreground">On</span>
                         </>
                     ) : (
                         <>
                           <XCircle className="h-4 w-4 mr-1.5 text-red-500 dark:text-red-400" />
-                          <span className="text-sm font-medium text-destructive">off</span>
+                          <span className="text-sm font-medium text-destructive">Off</span>
                         </>
                     )}
                   </div>
@@ -83,7 +83,7 @@ export function SubscriptionCard({ server, onCancelClick, onUncancelClick, isLoa
 
                 {server.cancel_at_period_end ? (
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">cancels at</span>
+                      <span className="text-sm text-muted-foreground">Cancels at</span>
                       <span className="text-sm font-medium flex items-center text-destructive">
                     <CalendarIcon className="mr-1 h-4 w-4" />
                         {formatDate(server.current_period_end)}
@@ -91,7 +91,7 @@ export function SubscriptionCard({ server, onCancelClick, onUncancelClick, isLoa
                     </div>
                 ) : (
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">next billing date</span>
+                      <span className="text-sm text-muted-foreground">Next billing date</span>
                       <span className="text-sm font-medium flex items-center text-foreground">
                     <CalendarIcon className="mr-1 h-4 w-4" />
                         {formatDate(server.current_period_end)}
@@ -111,7 +111,7 @@ export function SubscriptionCard({ server, onCancelClick, onUncancelClick, isLoa
                   onClick={() => onUncancelClick(server)}
                   disabled={isLoading}
               >
-                {isLoading ? "resuming..." : "resume subscription"}
+                {isLoading ? "Resuming..." : "Resume subscription"}
               </Button>
             </CardFooter>
         ) : (
@@ -123,7 +123,7 @@ export function SubscriptionCard({ server, onCancelClick, onUncancelClick, isLoa
                       onClick={() => onCancelClick(server)}
                       disabled={isLoading}
                   >
-                    {isLoading ? "canceling..." : "cancel subscription"}
+                    {isLoading ? "Canceling..." : "Cancel subscription"}
                   </Button>
                 </CardFooter>
             )

@@ -19,15 +19,15 @@ export function SubscriptionList({ servers, onCancelClick, onUncancelClick, load
                 <CardHeader>
                     <div className="flex justify-between items-center">
                         <div>
-                            <CardTitle className="text-foreground">your subscription</CardTitle>
+                            <CardTitle className="text-foreground">Your subscription</CardTitle>
                             <CardDescription className="text-muted-foreground">
-                                view and manage your server subscriptions
+                                View and manage your server subscriptions
                             </CardDescription>
                         </div>
                         <Link href="/store">
                             <Button className="bg-accent hover:bg-accent/90 text-accent-foreground disabled:opacity-50">
                                 <Package className="mr-2 h-4 w-4" />
-                                add new subscription
+                                Add new subscription
                             </Button>
                         </Link>
                     </div>
@@ -57,14 +57,14 @@ function EmptyState() {
     return (
         <div className="text-center py-12 px-4 border-2 border-dashed border-border rounded-lg">
             <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-foreground mb-2">no active subscriptions</h3>
+            <h3 className="text-lg font-medium text-foreground mb-2">No active subscriptions</h3>
             <p className="text-sm text-muted-foreground mb-6">
-                get started by adding your first server subscription
+                Get started by adding your first server subscription
             </p>
             <Link href="/store">
                 <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
                     <Package className="mr-2 h-4 w-4" />
-                    browse available plans
+                    Browse available plans
                 </Button>
             </Link>
         </div>

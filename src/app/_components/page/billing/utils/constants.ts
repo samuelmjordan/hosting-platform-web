@@ -85,9 +85,9 @@ export const WALLET_CONFIG = {
 
 // Tab configuration
 export const BILLING_TABS = {
-  subscription: "subscriptions",
-  payment: "payment methods",
-  history: "billing history"
+  subscription: "Subscriptions",
+  payment: "Payment methods",
+  history: "Billing history"
 } as const
 
 export type BillingTab = keyof typeof BILLING_TABS
