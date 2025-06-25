@@ -2,6 +2,7 @@ import {useCallback, useEffect, useState} from "react"
 import {Server} from "@/app/types"
 import {STATUS_CHECK_INTERVAL} from "../utils/constants"
 import {McHostDashboardClient, ProvisioningStatus} from "@/app/_services/protected/serverDetailsService";
+import {fetchSubscriptionProvisioningStatus} from "@/app/_services/protected/subscriptionClientService";
 
 export interface Player {
   name: string
@@ -107,13 +108,10 @@ const checkProvisioningStatus = async (subscriptionId: string | null, userId: st
   }
 
   try {
-    const client = new McHostDashboardClient(
-        process.env.NEXT_PUBLIC_API_URL || '',
-        userId
-    );
 
-    const response = await client.getProvisioningStatus(subscriptionId);
-    return response.status;
+    const provisioningStatus = await fetchSubscriptionProvisioningStatus(subscriptionId);
+    console.log("provisioningStatus: ", provisioningStatus);
+    return provisioningStatus;
   } catch (error) {
     console.error('failed to fetch provisioning status:', error);
     return ProvisioningStatus.ERROR;

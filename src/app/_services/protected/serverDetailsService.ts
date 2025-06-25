@@ -63,7 +63,7 @@ export class McHostDashboardClient implements DashboardApiClient {
         endpoint: string,
         body?: any
     ): Promise<T> {
-        const url = `${this.baseUrl}/api/dashboard${endpoint}`;
+        const url = `${this.baseUrl}/api${endpoint}`;
 
         const options: RequestInit = {
             method,

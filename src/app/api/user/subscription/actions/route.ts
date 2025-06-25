@@ -2,22 +2,25 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const { userId } = await auth();
+  const { getToken } = await auth();
+  const token = await getToken();
 
-  if (!userId) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  if (!token) {
+    return [];
   }
 
   const { title, address, action, subscriptionId, specificationId: specification_id } = await request.json();
-  const stripeBasePath = `${process.env.API_URL}/api/stripe/user/${userId}/subscription/${subscriptionId}`
-  const basePath = `${process.env.API_URL}/api/user/${userId}/subscription/${subscriptionId}`
+  const basePath = `${process.env.API_URL}/api/user/subscription/${subscriptionId}`
 
   try {
     switch (action) {
       case "cancel":
-        const createResponse = await fetch(`${stripeBasePath}/cancel`, {
+        const createResponse = await fetch(`${basePath}/cancel`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
         });
         
         if (!createResponse.ok) {
@@ -28,9 +31,12 @@ export async function POST(request: Request) {
         return NextResponse.json({ url });
 
       case "uncancel":
-        const setDefaultResponse = await fetch(`${stripeBasePath}/uncancel`, {
+        const setDefaultResponse = await fetch(`${basePath}/uncancel`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
         });
         
         if (!setDefaultResponse.ok) {
@@ -40,9 +46,12 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true });
 
       case "change-specification":
-        const specificationResponse = await fetch(`${stripeBasePath}/specification`, {
+        const specificationResponse = await fetch(`${basePath}/specification`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
           body: JSON.stringify({ specification_id })
         });
         
@@ -55,7 +64,10 @@ export async function POST(request: Request) {
       case "change-address":
         const changeAddressResponse = await fetch(`${basePath}/address`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
           body: JSON.stringify({ address })
         });
         
@@ -68,7 +80,10 @@ export async function POST(request: Request) {
       case "change-title":
         const changeTitleResponse = await fetch(`${basePath}/title`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
           body: JSON.stringify({ title })
         });
         

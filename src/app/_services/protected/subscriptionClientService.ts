@@ -1,3 +1,5 @@
+import {ProvisioningStatus} from "@/app/_services/protected/serverDetailsService";
+
 export async function cancelSubscription(subscriptionId: string): Promise<void> {
   const response = await fetch('/api/user/subscription/actions', {
     method: 'POST',
@@ -56,4 +58,19 @@ export async function changeServerSpecification(subscriptionId: string, specific
   if (!response.ok) {
     throw new Error('Failed to change server specification');
   }
+}
+
+export async function fetchSubscriptionProvisioningStatus(subscriptionId: string): Promise<ProvisioningStatus> {
+  const response = await fetch(`/api/user/subscription/${subscriptionId}/status`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch provisioning status');
+  }
+
+  const data = await response.json();
+  console.log("data: ", data);
+  return data.provisioningStatus.status;
 }
