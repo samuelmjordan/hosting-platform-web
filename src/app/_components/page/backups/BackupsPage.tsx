@@ -152,12 +152,12 @@ export default function BackupsPage({ subscriptionId }: BackupsScreenProps) {
         try {
             const { url } = await getBackupDownloadLink(subscriptionId, backupId);
             window.open(url, '_blank');
-            toast("download ready", {
-                description: "backup download link generated"
+            toast("Download ready", {
+                description: "Backup download link generated"
             });
         } catch (err) {
-            toast("download failed", {
-                description: err instanceof Error ? err.message : 'failed to get download link'
+            toast("Download failed", {
+                description: err instanceof Error ? err.message : 'Failed to get download link'
             });
         } finally {
             setDownloadingIds(prev => {
@@ -206,7 +206,7 @@ export default function BackupsPage({ subscriptionId }: BackupsScreenProps) {
         <div>
             <div className="max-w-6xl mx-auto space-y-6">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">backups</h1>
+                    <h1 className="text-2xl font-bold">Backups</h1>
                     <Button
                         variant="outline"
                         size="sm"
@@ -214,16 +214,16 @@ export default function BackupsPage({ subscriptionId }: BackupsScreenProps) {
                         disabled={refreshing}
                     >
                         <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-                        {refreshing ? 'refreshing...' : 'refresh'}
+                        {refreshing ? 'Refreshing...' : 'Refresh'}
                     </Button>
                 </div>
 
                 {/* create new backup */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>create new backup</CardTitle>
+                        <CardTitle>Create new backup</CardTitle>
                         <CardDescription>
-                            create a backup of your current server state
+                            Create a backup of your current server files
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -231,7 +231,7 @@ export default function BackupsPage({ subscriptionId }: BackupsScreenProps) {
                             <Input
                                 value={newBackupName}
                                 onChange={(e) => setNewBackupName(e.target.value)}
-                                placeholder="backup name..."
+                                placeholder="Backup name..."
                                 onKeyDown={(e) => e.key === 'Enter' && handleCreateBackup()}
                                 disabled={creating}
                             />
@@ -240,12 +240,12 @@ export default function BackupsPage({ subscriptionId }: BackupsScreenProps) {
                                 disabled={creating || !newBackupName.trim()}
                             >
                                 {creating && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                                {creating ? 'creating...' : 'create'}
+                                {creating ? 'Creating...' : 'Create'}
                             </Button>
                         </div>
                         {creating && (
                             <p className="text-sm text-muted-foreground mt-2">
-                                this might take a while depending on server size...
+                                This might take a while depending on server size...
                             </p>
                         )}
                     </CardContent>
@@ -254,14 +254,14 @@ export default function BackupsPage({ subscriptionId }: BackupsScreenProps) {
                 {/* backups list */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>existing backups</CardTitle>
+                        <CardTitle>Existing backups</CardTitle>
                     </CardHeader>
                     <CardContent>
                         {backups.length === 0 ? (
                             <div className="text-center py-12">
                                 <div className="text-4xl mb-4">📦</div>
-                                <p className="text-muted-foreground">no backups yet</p>
-                                <p className="text-sm text-muted-foreground">create your first backup above</p>
+                                <p className="text-muted-foreground">No backups yet</p>
+                                <p className="text-sm text-muted-foreground">Create your first backup above</p>
                             </div>
                         ) : (
                             <div className="space-y-4">
@@ -285,16 +285,16 @@ export default function BackupsPage({ subscriptionId }: BackupsScreenProps) {
                                                         {isRestoring && (
                                                             <Badge variant="secondary">
                                                                 <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                                                                restoring...
+                                                                Restoring...
                                                             </Badge>
                                                         )}
                                                     </div>
 
                                                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                                                        <span>size: {formatBytes(backup.bytes)}</span>
-                                                        <span>created: {formatDate(backup.created_at)}</span>
+                                                        <span>Size: {formatBytes(backup.bytes)}</span>
+                                                        <span>Created: {formatDate(backup.created_at)}</span>
                                                         {backup.completed_at && (
-                                                            <span>completed: {formatDate(backup.completed_at)}</span>
+                                                            <span>Completed: {formatDate(backup.completed_at)}</span>
                                                         )}
                                                     </div>
 
@@ -317,7 +317,7 @@ export default function BackupsPage({ subscriptionId }: BackupsScreenProps) {
                                                         ) : (
                                                             <Download className="h-4 w-4 mr-1" />
                                                         )}
-                                                        {isDownloading ? 'getting link...' : 'download'}
+                                                        {isDownloading ? 'Getting link...' : 'Download'}
                                                     </Button>
 
                                                     <Button
@@ -331,7 +331,7 @@ export default function BackupsPage({ subscriptionId }: BackupsScreenProps) {
                                                         ) : (
                                                             <RotateCcw className="h-4 w-4 mr-1" />
                                                         )}
-                                                        {isRestoring ? 'restoring...' : 'restore'}
+                                                        {isRestoring ? 'Restoring...' : 'Restore'}
                                                     </Button>
 
                                                     <Button
@@ -345,7 +345,7 @@ export default function BackupsPage({ subscriptionId }: BackupsScreenProps) {
                                                         ) : (
                                                             <Trash2 className="h-4 w-4 mr-1" />
                                                         )}
-                                                        {isDeleting ? 'deleting...' : 'delete'}
+                                                        {isDeleting ? 'Deleting...' : 'Delete'}
                                                     </Button>
                                                 </div>
                                             </div>
@@ -364,20 +364,20 @@ export default function BackupsPage({ subscriptionId }: BackupsScreenProps) {
             }>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>delete backup</AlertDialogTitle>
+                        <AlertDialogTitle>Delete backup</AlertDialogTitle>
                         <AlertDialogDescription>
-                            are you sure you want to delete "{deleteDialog.backup?.name}"?
+                            Are you sure you want to delete "{deleteDialog.backup?.name}"?
                             <br />
-                            this action cannot be undone.
+                            This action cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel>cancel</AlertDialogCancel>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
                         <AlertDialogAction
                             onClick={handleDeleteBackup}
                             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
-                            delete
+                            Delete
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
@@ -389,20 +389,20 @@ export default function BackupsPage({ subscriptionId }: BackupsScreenProps) {
             }>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>restore backup</AlertDialogTitle>
+                        <AlertDialogTitle>Restore backup</AlertDialogTitle>
                         <AlertDialogDescription>
-                            restore backup "{restoreDialog.backup?.name}"?
+                            Restore backup "{restoreDialog.backup?.name}"?
                             <br />
-                            this will overwrite all current server data and cannot be undone.
+                            This will overwrite all current server data and cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel>cancel</AlertDialogCancel>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
                         <AlertDialogAction
                             onClick={handleRestoreBackup}
                             className="bg-yellow-600 text-white hover:bg-yellow-700"
                         >
-                            restore
+                            Restore
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
