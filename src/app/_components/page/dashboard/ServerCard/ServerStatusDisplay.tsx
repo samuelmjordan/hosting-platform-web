@@ -69,7 +69,7 @@ export function ServerStatusDisplay({
                             !statusReady ? 'text-amber-700 dark:text-amber-300' :
                                 isOnline ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'
                         }`}>
-              {!statusReady ? 'checking' : isOnline ? 'online' : 'offline'}
+              {!statusReady ? 'Checking' : isOnline ? 'Online' : 'Offline'}
             </span>
                     </div>
                     {(isOnline ? status.minecraftStatus.lastUpdated : status.lastChecked) && statusReady && (
@@ -77,7 +77,7 @@ export function ServerStatusDisplay({
                             !statusReady ? 'text-amber-600 dark:text-amber-400' :
                                 isOnline ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
                         }`}>
-                            {isOnline ? 'updated' : 'checked'} {formatTime(isOnline ? status.minecraftStatus.lastUpdated! : status.lastChecked!)}
+                            {isOnline ? 'Updated' : 'Checked'} {formatTime(isOnline ? status.minecraftStatus.lastUpdated! : status.lastChecked!)}
                         </div>
                     )}
                 </div>
@@ -102,13 +102,13 @@ export function ServerStatusDisplay({
                     <div className={`font-semibold text-lg ${getStatsTextColor()}`}>
                         {!statusReady ? '...' : isOnline ? `${status.minecraftStatus.playerCount}/${status.minecraftStatus.maxPlayers}` : '0/0'}
                     </div>
-                    <div className={`text-xs ${getStatsSubtextColor()}`}>players online</div>
+                    <div className={`text-xs ${getStatsSubtextColor()}`}>Players online</div>
                 </div>
                 <div className="bg-background/60 rounded-lg p-3 text-center">
                     <div className={`font-semibold text-lg ${getStatsTextColor()}`}>
-                        {!statusReady ? '...' : isOnline ? status.minecraftStatus.version : 'unknown'}
+                        {!statusReady ? '...' : isOnline ? status.minecraftStatus.version : 'Unknown'}
                     </div>
-                    <div className={`text-xs ${getStatsSubtextColor()}`}>version</div>
+                    <div className={`text-xs ${getStatsSubtextColor()}`}>Version</div>
                 </div>
             </div>
         )
@@ -120,7 +120,7 @@ export function ServerStatusDisplay({
                 <div className="bg-background/60 rounded-lg p-3">
                     <div className="flex items-center justify-center gap-2 text-amber-600 dark:text-amber-400">
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        <span className="text-sm">loading player list...</span>
+                        <span className="text-sm">Loading player list...</span>
                     </div>
                 </div>
             )
@@ -169,7 +169,7 @@ export function ServerStatusDisplay({
                 ) : (
                     <div className={`flex items-center justify-center gap-2 ${getPlayerTextColor()}`}>
                         <Users className="h-4 w-4" />
-                        <span className="text-sm">no players currently online</span>
+                        <span className="text-sm">No players currently online</span>
                     </div>
                 )}
             </div>

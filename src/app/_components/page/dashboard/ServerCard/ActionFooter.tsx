@@ -29,7 +29,7 @@ export function ActionFooter({ plans, server, onUpgrade }: ActionFooterProps) {
           disabled={!hasUpgrades}
       >
         <TrendingUp className="h-3 w-3 mr-1" />
-        upgrade
+        Upgrade
       </Button>
   )
 
@@ -44,7 +44,7 @@ export function ActionFooter({ plans, server, onUpgrade }: ActionFooterProps) {
                     size="sm"
                     className="text-xs">
                   <ArrowUpRight className="h-3 w-3 mr-1" />
-                  manage
+                  Manage
                 </Button>
               </Link>
               <Button
@@ -54,7 +54,7 @@ export function ActionFooter({ plans, server, onUpgrade }: ActionFooterProps) {
                   onClick={() => router.push("/billing?tab=subscription")}
               >
                 <DollarSign className="h-3 w-3 mr-1" />
-                billing
+                Billing
               </Button>
             </div>
             <div className="flex items-center gap-2">
@@ -66,7 +66,7 @@ export function ActionFooter({ plans, server, onUpgrade }: ActionFooterProps) {
                   </span>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>no upgrades available</p>
+                      <p>No upgrades available</p>
                     </TooltipContent>
                   </Tooltip>
               )}

@@ -22,7 +22,7 @@ export function ServerBilling({ server }: ServerBillingProps) {
                 <StatusBadge status={`${server.subscription_status}`} />
             </div>
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span>auto-renew</span>
+                <span>Auto-renew</span>
                 <div className="flex items-center">
                     {!server.cancel_at_period_end ? (
                         <div className="flex items-center gap-1">
@@ -38,7 +38,7 @@ export function ServerBilling({ server }: ServerBillingProps) {
                 </div>
             </div>
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span>period ends</span>
+                <span>Period ends</span>
                 <div className="flex items-center gap-1">
                     {!server.cancel_at_period_end ? (
                         <span className="text-sm font-medium">{formatDate(server.current_period_end)}</span>

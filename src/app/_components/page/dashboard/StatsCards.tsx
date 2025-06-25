@@ -30,7 +30,7 @@ export function StatsCards({ servers, serverStatuses }: StatsCardsProps) {
           <div className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">online servers</p>
+                <p className="text-sm font-medium text-muted-foreground">Online servers</p>
                 <p className="text-2xl font-bold text-foreground">{onlineServers.length}</p>
               </div>
               <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center">
@@ -44,7 +44,7 @@ export function StatsCards({ servers, serverStatuses }: StatsCardsProps) {
           <div className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">active servers</p>
+                <p className="text-sm font-medium text-muted-foreground">Active subscriptions</p>
                 <p className="text-2xl font-bold text-foreground">{activeServers.length}</p>
               </div>
               <div className="h-10 w-10 bg-green-500/10 rounded-lg flex items-center justify-center">
@@ -58,7 +58,7 @@ export function StatsCards({ servers, serverStatuses }: StatsCardsProps) {
           <div className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">total players</p>
+                <p className="text-sm font-medium text-muted-foreground">Total players</p>
                 <p className="text-2xl font-bold text-foreground">{totalPlayers}</p>
               </div>
               <div className="h-10 w-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
@@ -72,7 +72,7 @@ export function StatsCards({ servers, serverStatuses }: StatsCardsProps) {
           <div className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">monthly cost</p>
+                <p className="text-sm font-medium text-muted-foreground">Monthly cost</p>
                 <p className="text-2xl font-bold text-foreground">
                   {formatCurrency({
                     type: servers[0]?.currency || "USD",

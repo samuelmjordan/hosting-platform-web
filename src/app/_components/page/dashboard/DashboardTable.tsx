@@ -54,16 +54,13 @@ export function DashboardTable({ servers: initialServers, plans, userId }: Dashb
       <div className="max-w-6xl mx-auto space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">server dashboard</h1>
-            <p className="text-muted-foreground mt-1">
-              {servers.length} servers • {activeServers.length} active • {totalPlayers} players online
-            </p>
+            <h1 className="text-3xl font-bold text-foreground">Server Dashboard</h1>
           </div>
           <div className="flex items-center gap-3">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                  placeholder="search servers..."
+                  placeholder="Search servers..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 w-64"
@@ -75,7 +72,7 @@ export function DashboardTable({ servers: initialServers, plans, userId }: Dashb
                 onClick={checkAllServerStatuses}
             >
               <RefreshCw className="h-4 w-4 mr-2" />
-              refresh
+              Refresh
             </Button>
             <Link href="/store">
               <Button
@@ -83,7 +80,7 @@ export function DashboardTable({ servers: initialServers, plans, userId }: Dashb
                   className="bg-accent hover:bg-accent/90 text-accent-foreground disabled:opacity-50"
               >
                 <ServerIcon className="mr-2 h-4 w-4" />
-                new server
+                New server
               </Button>
             </Link>
           </div>

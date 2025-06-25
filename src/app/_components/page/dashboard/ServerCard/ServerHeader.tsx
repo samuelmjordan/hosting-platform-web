@@ -52,13 +52,13 @@ export function ServerHeader({
                     </button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>edit server details</p>
+                    <p>Edit server details</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </div>
             <div className="flex items-center gap-2 mt-1">
-              <RegionBadge region="europe" />
+              <RegionBadge region="Europe" />
               <PlanTierBadge specificationTitle={`${server.specification_title}`} />
               <ProvisioningStatusBadge status={status.provisioningStatus} />
             </div>

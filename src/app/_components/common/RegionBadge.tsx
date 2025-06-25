@@ -2,12 +2,12 @@ import React from 'react';
 
 export const RegionBadge = ({ region = "" }) => {
     const regionData: Record<string, { flag: string; color: string }> = {
-        europe: { flag: "🇪🇺", color: "bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800" },
-        "north america": { flag: "🇺🇸", color: "bg-red-100 text-red-800 border-red-300 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800" },
-        singapore: { flag: "🇸🇬", color: "bg-green-100 text-green-800 border-green-300 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800" }
+        Europe: { flag: "🇪🇺", color: "bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800" },
+        "North America": { flag: "🇺🇸", color: "bg-red-100 text-red-800 border-red-300 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800" },
+        Singapore: { flag: "🇸🇬", color: "bg-green-100 text-green-800 border-green-300 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800" }
     };
 
-    const normalizedRegion = region.toLowerCase().trim();
+    const normalizedRegion = region.trim();
     const data = regionData[normalizedRegion];
 
     if (!data) {
