@@ -1,6 +1,6 @@
 import { DashboardTable } from '@/app/_components/page/dashboard/DashboardTable';
 import { fetchPlans } from '@/app/_services/public/planService';
-import { fetchServers } from '@/app/_services/protected/serverService';
+import { fetchServers } from '@/app/_services/protected/server/serverService';
 import { Plan, Server } from '@/app/types';
 import {auth} from "@clerk/nextjs/server";
 

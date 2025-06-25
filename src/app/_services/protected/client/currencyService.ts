@@ -1,4 +1,4 @@
-import { SupportedCurrency } from "../../types";
+import { SupportedCurrency } from "../../../types";
 
 export async function fetchUserCurrency(): Promise<SupportedCurrency> {
     const response = await fetch('/api/user/currency', {

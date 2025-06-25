@@ -2,7 +2,7 @@ import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "@/hooks/use-toast"
 import type { Server } from "@/app/types"
-import { cancelSubscription, uncancelSubscription } from "@/app/_services/protected/subscriptionClientService"
+import { cancelSubscription, uncancelSubscription } from "@/app/_services/protected/client/subscriptionClientService"
 
 interface UseSubscriptionsReturn {
   servers: Server[]
