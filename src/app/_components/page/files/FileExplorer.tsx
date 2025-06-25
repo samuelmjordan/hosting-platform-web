@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { FileObject } from '@/app/_components/page/files/utils/types';
-import { PterodactylFileClient } from '@/app/_components/page/files/utils/client';
+import * as fileService from '@/app/_services/protected/client/fileClientService';
 import { FileList } from './FileList';
 import { FileToolbar } from './FileToolbar';
 import { FileBreadcrumb } from './FileBreadcrumb';
@@ -28,19 +28,10 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
 
-  const client = useMemo(
-      () => new PterodactylFileClient(
-          process.env.NEXT_PUBLIC_API_URL || '',
-          userId,
-          subscriptionId
-      ),
-      [userId, subscriptionId]
-  );
-
   const loadFiles = useCallback(async () => {
     try {
       setIsLoading(true);
-      const files = await client.getFiles(currentPath);
+      const files = await fileService.getFiles(subscriptionId, currentPath);
       console.log('Files loaded:', files);
       setFiles(files);
     } catch (error) {
@@ -53,7 +44,7 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPath, client, toast]);
+  }, [currentPath, subscriptionId, toast]);
 
   useEffect(() => {
     loadFiles();
@@ -73,7 +64,10 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
 
     if (isEditable(file)) {
       try {
-        const content = await client.getFileContents(`${currentPath}/${file.name}`.replace('//', '/'));
+        const content = await fileService.getFileContents(
+            subscriptionId,
+            `${currentPath}/${file.name}`.replace('//', '/')
+        );
         setEditingFile({
           path: `${currentPath}/${file.name}`.replace('//', '/'),
           content,
@@ -152,7 +146,8 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
     if (!file || !file.is_file) return;
 
     try {
-      const { attributes } = await client.getDownloadLink(
+      const { attributes } = await fileService.getDownloadLink(
+          subscriptionId,
           `${currentPath}/${fileName}`.replace('//', '/')
       );
       window.open(attributes.url, '_blank');
@@ -169,7 +164,7 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
     if (selectedFiles.size === 0) return;
 
     try {
-      await client.deleteFiles(currentPath, Array.from(selectedFiles));
+      await fileService.deleteFiles(subscriptionId, currentPath, Array.from(selectedFiles));
       await loadFiles();
       setSelectedFiles(new Set());
       toast({
@@ -187,7 +182,7 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
 
   const handleCreateFolder = async (name: string) => {
     try {
-      await client.createFolder(currentPath, name);
+      await fileService.createFolder(subscriptionId, currentPath, name);
       await loadFiles();
       toast({
         title: 'Folder created',
@@ -206,7 +201,7 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
     if (selectedFiles.size === 0) return;
 
     try {
-      const result = await client.compressFiles(currentPath, Array.from(selectedFiles));
+      const result = await fileService.compressFiles(subscriptionId, currentPath, Array.from(selectedFiles));
       await loadFiles();
       setSelectedFiles(new Set());
       toast({
@@ -226,7 +221,7 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
     if (!editingFile) return;
 
     try {
-      await client.writeFile(editingFile.path, content);
+      await fileService.writeFile(subscriptionId, editingFile.path, content);
       setEditingFile(null);
       toast({
         title: 'File saved',
@@ -247,7 +242,7 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
     try {
       for (const fileName of selectedFiles) {
         const filePath = `${currentPath}/${fileName}`.replace('//', '/');
-        await client.copyFile(filePath);
+        await fileService.copyFile(subscriptionId, filePath);
       }
 
       await loadFiles();
@@ -318,11 +313,9 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
               open={isUploading}
               onClose={() => setIsUploading(false)}
               onUpload={async (files) => {
-                // Handle file upload
                 setIsUploading(false);
                 await loadFiles();
               }}
-              userId={userId}
               subscriptionId={subscriptionId}
           />
         </Card>
