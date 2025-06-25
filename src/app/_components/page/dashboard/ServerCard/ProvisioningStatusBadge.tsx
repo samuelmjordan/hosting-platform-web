@@ -23,47 +23,47 @@ const getProvisioningStatusInfo = (status: ProvisioningStatus): ProvisioningStat
         case ProvisioningStatus.READY:
             return {
                 label: 'Ready',
-                description: 'Server is online and ready to use'
+                description: 'Server hardware is ready'
             };
         case ProvisioningStatus.INACTIVE:
             return {
                 label: 'Inactive',
-                description: 'Server is offline or suspended'
+                description: 'No server hardware has been provisioned'
             };
         case ProvisioningStatus.PROVISIONING:
             return {
                 label: 'Setting Up',
-                description: 'Server is being created and configured'
+                description: 'Server hardware is setting up'
             };
         case ProvisioningStatus.DESTROYING:
             return {
                 label: 'Removing',
-                description: 'Server is being deleted'
+                description: 'Server hardware is being removed'
             };
         case ProvisioningStatus.MIGRATING:
             return {
                 label: 'Migrating',
-                description: 'Server is being moved to new hardware'
+                description: 'Server is migrating to new hardware'
             };
         case ProvisioningStatus.FAILED:
             return {
                 label: 'Failed',
-                description: 'Something went wrong - contact support'
+                description: 'Something went wrong provisioning server hardware'
             };
         case ProvisioningStatus.PENDING:
             return {
                 label: 'Pending',
-                description: 'Server request is queued and waiting to start'
+                description: 'Checking server hardware status...'
             };
         case ProvisioningStatus.ERROR:
             return {
                 label: 'Error',
-                description: 'Server encountered an error and needs attention'
+                description: 'There was an error while fetching server hardware status'
             };
         default:
             return {
-                label: 'Unknown',
-                description: 'Status not recognized'
+                label: 'Error',
+                description: 'There was an error while fetching server hardware status'
             };
     }
 };
@@ -80,9 +80,8 @@ const getStatusStyles = (status: ProvisioningStatus) => {
         case ProvisioningStatus.DESTROYING:
         case ProvisioningStatus.FAILED:
         case ProvisioningStatus.ERROR:
-            return "bg-red-100 text-red-800 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-800";
         default:
-            return "bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700";
+            return "bg-red-100 text-red-800 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-800";
     }
 };
 

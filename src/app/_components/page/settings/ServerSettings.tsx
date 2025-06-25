@@ -1,30 +1,39 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { useToast } from '@/hooks/use-toast';
-import {Loader2, Save, RotateCcw, AlertTriangle, Lock} from 'lucide-react';
+import React, {useEffect, useState} from 'react';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
+import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {
-  StartupResponse,
-  UpdateStartupRequest,
-  EGG_OPTIONS,
-} from '@/app/_components/page/settings/utils/types';
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from '@/components/ui/alert-dialog';
+import {InstallStatusBadge} from "./InstallStatusBadge"
+import {Separator} from '@/components/ui/separator';
+import {useToast} from '@/hooks/use-toast';
+import {AlertTriangle, Loader2, Lock, RotateCcw, Save} from 'lucide-react';
+import {EGG_OPTIONS, StartupResponse,} from '@/app/_components/page/settings/utils/types';
 import * as settingsClient from "@/app/_services/protected/client/settingsClientService";
+import {ProvisioningStatusBadge} from "@/app/_components/page/dashboard/ServerCard/ProvisioningStatusBadge";
+import {fetchSubscriptionProvisioningStatus} from "@/app/_services/protected/client/subscriptionClientService";
+import {ProvisioningStatus} from "@/app/types";
 
 interface ServerSettingsProps {
   subscriptionId: string;
-  userId: string;
 }
 
-export default function ServerSettings({ subscriptionId, userId }: ServerSettingsProps) {
+export default function ServerSettings({ subscriptionId }: ServerSettingsProps) {
   const [settings, setSettings] = useState<StartupResponse | null>(null);
+  const [status, setStatus] = useState<ProvisioningStatus>(ProvisioningStatus.PENDING);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [reinstalling, setReinstalling] = useState(false);
@@ -43,7 +52,16 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
 
   useEffect(() => {
     loadSettings();
-  }, [subscriptionId, userId]);
+    loadStatus();
+  }, [subscriptionId]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadStatus();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [subscriptionId]);
 
   useEffect(() => {
     if (formData.eggId > 0 && settings) {
@@ -93,11 +111,20 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'could not load server settings',
+        description: 'Could not load server settings',
         variant: 'destructive'
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadStatus = async () => {
+    try {
+      const provisioningStatus = await fetchSubscriptionProvisioningStatus(subscriptionId);
+      setStatus(provisioningStatus);
+    } catch (error) {
+      setStatus(ProvisioningStatus.ERROR);
     }
   };
 
@@ -110,14 +137,15 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
 
       toast({
         title: 'Success',
-        description: 'settings saved successfully',
+        description: 'Settings saved successfully',
       });
 
-      await loadSettings(); // refresh
+      await loadSettings();
+      await loadStatus();
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'could not save settings',
+        description: 'Could not save settings',
         variant: 'destructive'
       });
     } finally {
@@ -131,14 +159,15 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
 
       toast({
         title: 'Success',
-        description: 'server reinstall initiated',
+        description: 'Server reinstall initiated',
       });
 
       await loadSettings();
+      await loadStatus();
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'reinstall failed',
+        description: 'Reinstall failed',
         variant: 'destructive'
       });
     }
@@ -150,14 +179,15 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
 
       toast({
         title: 'Success',
-        description: 'server re-creation initiated. please wait up to 20 minutes to complete',
+        description: 'Hardware re-creation initiated. Please wait up to 20 minutes to complete',
       });
 
       await loadSettings();
+      await loadStatus();
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'recreate failed',
+        description: 'Re-create failed',
         variant: 'destructive'
       });
     }
@@ -235,7 +265,7 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
   if (!settings) {
     return (
         <div className="text-center text-muted-foreground">
-          failed to load server settings
+          Failed to load server settings
         </div>
     );
   }
@@ -247,13 +277,11 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold">server settings</h1>
-            <p className="text-muted-foreground">subscription: {subscriptionId}</p>
+            <h1 className="text-3xl font-bold">Server Settings</h1>
           </div>
           <div className="flex items-center gap-2">
-            <Badge variant={settings.installed ? "default" : "secondary"}>
-              {settings.installed ? "installed" : "not installed"}
-            </Badge>
+            <InstallStatusBadge installed={settings.installed} />
+            <ProvisioningStatusBadge status={status} />
           </div>
         </div>
 
@@ -261,11 +289,11 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
           {/* basic settings */}
           <Card>
             <CardHeader>
-              <CardTitle>basic configuration</CardTitle>
+              <CardTitle>Advanced Configuration</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="startup">startup command</Label>
+                <Label htmlFor="startup">Startup Command</Label>
                 <Input
                     id="startup"
                     value={formData.startup}
@@ -275,7 +303,7 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="image">docker image</Label>
+                <Label htmlFor="image">Docker Image</Label>
                 <Input
                     id="image"
                     value={formData.image}
@@ -285,7 +313,7 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="egg">server type</Label>
+                <Label htmlFor="egg">Server Type</Label>
                 <Select
                     value={formData.eggId > 0 ? formData.eggId.toString() : undefined}
                     onValueChange={(value) => setFormData(prev => ({ ...prev, eggId: parseInt(value) }))}
@@ -308,7 +336,7 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
           {/* environment variables */}
           <Card>
             <CardHeader>
-              <CardTitle>environment variables</CardTitle>
+              <CardTitle>Environment Variables</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* required vars first */}
@@ -316,7 +344,7 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
                   <>
                     <div className="flex items-center gap-2">
                       <Lock className="h-4 w-4 text-muted-foreground" />
-                      <Label className="text-sm font-medium">required variables</Label>
+                      <Label className="text-sm font-medium">Required Variables</Label>
                     </div>
                     {requiredKeys.map(key => (
                         <div key={key} className="flex items-center gap-2">
@@ -349,7 +377,7 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
               {/* optional vars */}
               {optionalKeys.length > 0 && (
                   <>
-                    <Label className="text-sm font-medium">optional variables</Label>
+                    <Label className="text-sm font-medium">Optional Variables</Label>
                     {optionalKeys.map(key => (
                         <div key={key} className="flex items-center gap-2">
                           <Input
@@ -367,7 +395,7 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
                               size="sm"
                               onClick={() => removeEnvironmentVariable(key)}
                           >
-                            remove
+                            Remove
                           </Button>
                         </div>
                     ))}
@@ -378,19 +406,19 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
 
               <div className="flex items-center gap-2">
                 <Input
-                    placeholder="variable name"
+                    placeholder="Variable name"
                     value={newEnvKey}
                     onChange={(e) => setNewEnvKey(e.target.value)}
                     className="flex-1"
                 />
                 <Input
-                    placeholder="variable value"
+                    placeholder="Variable value"
                     value={newEnvValue}
                     onChange={(e) => setNewEnvValue(e.target.value)}
                     className="flex-1"
                 />
                 <Button onClick={addEnvironmentVariable} disabled={!newEnvKey || !newEnvValue}>
-                  add
+                  Add
                 </Button>
               </div>
             </CardContent>
@@ -404,27 +432,26 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
                   <Button variant="destructive" disabled={reinstalling}>
                     {reinstalling && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     <RotateCcw className="mr-2 h-4 w-4" />
-                    reinstall server
+                    Reinstall Server
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle className="flex items-center gap-2">
                       <AlertTriangle className="h-5 w-5 text-destructive" />
-                      confirm server reinstall
+                      Confirm Server Reinstall
                     </AlertDialogTitle>
                     <AlertDialogDescription>
-                      this will completely wipe your server and reinstall it from scratch.
-                      ALL DATA WILL BE LOST. this action cannot be undone.
+                      This will reinstall the server with the current configuration and variables. WARNING: Data WILL be LOST. Take a backup first!
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>cancel</AlertDialogCancel>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
                         onClick={reinstallServer}
                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     >
-                      yes, reinstall server
+                      Yes, reinstall server
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -435,26 +462,26 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
                   <Button variant="destructive">
                     {reinstalling && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     <AlertTriangle className="mr-2 h-4 w-4" />
-                    re-create server
+                    Re-create Hardware
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle className="flex items-center gap-2">
                       <AlertTriangle className="h-5 w-5 text-destructive" />
-                      confirm server re-create
+                      Confirm Hardware Re-create
                     </AlertDialogTitle>
                     <AlertDialogDescription>
-                      this will destroy your server and create a new one. ALL DATA WILL BE LOST. this action cannot be undone.
+                      This will migrate your server on to new hardware. ALL DATA (INCLUDING BACKUPS) WILL BE LOST. This is only necessary if your server is in a broken state and you need a clean slate.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>cancel</AlertDialogCancel>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
                         onClick={recreateServer}
                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     >
-                      yes, recreate server
+                      Yes, recreate hardware
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -464,7 +491,7 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
             <Button onClick={saveSettings} disabled={saving}>
               {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               <Save className="mr-2 h-4 w-4" />
-              save changes
+              Save Changes
             </Button>
           </div>
         </div>
