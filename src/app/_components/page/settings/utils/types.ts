@@ -19,12 +19,6 @@ export interface UpdateStartupRequest {
     image: string;
 }
 
-export interface ServerSettingsApiClient {
-    getSettings: () => Promise<StartupResponse>;
-    updateSettings: (request: UpdateStartupRequest) => Promise<StartupResponse>;
-    reinstallServer: () => Promise<void>;
-}
-
 export const EGG_OPTIONS: Egg[] = [
     {
         id: 1,

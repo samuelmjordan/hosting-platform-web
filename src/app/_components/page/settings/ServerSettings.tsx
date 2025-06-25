@@ -16,10 +16,7 @@ import {
   UpdateStartupRequest,
   EGG_OPTIONS,
 } from '@/app/_components/page/settings/utils/types';
-import {
-  PterodactylServerSettingsClient,
-  formDataToRequest
-} from '@/app/_components/page/settings/utils/client';
+import * as settingsClient from "@/app/_services/protected/client/settingsClientService";
 
 interface ServerSettingsProps {
   subscriptionId: string;
@@ -33,12 +30,6 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
   const [reinstalling, setReinstalling] = useState(false);
   const [previousEggId, setPreviousEggId] = useState<number>(0);
   const { toast } = useToast();
-
-  const client = new PterodactylServerSettingsClient(
-      process.env.NEXT_PUBLIC_API_URL || '',
-      userId,
-      subscriptionId
-  );
 
   const [formData, setFormData] = useState({
     startup: '',
@@ -88,7 +79,7 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
   const loadSettings = async () => {
     try {
       setLoading(true);
-      const data = await client.getSettings();
+      const data = await settingsClient.getSettings(subscriptionId);
       setSettings(data);
 
       setFormData({
@@ -114,8 +105,8 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
     try {
       setSaving(true);
 
-      const request = formDataToRequest(formData);
-      await client.updateSettings(request);
+      const request = settingsClient.formDataToRequest(formData);
+      await settingsClient.updateSettings(subscriptionId, request);
 
       toast({
         title: 'Success',
@@ -136,7 +127,7 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
 
   const reinstallServer = async () => {
     try {
-      await client.reinstallServer();
+      await settingsClient.reinstallServer(subscriptionId);
 
       toast({
         title: 'Success',
@@ -155,7 +146,7 @@ export default function ServerSettings({ subscriptionId, userId }: ServerSetting
 
   const recreateServer = async () => {
     try {
-      await client.recreateServer();
+      await settingsClient.recreateServer(subscriptionId);
 
       toast({
         title: 'Success',
