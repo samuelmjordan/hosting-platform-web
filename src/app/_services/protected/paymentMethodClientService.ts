@@ -1,4 +1,3 @@
-// client-side functions that call the single api route
 export async function setDefaultPaymentMethod(paymentMethodId: string): Promise<void> {
   const response = await fetch('/api/payment-methods/actions', {
     method: 'POST',

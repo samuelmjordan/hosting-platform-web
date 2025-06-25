@@ -2,10 +2,14 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const { userId } = await auth();
+  const { getToken } = await auth();
+  const token = await getToken();
 
-  if (!userId) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  if (!token) {
+    return NextResponse.json(
+        { error: 'unauthorized' },
+        { status: 401 }
+    );
   }
 
   const { action, paymentMethodId, successUrl, cancelUrl } = await request.json();
@@ -13,9 +17,12 @@ export async function POST(request: Request) {
   try {
     switch (action) {
       case "create":
-        const createResponse = await fetch(`${process.env.API_URL}/api/stripe/user/${userId}/payment-method`, {
+        const createResponse = await fetch(`${process.env.API_URL}/api/user/payment-method`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
           body: JSON.stringify({ 
             success: successUrl,
             cancel: cancelUrl 
@@ -30,9 +37,12 @@ export async function POST(request: Request) {
         return NextResponse.json({ url });
 
       case "setDefault":
-        const setDefaultResponse = await fetch(`${process.env.API_URL}/api/stripe/user/${userId}/payment-method/${paymentMethodId}/default`, {
+        const setDefaultResponse = await fetch(`${process.env.API_URL}/api/user/payment-method/${paymentMethodId}/default`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
         });
         
         if (!setDefaultResponse.ok) {
@@ -42,9 +52,12 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true });
 
       case "removeDefault":
-        const removeDefaultResponse = await fetch(`${process.env.API_URL}/api/stripe/user/${userId}/payment-method/${paymentMethodId}/default/remove`, {
+        const removeDefaultResponse = await fetch(`${process.env.API_URL}/api/user/payment-method/${paymentMethodId}/default/remove`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
         });
         
         if (!removeDefaultResponse.ok) {
@@ -54,9 +67,12 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true });
 
       case "remove":
-        const removeResponse = await fetch(`${process.env.API_URL}/api/stripe/user/${userId}/payment-method/${paymentMethodId}/remove`, {
+        const removeResponse = await fetch(`${process.env.API_URL}/api/user/payment-method/${paymentMethodId}/remove`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
         });
         
         if (!removeResponse.ok) {
