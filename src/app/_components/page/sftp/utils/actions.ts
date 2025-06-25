@@ -10,7 +10,6 @@ interface SftpCredentials {
     port: number;
 }
 
-// server-side decryption matching your java AES/ECB/PKCS5Padding setup
 function decryptPassword(encryptedPassword: string): string {
     const crypto = require('crypto');
 
