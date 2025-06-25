@@ -1,7 +1,7 @@
 import { Backup } from "@/app/_components/page/backups/utils/types";
 
 export async function listBackups(subscriptionId: string): Promise<Backup[]> {
-    const response = await fetch(`/api/user/subscription/${subscriptionId}/backups`, {
+    const response = await fetch(`/api/user/subscription/${subscriptionId}/backup`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
     });
@@ -14,7 +14,7 @@ export async function listBackups(subscriptionId: string): Promise<Backup[]> {
 }
 
 export async function createBackup(subscriptionId: string, name: string): Promise<Backup> {
-    const response = await fetch(`/api/user/subscription/${subscriptionId}/backups`, {
+    const response = await fetch(`/api/user/subscription/${subscriptionId}/backup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name })
@@ -28,7 +28,7 @@ export async function createBackup(subscriptionId: string, name: string): Promis
 }
 
 export async function deleteBackup(subscriptionId: string, backupId: string): Promise<void> {
-    const response = await fetch(`/api/user/subscription/${subscriptionId}/backups/${backupId}`, {
+    const response = await fetch(`/api/user/subscription/${subscriptionId}/backup/${backupId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' }
     });
@@ -39,7 +39,7 @@ export async function deleteBackup(subscriptionId: string, backupId: string): Pr
 }
 
 export async function getBackup(subscriptionId: string, backupId: string): Promise<Backup> {
-    const response = await fetch(`/api/user/subscription/${subscriptionId}/backups/${backupId}`, {
+    const response = await fetch(`/api/user/subscription/${subscriptionId}/backup/${backupId}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
     });
@@ -51,8 +51,8 @@ export async function getBackup(subscriptionId: string, backupId: string): Promi
     return response.json();
 }
 
-export async function getBackupDownloadLink(subscriptionId: string, backupId: string): Promise<string> {
-    const response = await fetch(`/api/user/subscription/${subscriptionId}/backups/${backupId}/download`, {
+export async function getBackupDownloadLink(subscriptionId: string, backupId: string): Promise<{ url: string }> {
+    const response = await fetch(`/api/user/subscription/${subscriptionId}/backup/${backupId}/download`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
     });
@@ -61,11 +61,11 @@ export async function getBackupDownloadLink(subscriptionId: string, backupId: st
         throw new Error('failed to get backup download link');
     }
 
-    return response.text();
+    return response.json();
 }
 
 export async function restoreBackup(subscriptionId: string, backupId: string): Promise<void> {
-    const response = await fetch(`/api/user/subscription/${subscriptionId}/backups/${backupId}/restore`, {
+    const response = await fetch(`/api/user/subscription/${subscriptionId}/backup/${backupId}/restore`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
     });

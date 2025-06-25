@@ -1,8 +1,14 @@
 "use client"
 
 import {useState, useEffect} from 'react';
-import { PterodactylBackupClient } from './utils/client';
 import { Backup } from './utils/types';
+import {
+    listBackups,
+    createBackup,
+    deleteBackup,
+    restoreBackup,
+    getBackupDownloadLink
+} from '@/app/_services/protected/client/backupClientService';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -22,10 +28,9 @@ import { Loader2, RefreshCw, Download, RotateCcw, Trash2 } from 'lucide-react';
 
 interface BackupsScreenProps {
     subscriptionId: string;
-    userId: string;
 }
 
-export default function BackupsPage({ subscriptionId, userId }: BackupsScreenProps) {
+export default function BackupsPage({ subscriptionId }: BackupsScreenProps) {
     const [backups, setBackups] = useState<Backup[]>([]);
     const [loading, setLoading] = useState(true);
     const [creating, setCreating] = useState(false);
@@ -48,18 +53,12 @@ export default function BackupsPage({ subscriptionId, userId }: BackupsScreenPro
         backup: Backup | null;
     }>({ isOpen: false, backup: null });
 
-    const client = new PterodactylBackupClient(
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
-        userId,
-        subscriptionId
-    );
-
     const loadBackups = async (isRefresh = false) => {
         try {
             if (isRefresh) {
                 setRefreshing(true);
             }
-            const data = await client.listBackups();
+            const data = await listBackups(subscriptionId);
             setBackups(data);
         } catch (err) {
             toast("failed to load backups", {
@@ -71,12 +70,12 @@ export default function BackupsPage({ subscriptionId, userId }: BackupsScreenPro
         }
     };
 
-    const createBackup = async () => {
+    const handleCreateBackup = async () => {
         if (!newBackupName.trim()) return;
 
         setCreating(true);
         try {
-            await client.createBackup(newBackupName);
+            await createBackup(subscriptionId, newBackupName);
             const backupName = newBackupName;
             setNewBackupName('');
             await loadBackups(true);
@@ -102,7 +101,7 @@ export default function BackupsPage({ subscriptionId, userId }: BackupsScreenPro
         setDeleteDialog({ isOpen: false, backup: null });
 
         try {
-            await client.deleteBackup(backupId);
+            await deleteBackup(subscriptionId, backupId);
             await loadBackups(true);
             toast("backup deleted", {
                 description: `backup "${backupName}" has been deleted`
@@ -130,12 +129,11 @@ export default function BackupsPage({ subscriptionId, userId }: BackupsScreenPro
         setRestoreDialog({ isOpen: false, backup: null });
 
         try {
-            await client.restoreBackup(backupId);
+            await restoreBackup(subscriptionId, backupId);
             toast("restore initiated", {
                 description: `backup "${backupName}" restore has been started - this may take several minutes. your server will be unavailable during this process.`,
-                duration: 10000, // longer duration for important message
+                duration: 10000,
             });
-            console.log("backup restored toast");
         } catch (err) {
             toast("restore failed", {
                 description: err instanceof Error ? err.message : 'failed to restore backup'
@@ -152,8 +150,8 @@ export default function BackupsPage({ subscriptionId, userId }: BackupsScreenPro
     const downloadBackup = async (backupId: string) => {
         setDownloadingIds(prev => new Set(prev).add(backupId));
         try {
-            const downloadUrl = await client.getBackupDownloadLink(backupId);
-            window.open(downloadUrl, '_blank');
+            const { url } = await getBackupDownloadLink(subscriptionId, backupId);
+            window.open(url, '_blank');
             toast("download ready", {
                 description: "backup download link generated"
             });
@@ -234,11 +232,11 @@ export default function BackupsPage({ subscriptionId, userId }: BackupsScreenPro
                                 value={newBackupName}
                                 onChange={(e) => setNewBackupName(e.target.value)}
                                 placeholder="backup name..."
-                                onKeyDown={(e) => e.key === 'Enter' && createBackup()}
+                                onKeyDown={(e) => e.key === 'Enter' && handleCreateBackup()}
                                 disabled={creating}
                             />
                             <Button
-                                onClick={createBackup}
+                                onClick={handleCreateBackup}
                                 disabled={creating || !newBackupName.trim()}
                             >
                                 {creating && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
