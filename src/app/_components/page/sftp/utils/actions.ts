@@ -2,6 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import {NextResponse} from "next/server";
 
 interface SftpCredentials {
     connectionString: string;
@@ -36,10 +37,11 @@ function decryptPassword(encryptedPassword: string): string {
 }
 
 export async function getSftpCredentials(subscriptionId: string): Promise<SftpCredentials> {
-    const { userId } = await auth();
+    const { getToken } = await auth();
+    const token = await getToken();
 
-    if (!userId) {
-        redirect('/sign-in');
+    if (!token) {
+        throw new Error('forbidden');
     }
 
     if (!process.env.API_URL) {
@@ -48,10 +50,11 @@ export async function getSftpCredentials(subscriptionId: string): Promise<SftpCr
 
     try {
         const response = await fetch(
-            `${process.env.API_URL}/api/panel/user/${userId}/subscription/${subscriptionId}/sftp/credentials`,
+            `${process.env.API_URL}/api/panel/user/subscription/${subscriptionId}/sftp/credentials`,
             {
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
             }
         );
