@@ -71,7 +71,7 @@ export function FileToolbar({
             className="gap-2"
           >
             <FolderPlus className="h-4 w-4" />
-            <span className="hidden sm:inline">new folder</span>
+            <span className="hidden sm:inline">New folder</span>
           </Button>
           
           <Button
@@ -81,7 +81,7 @@ export function FileToolbar({
             className="gap-2"
           >
             <Upload className="h-4 w-4" />
-            <span className="hidden sm:inline">upload</span>
+            <span className="hidden sm:inline">Upload</span>
           </Button>
 
           {selectedCount > 0 && (
