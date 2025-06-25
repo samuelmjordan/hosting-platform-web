@@ -30,7 +30,7 @@ export default function PterodactylConsole({ subscriptionUid }: PterodactylConso
   return (
       <div className="max-w-6xl mx-auto space-y-6">
           <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold">console</h1>
+              <h1 className="text-2xl font-bold">Console</h1>
           </div>
 
         <ConnectionStatus

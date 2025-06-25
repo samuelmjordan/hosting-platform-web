@@ -16,7 +16,7 @@ export function ResourceStats({ stats }: ResourceStatsProps) {
                 <CardHeader className="pb-3">
                     <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                         <Cpu className="h-4 w-4 text-blue-400" />
-                        cpu load
+                        CPU load
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -37,7 +37,7 @@ export function ResourceStats({ stats }: ResourceStatsProps) {
                 <CardHeader className="pb-3">
                     <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                         <MemoryStick className="h-4 w-4 text-emerald-400" />
-                        memory
+                        Memory
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -63,7 +63,7 @@ export function ResourceStats({ stats }: ResourceStatsProps) {
                 <CardHeader className="pb-3">
                     <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                         <HardDrive className="h-4 w-4 text-amber-400" />
-                        disk usage
+                        SSD usage
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -84,17 +84,17 @@ export function ResourceStats({ stats }: ResourceStatsProps) {
                 <CardHeader className="pb-3">
                     <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                         <Network className="h-4 w-4 text-purple-400" />
-                        network
+                        Network
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-2 text-xs">
                         <div className="flex justify-between items-center">
-                            <span className="text-muted-foreground">↓ download</span>
+                            <span className="text-muted-foreground">↓ Download</span>
                             <span className="text-purple-400 font-bold">{formatBytes(stats.network.rx_bytes)}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-muted-foreground">↑ upload</span>
+                            <span className="text-muted-foreground">↑ Upload</span>
                             <span className="text-pink-400 font-bold">{formatBytes(stats.network.tx_bytes)}</span>
                         </div>
                     </div>

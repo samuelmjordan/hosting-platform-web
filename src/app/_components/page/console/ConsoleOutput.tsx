@@ -58,7 +58,7 @@ export function ConsoleOutput({ logs, error, isConnected, onSendCommand }: Conso
                 <Alert variant="destructive" className="bg-destructive/10 border-destructive/50">
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
-                        error: {error}
+                        Error: {error}
                     </AlertDescription>
                 </Alert>
             )}
@@ -67,14 +67,14 @@ export function ConsoleOutput({ logs, error, isConnected, onSendCommand }: Conso
                 <CardHeader className="bg-muted/50 border-b border-border">
                     <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
                         <Terminal className="h-5 w-5 text-green-400" />
-                        console output
+                        Console
                     </CardTitle>
                 </CardHeader>
 
                 <CardContent className="p-0">
                     <div className="h-96 overflow-y-auto p-4 bg-black font-mono text-sm leading-relaxed">
                         {logs.length === 0 ? (
-                            <div className="text-muted-foreground italic">no console output yet. connect to start receiving logs...</div>
+                            <div className="text-muted-foreground italic">No console output yet. Connect to start receiving logs...</div>
                         ) : (
                             logs.map((log, i) => renderLogLine(log, i))
                         )}
@@ -88,7 +88,7 @@ export function ConsoleOutput({ logs, error, isConnected, onSendCommand }: Conso
                                 value={command}
                                 onChange={(e) => setCommand(e.target.value)}
                                 onKeyPress={handleKeyPress}
-                                placeholder="type a command..."
+                                placeholder="Type a command..."
                                 disabled={!isConnected}
                                 className="flex-1 bg-background/50 border-border text-foreground placeholder-muted-foreground focus:ring-2 focus:ring-ring font-mono"
                             />
@@ -98,7 +98,7 @@ export function ConsoleOutput({ logs, error, isConnected, onSendCommand }: Conso
                                 className="bg-blue-600 hover:bg-blue-700"
                             >
                                 <Send className="h-4 w-4 mr-2" />
-                                send
+                                Send
                             </Button>
                         </div>
                     </div>

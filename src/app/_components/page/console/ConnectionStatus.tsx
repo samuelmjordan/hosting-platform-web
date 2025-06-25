@@ -43,7 +43,7 @@ export function ConnectionStatus({
                                 </Badge>
                                 <div className="flex items-center gap-1 text-muted-foreground">
                                     <Clock className="h-3 w-3" />
-                                    <span>uptime: {uptime}</span>
+                                    <span>Uptime: {uptime}</span>
                                 </div>
                             </div>
                         </div>
@@ -56,7 +56,7 @@ export function ConnectionStatus({
                             variant="default"
                             className="bg-emerald-100 hover:bg-emerald-600 border-emerald-300 text-foreground hover:text-white dark:bg-emerald-600 dark:hover:bg-emerald-700"
                         >
-                            connect
+                            Connect
                         </Button>
                         <Button
                             onClick={onDisconnect}
@@ -64,7 +64,7 @@ export function ConnectionStatus({
                             variant="destructive"
                             className="bg-red-100 hover:bg-red-600 border-red-300 text-foreground hover:text-white dark:bg-red-600 dark:hover:bg-red-700"
                         >
-                            disconnect
+                            Disconnect
                         </Button>
                     </div>
                 </div>
