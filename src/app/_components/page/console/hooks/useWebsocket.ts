@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { useUser } from '@clerk/nextjs';
+import { useAuth } from '@clerk/nextjs';
 import {PowerSignal, ServerStats, ServerStatus} from "@/app/_components/page/console/utils/types";
 
 export function useWebSocket(subscriptionUid: string) {
@@ -12,19 +12,21 @@ export function useWebSocket(subscriptionUid: string) {
 
     const wsRef = useRef<WebSocket | null>(null);
     const uptimeStartRef = useRef<Date | null>(null);
-    const { user } = useUser();
+    const { getToken } = useAuth();
 
     const connect = useCallback(async () => {
         try {
             setError(null);
 
-            if (!user?.id) {
-                setError("user not authenticated");
+            const token = await getToken();
+            if (!token) {
+                setError("failed to get auth token");
                 return;
             }
 
             const wsUrl = process.env.NEXT_PUBLIC_API_URL?.replace('http', 'ws') || 'ws://localhost:8080';
-            const ws = new WebSocket(`${wsUrl}/ws/user/${user.id}/subscription/${subscriptionUid}`);
+
+            const ws = new WebSocket(`${wsUrl}/ws/user/subscription/${subscriptionUid}?token=${encodeURIComponent(token)}`);
             wsRef.current = ws;
 
             ws.onopen = () => {
@@ -85,7 +87,7 @@ export function useWebSocket(subscriptionUid: string) {
         } catch (err) {
             setError(err instanceof Error ? err.message : "failed to connect");
         }
-    }, [user?.id, subscriptionUid]);
+    }, [subscriptionUid, getToken]);
 
     const disconnect = useCallback(() => {
         if (wsRef.current) {
