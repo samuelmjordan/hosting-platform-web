@@ -1,48 +1,55 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-export async function POST(request: Request) {
-  const { getToken } = await auth();
-  const token = await getToken();
-
-  if (!token) {
-    return [];
-  }
-
-  const { title, address, action, subscriptionId, specificationId: specification_id } = await request.json();
-  const basePath = `${process.env.API_URL}/api/user/subscription/${subscriptionId}`
-
+export async function POST(
+    request: Request,
+    { params }: { params: Promise<{ subscriptionId: string }> }
+) {
   try {
+    const { getToken } = await auth();
+    const token = await getToken();
+
+    if (!token) {
+      return NextResponse.json(
+          { error: 'unauthorized' },
+          { status: 401 }
+      );
+    }
+
+    const { subscriptionId } = await params;
+    const { title, address, action, specificationId: specification_id } = await request.json();
+    const basePath = `${process.env.API_URL}/api/user/subscription/${subscriptionId}`;
+
     switch (action) {
       case "cancel":
-        const createResponse = await fetch(`${basePath}/cancel`, {
+        const cancelResponse = await fetch(`${basePath}/cancel`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
         });
-        
-        if (!createResponse.ok) {
-          throw new Error('Failed to cancel subscription');
+
+        if (!cancelResponse.ok) {
+          throw new Error('failed to cancel subscription');
         }
-        
-        const url = await createResponse.text();
+
+        const url = await cancelResponse.text();
         return NextResponse.json({ url });
 
       case "uncancel":
-        const setDefaultResponse = await fetch(`${basePath}/uncancel`, {
+        const uncancelResponse = await fetch(`${basePath}/uncancel`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           }
         });
-        
-        if (!setDefaultResponse.ok) {
-          throw new Error('Failed to unancel subscription');
+
+        if (!uncancelResponse.ok) {
+          throw new Error('failed to uncancel subscription');
         }
-        
+
         return NextResponse.json({ success: true });
 
       case "change-specification":
@@ -54,11 +61,11 @@ export async function POST(request: Request) {
           },
           body: JSON.stringify({ specification_id })
         });
-        
+
         if (!specificationResponse.ok) {
-          throw new Error('Failed to change subscription specification');
+          throw new Error('failed to change subscription specification');
         }
-        
+
         return NextResponse.json({ success: true });
 
       case "change-address":
@@ -70,11 +77,11 @@ export async function POST(request: Request) {
           },
           body: JSON.stringify({ address })
         });
-        
+
         if (!changeAddressResponse.ok) {
-          throw new Error('Failed to change server adress');
+          throw new Error('failed to change server address');
         }
-        
+
         return NextResponse.json({ success: true });
 
       case "change-title":
@@ -86,17 +93,20 @@ export async function POST(request: Request) {
           },
           body: JSON.stringify({ title })
         });
-        
+
+        console.log(changeTitleResponse);
+
         if (!changeTitleResponse.ok) {
-          throw new Error('Failed to change server title');
+          throw new Error('failed to change server title');
         }
-        
+
         return NextResponse.json({ success: true });
 
       default:
-        return NextResponse.json({ error: "Invalid action" }, { status: 400 });
+        return NextResponse.json({ error: "invalid action" }, { status: 400 });
     }
   } catch (error: any) {
+    console.error('subscription action error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

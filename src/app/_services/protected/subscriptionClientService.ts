@@ -1,62 +1,62 @@
 import {ProvisioningStatus} from "@/app/_services/protected/serverDetailsService";
 
 export async function cancelSubscription(subscriptionId: string): Promise<void> {
-  const response = await fetch('/api/user/subscription/actions', {
+  const response = await fetch(`/api/user/subscription/${subscriptionId}/actions`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'cancel', subscriptionId })
+    body: JSON.stringify({ action: 'cancel' })
   });
-  
+
   if (!response.ok) {
-    throw new Error('Failed to cancel subscription');
+    throw new Error('failed to cancel subscription');
   }
 }
 
 export async function uncancelSubscription(subscriptionId: string): Promise<void> {
-  const response = await fetch('/api/user/subscription/actions', {
+  const response = await fetch(`/api/user/subscription/${subscriptionId}/actions`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'uncancel', subscriptionId })
+    body: JSON.stringify({ action: 'uncancel' })
   });
-  
+
   if (!response.ok) {
-    throw new Error('Failed to uncancel subscription');
+    throw new Error('failed to uncancel subscription');
   }
 }
 
 export async function changeServerAddress(subscriptionId: string, address: string): Promise<void> {
-  const response = await fetch('/api/user/subscription/actions', {
+  const response = await fetch(`/api/user/subscription/${subscriptionId}/actions`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'change-address', subscriptionId, address })
+    body: JSON.stringify({ action: 'change-address', address })
   });
-  
+
   if (!response.ok) {
-    throw new Error('Failed to change server adress');
+    throw new Error('failed to change server address');
   }
 }
 
 export async function changeServerTitle(subscriptionId: string, title: string): Promise<void> {
-  const response = await fetch('/api/user/subscription/actions', {
+  const response = await fetch(`/api/user/subscription/${subscriptionId}/actions`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'change-title', subscriptionId, title })
+    body: JSON.stringify({ action: 'change-title', title })
   });
-  
+
   if (!response.ok) {
-    throw new Error('Failed to change server title');
+    throw new Error('failed to change server title');
   }
 }
 
 export async function changeServerSpecification(subscriptionId: string, specificationId: string): Promise<void> {
-  const response = await fetch('/api/user/subscription/actions', {
+  const response = await fetch(`/api/user/subscription/${subscriptionId}/actions`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'change-specification', subscriptionId, specificationId })
+    body: JSON.stringify({ action: 'change-specification', specificationId })
   });
-  
+
   if (!response.ok) {
-    throw new Error('Failed to change server specification');
+    throw new Error('failed to change server specification');
   }
 }
 
@@ -67,10 +67,9 @@ export async function fetchSubscriptionProvisioningStatus(subscriptionId: string
   });
 
   if (!response.ok) {
-    throw new Error('Failed to fetch provisioning status');
+    throw new Error('failed to fetch provisioning status');
   }
 
   const data = await response.json();
-  console.log("data: ", data);
   return data.provisioningStatus.status;
 }
