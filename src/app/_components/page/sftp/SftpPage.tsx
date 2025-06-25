@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { getSftpCredentials } from './utils/actions';
+import { getSftpCredentials } from '../../../_services/protected/server/sftpService';
 
 interface SftpCredentials {
     connectionString: string;
