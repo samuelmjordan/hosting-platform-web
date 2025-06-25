@@ -44,25 +44,25 @@ export default function SftpPage({ subscriptionId }: SftpPageProps) {
             const apiError = err as ApiError;
 
             if (apiError.status === 401 || apiError.status === 403) {
-                return { type: 'auth', message: 'access denied - check your permissions' };
+                return { type: 'auth', message: 'Access denied - check your permissions' };
             }
 
             if (apiError.status === 404) {
-                return { type: 'server', message: 'subscription not found' };
+                return { type: 'server', message: 'Subscription not found' };
             }
 
             if (apiError.status && apiError.status >= 500) {
-                return { type: 'server', message: 'server error - try again later' };
+                return { type: 'server', message: 'Server error - try again later' };
             }
 
             if (apiError.name === 'NetworkError' || apiError.message.includes('fetch')) {
-                return { type: 'network', message: 'connection failed - check your internet' };
+                return { type: 'network', message: 'Connection failed - check your internet' };
             }
 
             return { type: 'unknown', message: apiError.message };
         }
 
-        return { type: 'unknown', message: 'something went wrong' };
+        return { type: 'unknown', message: 'Something went wrong' };
     };
 
     const loadCredentials = async () => {
@@ -155,7 +155,7 @@ export default function SftpPage({ subscriptionId }: SftpPageProps) {
     return (
         <div className="space-y-6">
             <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-bold">sftp credentials</h1>
+                <h1 className="text-2xl font-bold">SFTP Credentials</h1>
             </div>
 
             {isPending && (
@@ -163,7 +163,7 @@ export default function SftpPage({ subscriptionId }: SftpPageProps) {
                     <CardContent className="flex items-center justify-center py-12">
                         <div className="flex flex-col items-center gap-4">
                             <RefreshCw className="h-8 w-8 animate-spin text-primary" />
-                            <p className="text-muted-foreground">loading credentials...</p>
+                            <p className="text-muted-foreground">Loading credentials...</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -180,7 +180,7 @@ export default function SftpPage({ subscriptionId }: SftpPageProps) {
                             onClick={loadCredentials}
                             disabled={isPending}
                         >
-                            retry
+                            Retry
                         </Button>
                     </AlertDescription>
                 </Alert>
@@ -191,21 +191,21 @@ export default function SftpPage({ subscriptionId }: SftpPageProps) {
                     <Card>
                         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 mx-auto p-6">
                             <CredentialField
-                                label="connection string"
+                                label="Connection string"
                                 value={credentials.connectionString}
                             />
                             <CredentialField
-                                label="username"
+                                label="Username"
                                 value={credentials.username}
                             />
                             <CredentialField
-                                label="password"
+                                label="Password"
                                 value={credentials.password}
                                 type="password"
                                 showToggle={true}
                             />
                             <CredentialField
-                                label="port"
+                                label="Port"
                                 value={credentials.port.toString()}
                             />
                         </CardContent>
@@ -214,7 +214,7 @@ export default function SftpPage({ subscriptionId }: SftpPageProps) {
                     <Alert>
                         <CheckCircle2 className="h-4 w-4" />
                         <AlertDescription>
-                            try using filezilla, winscp, cyberduck, or terminal clients like sftp and scp
+                            Try using filezilla, winscp, cyberduck, or terminal clients like sftp and scp
                         </AlertDescription>
                     </Alert>
                 </div>
