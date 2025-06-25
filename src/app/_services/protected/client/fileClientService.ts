@@ -65,6 +65,7 @@ export async function createFolder(subscriptionId: string, root: string, name: s
     }
 }
 
+//TODO: link up rename and decompress
 export async function renameFiles(subscriptionId: string, root: string, files: RenameItem[]): Promise<void> {
     const response = await fetch(`/api/user/subscription/${subscriptionId}/file/rename`, {
         method: 'PUT',
