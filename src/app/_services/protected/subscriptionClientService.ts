@@ -1,4 +1,4 @@
-import {ProvisioningStatus} from "@/app/_services/protected/serverDetailsService";
+import {ProvisioningStatus, ResourceLimitResponse} from "@/app/types";
 
 export async function cancelSubscription(subscriptionId: string): Promise<void> {
   const response = await fetch(`/api/user/subscription/${subscriptionId}/actions`, {
@@ -62,6 +62,20 @@ export async function changeServerSpecification(subscriptionId: string, specific
 
 export async function fetchSubscriptionProvisioningStatus(subscriptionId: string): Promise<ProvisioningStatus> {
   const response = await fetch(`/api/user/subscription/${subscriptionId}/status`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+
+  if (!response.ok) {
+    throw new Error('failed to fetch provisioning status');
+  }
+
+  const data = await response.json();
+  return data.provisioningStatus.status;
+}
+
+export async function fetchSubscriptionResourceLimits(subscriptionId: string): Promise<ResourceLimitResponse> {
+  const response = await fetch(`/api/user/subscription/${subscriptionId}/limits`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
   });

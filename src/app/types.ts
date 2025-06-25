@@ -84,3 +84,29 @@ export interface CurrencyAmount {
 export type SupportedCurrency = 'USD' | 'EUR' | 'GBP' | 'XXX';
 
 export type SpecificationType = 'GAME_SERVER' | 'ACCOUNT_TIER';
+
+export enum ProvisioningStatus {
+    READY = 'READY',
+    INACTIVE = 'INACTIVE',
+    PROVISIONING = 'PROVISIONING',
+    DESTROYING = 'DESTROYING',
+    MIGRATING = 'MIGRATING',
+    FAILED = 'FAILED',
+    PENDING = 'PENDING',
+    ERROR = 'ERROR',
+}
+
+export interface ProvisioningStatusResponse {
+    subscriptionId: string;
+    status: ProvisioningStatus;
+}
+
+export interface ResourceLimitResponse {
+    subscriptionId: string;
+    memory: number;
+    swap: number;
+    disk: number;
+    io: number;
+    cpu: number;
+    threads: number;
+}

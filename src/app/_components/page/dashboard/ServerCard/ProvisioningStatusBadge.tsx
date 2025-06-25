@@ -1,3 +1,4 @@
+import { ProvisioningStatus } from "@/app/types";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
@@ -11,7 +12,11 @@ import {
     Timer,
     AlertCircle
 } from "lucide-react";
-import { ProvisioningStatus, ProvisioningStatusInfo } from "@/app/_services/protected/serverDetailsService";
+
+export interface ProvisioningStatusInfo {
+    label: string;
+    description: string;
+}
 
 const getProvisioningStatusInfo = (status: ProvisioningStatus): ProvisioningStatusInfo => {
     switch (status) {
