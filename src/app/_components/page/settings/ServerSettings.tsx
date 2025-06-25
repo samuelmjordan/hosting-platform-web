@@ -20,12 +20,13 @@ import {
 import {InstallStatusBadge} from "./InstallStatusBadge"
 import {Separator} from '@/components/ui/separator';
 import {useToast} from '@/hooks/use-toast';
-import {AlertTriangle, Loader2, Lock, RotateCcw, Save} from 'lucide-react';
+import {AlertTriangle, CheckCircle2, Loader2, Lock, RotateCcw, Save} from 'lucide-react';
 import {EGG_OPTIONS, StartupResponse,} from '@/app/_components/page/settings/utils/types';
 import * as settingsClient from "@/app/_services/protected/client/settingsClientService";
 import {ProvisioningStatusBadge} from "@/app/_components/page/dashboard/ServerCard/ProvisioningStatusBadge";
 import {fetchSubscriptionProvisioningStatus} from "@/app/_services/protected/client/subscriptionClientService";
 import {ProvisioningStatus} from "@/app/types";
+import {Alert, AlertDescription} from "@/components/ui/alert";
 
 interface ServerSettingsProps {
   subscriptionId: string;
@@ -284,6 +285,12 @@ export default function ServerSettings({ subscriptionId }: ServerSettingsProps) 
             <ProvisioningStatusBadge status={status} />
           </div>
         </div>
+        <Alert>
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            These settings are for advanced users. Please exercise caution.
+          </AlertDescription>
+        </Alert>
 
         <div className="grid gap-6">
           {/* basic settings */}
