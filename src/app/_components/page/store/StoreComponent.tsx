@@ -67,7 +67,7 @@ export function StoreComponent({ plans }: StoreComponentProps) {
                     setCurrency(detectUserCurrency());
                 }
             } catch (error) {
-                console.warn('currency fetch failed:', error);
+                console.warn('Currency fetch failed:', error);
                 setCurrency(detectUserCurrency());
             }
         };
@@ -88,12 +88,12 @@ export function StoreComponent({ plans }: StoreComponentProps) {
 
     const handleCheckout = useCallback(async () => {
         if (!selectedPlan) {
-            setError('please select a product before proceeding');
+            setError('Please select a product before proceeding');
             return;
         }
 
         if (!userId) {
-            setError('please login before proceeding');
+            setError('Please login before proceeding');
             return;
         }
 
@@ -104,8 +104,8 @@ export function StoreComponent({ plans }: StoreComponentProps) {
             const checkoutUrl = await startCheckout(selectedPlan.price.price_id);
             router.push(checkoutUrl);
         } catch (error) {
-            console.error('checkout error:', error);
-            setError(error instanceof Error ? error.message : 'failed to create checkout session');
+            console.error('Checkout error:', error);
+            setError(error instanceof Error ? error.message : 'Failed to create checkout session');
         } finally {
             setIsLoading(false);
         }

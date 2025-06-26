@@ -38,7 +38,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
             )}
 
             <CardHeader>
-                <CardTitle className="text-foreground">{specification.title.toLowerCase()}</CardTitle>
+                <CardTitle className="text-foreground">{specification.title}</CardTitle>
             </CardHeader>
 
             <CardContent className="space-y-4">
@@ -74,7 +74,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
                     )}
                     onClick={() => onSelect(plan)}
                 >
-                    {isSelected ? "selected" : "select"}
+                    {isSelected ? "Selected" : "Select"}
                 </Button>
             </CardFooter>
         </Card>

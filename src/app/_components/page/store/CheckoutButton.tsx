@@ -26,17 +26,17 @@ export const CheckoutButton: React.FC<StoreCheckoutProps> = ({
             {isLoading ? (
                 <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    processing...
+                    Processing...
                 </>
             ) : (
-                'checkout'
+                'Checkout'
             )}
         </Button>
 
         {error && (
             <Alert variant="destructive">
                 <AlertDescription>
-                    something went wrong. please refresh the page and try again!
+                    Something went wrong. Please refresh the page and try again!
                 </AlertDescription>
             </Alert>
         )}

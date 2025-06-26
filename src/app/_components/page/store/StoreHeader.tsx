@@ -16,7 +16,7 @@ export const StoreHeader: React.FC<StoreHeaderProps> = ({
     <div className="mb-8">
         <div className="flex justify-between items-center">
             <div>
-                <h1 className="text-3xl font-bold text-foreground">store</h1>
+                <h1 className="text-3xl font-bold text-foreground">Server Shop</h1>
             </div>
             <div className="flex items-center gap-4">
                 <CurrencySelector
@@ -27,11 +27,11 @@ export const StoreHeader: React.FC<StoreHeaderProps> = ({
             </div>
         </div>
         <div className="flex flex-wrap items-center gap-2 mt-3">
-            <span className="mr-2">all our plans are:</span>
-            <span className="px-2 py-1 bg-muted rounded-full text-xs">🇪🇺 based in europe</span>
-            <span className="px-2 py-1 bg-muted rounded-full text-xs">☕ java-edition</span>
-            <span className="px-2 py-1 bg-muted rounded-full text-xs">📅 rolling subscription</span>
-            <span className="px-2 py-1 bg-muted rounded-full text-xs">📅 one-month term</span>
+            <span className="mr-2">All our plans are:</span>
+            <span className="px-2 py-1 bg-muted rounded-full text-xs">🇪🇺 Based in europe</span>
+            <span className="px-2 py-1 bg-muted rounded-full text-xs">☕ Java-edition</span>
+            <span className="px-2 py-1 bg-muted rounded-full text-xs">📅 Rolling subscription</span>
+            <span className="px-2 py-1 bg-muted rounded-full text-xs">1️⃣ One-month term</span>
         </div>
     </div>
 );

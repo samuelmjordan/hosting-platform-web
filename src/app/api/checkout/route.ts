@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
     console.log('Sending checkout data:', checkoutData);
 
-    const response = await fetch(`${API_URL}/api/stripe/checkout`, {
+    const response = await fetch(`${API_URL}/api/user/checkout`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
