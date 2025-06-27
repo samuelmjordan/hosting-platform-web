@@ -10,6 +10,7 @@ import {
     CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import { NavbarItem } from '../../types';
+import ThemeToggle from "@/app/_components/common/ThemeToggle";
 
 interface NavbarProps {
     items: NavbarItem[]
@@ -60,6 +61,7 @@ const Navbar = ({ items }: NavbarProps) => {
                                 {item.label}
                             </a>
                         ))}
+                        <ThemeToggle />
                         <UserButtonWithLoader />
                     </div>
 
