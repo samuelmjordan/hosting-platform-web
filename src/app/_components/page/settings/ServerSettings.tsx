@@ -327,12 +327,27 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
 
               <div className="space-y-2">
                 <Label htmlFor="image">Docker Image</Label>
-                <Input
-                    id="image"
+                <Select
                     value={formData.image}
-                    onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                    placeholder="ghcr.io/pterodactyl/yolks:java_17"
-                />
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, image: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="select docker image" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(() => {
+                      const selectedEgg = eggs.find(egg => egg.id === formData.eggId);
+                      if (!selectedEgg || !selectedEgg.docker_images || selectedEgg.docker_images.length === 0) {
+                        return <SelectItem value="" disabled>no images available</SelectItem>;
+                      }
+                      return selectedEgg.docker_images.map(image => (
+                          <SelectItem key={image} value={image}>
+                            {image}
+                          </SelectItem>
+                      ));
+                    })()}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">
