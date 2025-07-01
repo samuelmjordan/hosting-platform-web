@@ -118,7 +118,7 @@ export type Egg = {
     type: EggType;
     name: string;
     description: string;
-    docker_images: string[];
+    docker_images: Map<string, string>;
     startup: string;
     variables: EggVariable[];
 };

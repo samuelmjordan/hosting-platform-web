@@ -20,7 +20,7 @@ import {
 import {InstallStatusBadge} from "./InstallStatusBadge"
 import {Separator} from '@/components/ui/separator';
 import {useToast} from '@/hooks/use-toast';
-import {AlertTriangle, CheckCircle2, Loader2, Lock, RotateCcw, Save} from 'lucide-react';
+import {AlertTriangle, Loader2, Lock, RotateCcw, Save} from 'lucide-react';
 import {StartupResponse,} from '@/app/_components/page/settings/utils/types';
 import * as settingsClient from "@/app/_services/protected/client/settingsClientService";
 import {ProvisioningStatusBadge} from "@/app/_components/page/dashboard/ServerCard/ProvisioningStatusBadge";
@@ -74,27 +74,29 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
         setFormData(prev => {
           const newEnv = { ...prev.environment };
 
-          // remove old required vars if switching eggs
           if (previousEgg && selectedEgg.id !== previousEgg.id) {
             previousEgg.variables.forEach(variable => {
               delete newEnv[variable.env_variable];
             });
           }
 
-          // add new required vars with defaults
           selectedEgg.variables.forEach(variable => {
             if (!(variable.env_variable in newEnv)) {
               newEnv[variable.env_variable] = variable.default_value;
             }
           });
 
+          let firstImageValue = prev.image;
+          if (selectedEgg.docker_images && Object.keys(selectedEgg.docker_images).length > 0) {
+            const values = Object.values(selectedEgg.docker_images);
+            firstImageValue = values[values.length - 1];
+          }
+
           return {
             ...prev,
             environment: newEnv,
             startup: selectedEgg.startup,
-            image: (selectedEgg.docker_images && selectedEgg.docker_images.length > 0)
-                ? selectedEgg.docker_images[0]
-                : prev.image
+            image: firstImageValue
           };
         });
 
@@ -241,8 +243,6 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
 
   const getRequiredKeys = (): string[] => {
     const selectedEgg = eggs.find(egg => egg.id === formData.eggId);
-    console.log('selectedEgg', selectedEgg);
-    console.log('requiredKeys', selectedEgg ? selectedEgg.variables.map(v => v.env_variable) : []);
     return selectedEgg ? selectedEgg.variables.map(v => v.env_variable) : [];
   };
 
@@ -337,12 +337,12 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
                   <SelectContent>
                     {(() => {
                       const selectedEgg = eggs.find(egg => egg.id === formData.eggId);
-                      if (!selectedEgg || !selectedEgg.docker_images || selectedEgg.docker_images.length === 0) {
+                      if (!selectedEgg || !selectedEgg.docker_images || Object.keys(selectedEgg.docker_images).length === 0) {
                         return <SelectItem value="" disabled>no images available</SelectItem>;
                       }
-                      return selectedEgg.docker_images.map(image => (
-                          <SelectItem key={image} value={image}>
-                            {image}
+                      return Object.entries(selectedEgg.docker_images).map(([displayName, imageValue]) => (
+                          <SelectItem key={imageValue} value={imageValue}>
+                            {displayName}
                           </SelectItem>
                       ));
                     })()}
@@ -387,41 +387,41 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
                     {requiredKeys
                         .filter(key => getVariableByKey(key)?.user_viewable)
                         .map(key => {
-                      const variable = getVariableByKey(key);
-                      const isEditable = variable?.user_editable ?? true;
-                      return (
-                          <React.Fragment key={key}>
-                            <div className="flex items-center gap-2">
-                              <Input
-                                  value={key}
-                                  disabled
-                                  className="flex-1 bg-muted"
-                              />
-                              <Input
-                                  value={formData.environment[key] || ''}
-                                  onChange={(e) => updateEnvironmentVariable(key, e.target.value)}
-                                  disabled={!isEditable}
-                                  className={`flex-1 ${!isEditable ? 'bg-muted' : ''}`}
-                                  placeholder={variable?.default_value || 'null'}
-                              />
-                              <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => restoreDefault(key)}
-                                  disabled={!isEditable}
-                                  title="restore default"
-                              >
-                                <RotateCcw className="h-4 w-4" />
-                              </Button>
-                            </div>
-                            {variable?.description && (
-                                <p className="text-sm text-muted-foreground pl-2">
-                                  {variable.description}
-                                </p>
-                            )}
-                          </React.Fragment>
-                      );
-                    })}
+                          const variable = getVariableByKey(key);
+                          const isEditable = variable?.user_editable ?? true;
+                          return (
+                              <React.Fragment key={key}>
+                                <div className="flex items-center gap-2">
+                                  <Input
+                                      value={key}
+                                      disabled
+                                      className="flex-1 bg-muted"
+                                  />
+                                  <Input
+                                      value={formData.environment[key] || ''}
+                                      onChange={(e) => updateEnvironmentVariable(key, e.target.value)}
+                                      disabled={!isEditable}
+                                      className={`flex-1 ${!isEditable ? 'bg-muted' : ''}`}
+                                      placeholder={variable?.default_value || 'null'}
+                                  />
+                                  <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => restoreDefault(key)}
+                                      disabled={!isEditable}
+                                      title="restore default"
+                                  >
+                                    <RotateCcw className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                                {variable?.description && (
+                                    <p className="text-sm text-muted-foreground pl-2">
+                                      {variable.description}
+                                    </p>
+                                )}
+                              </React.Fragment>
+                          );
+                        })}
 
                     {optionalKeys.length > 0 && <Separator />}
                   </>

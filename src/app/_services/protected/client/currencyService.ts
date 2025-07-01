@@ -7,7 +7,6 @@ export async function fetchUserCurrency(): Promise<SupportedCurrency> {
     });
 
     if (!response.ok) {
-        console.log(response);
         const error = await response.text();
         throw new Error(error || 'Fetch currency failed');
     }

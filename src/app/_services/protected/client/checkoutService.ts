@@ -6,7 +6,6 @@ export async function startCheckout(price_id: string): Promise<string> {
     });
 
     if (!response.ok) {
-        console.log(response);
         const error = await response.text();
         throw new Error(error || 'Checkout failed');
     }
