@@ -72,15 +72,15 @@ export default async function Home() {
               <div className="flex items-center justify-center space-x-8 text-sm text-muted-foreground">
                 <div className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-primary mr-2" />
-                  No Setup Fees
+                  No Hidden Fees
                 </div>
                 <div className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-primary mr-2" />
-                  24/7 Support
+                  No Player Limits
                 </div>
                 <div className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-primary mr-2" />
-                  99.9% Uptime
+                  DDoS Protection
                 </div>
               </div>
             </div>
@@ -98,10 +98,12 @@ export default async function Home() {
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <Card className="border hover:border-primary/50 transition-colors">
                   <CardHeader>
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                      <MapPin className="w-6 h-6 text-primary" />
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <MapPin className="w-6 h-6 text-primary" />
+                      </div>
+                      <CardTitle>European Data Centers</CardTitle>
                     </div>
-                    <CardTitle>European Data Centers</CardTitle>
                     <CardDescription>
                       Servers located in Germany for low latency anywhere in Europe
                     </CardDescription>
@@ -110,10 +112,12 @@ export default async function Home() {
 
                 <Card className="border hover:border-primary/50 transition-colors">
                   <CardHeader>
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                      <Zap className="w-6 h-6 text-primary" />
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <Zap className="w-6 h-6 text-primary" />
+                      </div>
+                      <CardTitle>Instant Setup</CardTitle>
                     </div>
-                    <CardTitle>Instant Setup</CardTitle>
                     <CardDescription>
                       Your Minecraft server is ready in under 2 minutes with our one-click deployment
                     </CardDescription>
@@ -122,10 +126,12 @@ export default async function Home() {
 
                 <Card className="border hover:border-primary/50 transition-colors">
                   <CardHeader>
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                      <Shield className="w-6 h-6 text-primary" />
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <Shield className="w-6 h-6 text-primary" />
+                      </div>
+                      <CardTitle>DDoS Protection</CardTitle>
                     </div>
-                    <CardTitle>DDoS Protection</CardTitle>
                     <CardDescription>
                       Enterprise-grade DDoS protection keeps your server online even during attacks
                     </CardDescription>
@@ -134,10 +140,12 @@ export default async function Home() {
 
                 <Card className="border hover:border-primary/50 transition-colors">
                   <CardHeader>
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                      <Terminal className="w-6 h-6 text-primary" />
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <Terminal className="w-6 h-6 text-primary" />
+                      </div>
+                      <CardTitle>Server Console</CardTitle>
                     </div>
-                    <CardTitle>Server Console</CardTitle>
                     <CardDescription>
                       Monitor your server and run commands remotely via our in-browser console terminal
                     </CardDescription>
@@ -146,10 +154,12 @@ export default async function Home() {
 
                 <Card className="border hover:border-primary/50 transition-colors">
                   <CardHeader>
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                      <Pencil className="w-6 h-6 text-primary" />
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <Pencil className="w-6 h-6 text-primary" />
+                      </div>
+                      <CardTitle>Mod Support</CardTitle>
                     </div>
-                    <CardTitle>Mod Support</CardTitle>
                     <CardDescription>
                       Choose one of our preset minecraft installations, or upload your own custom setups
                     </CardDescription>
@@ -158,10 +168,12 @@ export default async function Home() {
 
                 <Card className="border hover:border-primary/50 transition-colors">
                   <CardHeader>
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                      <Files className="w-6 h-6 text-primary" />
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <Files className="w-6 h-6 text-primary" />
+                      </div>
+                      <CardTitle>SFTP</CardTitle>
                     </div>
-                    <CardTitle>SFTP</CardTitle>
                     <CardDescription>
                       Access your server via SFTP; or modify your files via our in-browser file explorer
                     </CardDescription>
@@ -177,7 +189,7 @@ export default async function Home() {
             <div className="container mx-auto px-4">
               <div className="text-center mb-16">
                 <h2 className="text-4xl font-bold mb-4 text-foreground">Simple, Transparent Pricing</h2>
-                <p className="text-xl text-muted-foreground">No hidden fees. What you see, is what you get.</p>
+                <p className="text-xl text-muted-foreground">No hidden fees. What you see, is what you get</p>
               </div>
               <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                 {euroPlans.map((plan, index) => (
@@ -226,7 +238,7 @@ export default async function Home() {
             <div className="container mx-auto px-4 text-center">
               <h2 className="text-4xl font-bold mb-4">Ready to Start Your Minecraft Adventure?</h2>
               <p className="text-xl mb-8 opacity-90">
-                Join thousands of European players who trust AxolHost with their Minecraft worlds
+                Join hundreds of European players who trust AxolHost with their Minecraft worlds
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <SignUpButton mode="modal">
