@@ -110,3 +110,24 @@ export interface ResourceLimitResponse {
     cpu: number;
     threads: number;
 }
+
+type EggType = 'SPONGE' | 'VANILLA' | 'PAPER' | 'BUNGEECORD' | 'FORGE' | 'MODPACK';
+
+type Egg = {
+    id: number;
+    type: EggType;
+    name: string;
+    description: string;
+    dockerImages: string[];
+    startup: string;
+    variables: EggVariable[];
+};
+
+type EggVariable = {
+    name: string;
+    description: string;
+    envVariable: string;
+    defaultValue: string;
+    userViewable: boolean;
+    userEditable: boolean;
+};
