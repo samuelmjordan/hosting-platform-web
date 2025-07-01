@@ -36,7 +36,7 @@ const Navbar = ({ items = [], showAuth = false }: NavbarProps) => {
                         <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
                             <Server className="w-5 h-5 text-white" />
                         </div>
-                        <span className="text-2xl font-bold text-accent">AxolHost</span>
+                        <span className="text-2xl font-bold text-accent">Axolhost</span>
                     </Link>
 
                     {/* Desktop menu */}

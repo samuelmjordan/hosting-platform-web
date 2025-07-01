@@ -52,7 +52,7 @@ export default async function Home() {
                 🇪🇺 European Data Centers • GDPR Compliant
               </Badge>
               <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-6 text-foreground">
-                <span className="text-primary">AxolHost</span>
+                <span className="text-primary">Axolhost</span>
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-3xl mx-auto">
                 Premium Minecraft Java Edition server hosting designed for European players
@@ -90,7 +90,7 @@ export default async function Home() {
           <section id="features" className="py-20 bg-muted">
             <div className="container mx-auto px-4">
               <div className="text-center mb-16">
-                <h2 className="text-4xl font-bold mb-4 text-foreground">Why Choose AxolHost?</h2>
+                <h2 className="text-4xl font-bold mb-4 text-foreground">Why Choose Axolhost?</h2>
                 <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                   Built specifically for Minecraft Java Edition with European players in mind
                 </p>
@@ -238,7 +238,7 @@ export default async function Home() {
             <div className="container mx-auto px-4 text-center">
               <h2 className="text-4xl font-bold mb-4">Ready to Start Your Minecraft Adventure?</h2>
               <p className="text-xl mb-8 opacity-90">
-                Join hundreds of European players who trust AxolHost with their Minecraft worlds
+                Join hundreds of European players who trust Axolhost with their Minecraft worlds
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <SignUpButton mode="modal">
