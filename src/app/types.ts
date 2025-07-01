@@ -111,23 +111,23 @@ export interface ResourceLimitResponse {
     threads: number;
 }
 
-type EggType = 'SPONGE' | 'VANILLA' | 'PAPER' | 'BUNGEECORD' | 'FORGE' | 'MODPACK';
+export type EggType = 'SPONGE' | 'VANILLA' | 'PAPER' | 'BUNGEECORD' | 'FORGE' | 'MODPACK';
 
-type Egg = {
+export type Egg = {
     id: number;
     type: EggType;
     name: string;
     description: string;
-    dockerImages: string[];
+    docker_images: string[];
     startup: string;
     variables: EggVariable[];
 };
 
-type EggVariable = {
+export type EggVariable = {
     name: string;
     description: string;
-    envVariable: string;
-    defaultValue: string;
-    userViewable: boolean;
-    userEditable: boolean;
+    env_variable: string;
+    default_value: string;
+    user_viewable: boolean;
+    user_editable: boolean;
 };

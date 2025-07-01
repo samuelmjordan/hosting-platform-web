@@ -12,6 +12,7 @@ export default async function Settings({ params }: { params: Promise<Params> }) 
   return (
     <main className="flex-1">
         <ServerSettings
+            eggs={eggs}
             subscriptionId={subscriptionUid}
         />
     </main>

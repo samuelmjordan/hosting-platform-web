@@ -21,18 +21,19 @@ import {InstallStatusBadge} from "./InstallStatusBadge"
 import {Separator} from '@/components/ui/separator';
 import {useToast} from '@/hooks/use-toast';
 import {AlertTriangle, CheckCircle2, Loader2, Lock, RotateCcw, Save} from 'lucide-react';
-import {EGG_OPTIONS, StartupResponse,} from '@/app/_components/page/settings/utils/types';
+import {StartupResponse,} from '@/app/_components/page/settings/utils/types';
 import * as settingsClient from "@/app/_services/protected/client/settingsClientService";
 import {ProvisioningStatusBadge} from "@/app/_components/page/dashboard/ServerCard/ProvisioningStatusBadge";
 import {fetchSubscriptionProvisioningStatus} from "@/app/_services/protected/client/subscriptionClientService";
-import {ProvisioningStatus} from "@/app/types";
+import {Egg, EggVariable, ProvisioningStatus} from "@/app/types";
 import {Alert, AlertDescription} from "@/components/ui/alert";
 
 interface ServerSettingsProps {
+  eggs: Egg[];
   subscriptionId: string;
 }
 
-export default function ServerSettings({ subscriptionId }: ServerSettingsProps) {
+export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsProps) {
   const [settings, setSettings] = useState<StartupResponse | null>(null);
   const [status, setStatus] = useState<ProvisioningStatus>(ProvisioningStatus.PENDING);
   const [loading, setLoading] = useState(true);
@@ -66,8 +67,8 @@ export default function ServerSettings({ subscriptionId }: ServerSettingsProps) 
 
   useEffect(() => {
     if (formData.eggId > 0 && settings) {
-      const selectedEgg = EGG_OPTIONS.find(egg => egg.id === formData.eggId);
-      const previousEgg = EGG_OPTIONS.find(egg => egg.id === previousEggId);
+      const selectedEgg = eggs.find(egg => egg.id === formData.eggId);
+      const previousEgg = eggs.find(egg => egg.id === previousEggId);
 
       if (selectedEgg) {
         setFormData(prev => {
@@ -75,25 +76,32 @@ export default function ServerSettings({ subscriptionId }: ServerSettingsProps) 
 
           // remove old required vars if switching eggs
           if (previousEgg && selectedEgg.id !== previousEgg.id) {
-            Object.keys(previousEgg.requiredEnvVars).forEach(key => {
-              delete newEnv[key];
+            previousEgg.variables.forEach(variable => {
+              delete newEnv[variable.env_variable];
             });
           }
 
           // add new required vars with defaults
-          Object.entries(selectedEgg.requiredEnvVars).forEach(([key, defaultValue]) => {
-            if (!(key in newEnv)) {
-              newEnv[key] = defaultValue;
+          selectedEgg.variables.forEach(variable => {
+            if (!(variable.env_variable in newEnv)) {
+              newEnv[variable.env_variable] = variable.default_value;
             }
           });
 
-          return { ...prev, environment: newEnv };
+          return {
+            ...prev,
+            environment: newEnv,
+            startup: selectedEgg.startup,
+            image: (selectedEgg.docker_images && selectedEgg.docker_images.length > 0)
+                ? selectedEgg.docker_images[0]
+                : prev.image
+          };
         });
 
         setPreviousEggId(formData.eggId);
       }
     }
-  }, [formData.eggId, settings, previousEggId]);
+  }, [formData.eggId, settings, previousEggId, eggs]);
 
   const loadSettings = async () => {
     try {
@@ -209,8 +217,8 @@ export default function ServerSettings({ subscriptionId }: ServerSettingsProps) 
   };
 
   const removeEnvironmentVariable = (key: string) => {
-    const selectedEgg = EGG_OPTIONS.find(egg => egg.id === formData.eggId);
-    if (selectedEgg && key in selectedEgg.requiredEnvVars) {
+    const selectedEgg = eggs.find(egg => egg.id === formData.eggId);
+    if (selectedEgg && selectedEgg.variables.some(v => v.env_variable === key)) {
       return; // can't remove required vars
     }
 
@@ -232,8 +240,10 @@ export default function ServerSettings({ subscriptionId }: ServerSettingsProps) 
   };
 
   const getRequiredKeys = (): string[] => {
-    const selectedEgg = EGG_OPTIONS.find(egg => egg.id === formData.eggId);
-    return selectedEgg ? Object.keys(selectedEgg.requiredEnvVars) : [];
+    const selectedEgg = eggs.find(egg => egg.id === formData.eggId);
+    console.log('selectedEgg', selectedEgg);
+    console.log('requiredKeys', selectedEgg ? selectedEgg.variables.map(v => v.env_variable) : []);
+    return selectedEgg ? selectedEgg.variables.map(v => v.env_variable) : [];
   };
 
   const getOptionalKeys = (): string[] => {
@@ -245,14 +255,20 @@ export default function ServerSettings({ subscriptionId }: ServerSettingsProps) 
     return getRequiredKeys().includes(key);
   };
 
-  const getDefaultValue = (key: string): string => {
-    const selectedEgg = EGG_OPTIONS.find(egg => egg.id === formData.eggId);
-    return selectedEgg?.requiredEnvVars[key] || '';
+  const getdefault_value = (key: string): string => {
+    const selectedEgg = eggs.find(egg => egg.id === formData.eggId);
+    const variable = selectedEgg?.variables.find(v => v.env_variable === key);
+    return variable?.default_value || '';
+  };
+
+  const getVariableByKey = (key: string): EggVariable | undefined => {
+    const selectedEgg = eggs.find(egg => egg.id === formData.eggId);
+    return selectedEgg?.variables.find(v => v.env_variable === key);
   };
 
   const restoreDefault = (key: string) => {
-    const defaultValue = getDefaultValue(key);
-    updateEnvironmentVariable(key, defaultValue);
+    const default_value = getdefault_value(key);
+    updateEnvironmentVariable(key, default_value);
   };
 
   if (loading) {
@@ -329,7 +345,7 @@ export default function ServerSettings({ subscriptionId }: ServerSettingsProps) 
                     <SelectValue placeholder="select server type" />
                   </SelectTrigger>
                   <SelectContent>
-                    {EGG_OPTIONS.map(egg => (
+                    {eggs.map(egg => (
                         <SelectItem key={egg.id} value={egg.id.toString()}>
                           {egg.name}
                         </SelectItem>
@@ -353,29 +369,39 @@ export default function ServerSettings({ subscriptionId }: ServerSettingsProps) 
                       <Lock className="h-4 w-4 text-muted-foreground" />
                       <Label className="text-sm font-medium">Required Variables</Label>
                     </div>
-                    {requiredKeys.map(key => (
-                        <div key={key} className="flex items-center gap-2">
-                          <Input
-                              value={key}
-                              disabled
-                              className="flex-1 bg-muted"
-                          />
-                          <Input
-                              value={formData.environment[key] || ''}
-                              onChange={(e) => updateEnvironmentVariable(key, e.target.value)}
-                              className="flex-1"
-                              placeholder={`null`}
-                          />
-                          <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => restoreDefault(key)}
-                              title="restore default"
-                          >
-                            <RotateCcw className="h-4 w-4" />
-                          </Button>
-                        </div>
-                    ))}
+                    {requiredKeys.map(key => {
+                      const variable = getVariableByKey(key);
+                      return (
+                          <React.Fragment key={key}>
+                            <div className="flex items-center gap-2">
+                              <Input
+                                  value={variable?.name || key}
+                                  disabled
+                                  className="flex-1 bg-muted"
+                              />
+                              <Input
+                                  value={formData.environment[key] || ''}
+                                  onChange={(e) => updateEnvironmentVariable(key, e.target.value)}
+                                  className="flex-1"
+                                  placeholder={variable?.default_value || 'null'}
+                              />
+                              <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => restoreDefault(key)}
+                                  title="restore default"
+                              >
+                                <RotateCcw className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            {variable?.description && (
+                                <p className="text-sm text-muted-foreground pl-2">
+                                  {variable.description}
+                                </p>
+                            )}
+                          </React.Fragment>
+                      );
+                    })}
 
                     {optionalKeys.length > 0 && <Separator />}
                   </>
