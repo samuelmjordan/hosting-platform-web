@@ -17,7 +17,7 @@ export default async function RootLayout({ children, params }: { children: React
     return (
         <div className="flex flex-col min-h-screen">
         <div>
-            <Navbar items={menuItems}/>
+            <Navbar items={menuItems} showAuth={true} />
         </div>
         <div className={`min-h-screen bg-gradient-to-br from-background via-muted/50 to-background`}>
             <div className="container mx-auto p-6 space-y-6">

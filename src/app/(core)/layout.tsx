@@ -14,9 +14,7 @@ export default function RootLayout({
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div>
-        <Navbar items={menuItems}/>
-      </div>
+        <Navbar items={menuItems} showAuth={true} />
       <div className="flex-1">
         {children}
       </div>

@@ -45,7 +45,7 @@ export default async function Home() {
               </p>
               <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
                 Lightning-fast servers, instant setup, and straightforward management. Get your Minecraft world online in
-                under 60 seconds.
+                under 2 minutes.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                 <SignUpButton mode="modal">
@@ -54,10 +54,6 @@ export default async function Home() {
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Button>
                 </SignUpButton>
-                <Button variant="outline" size="lg" className="text-lg px-8 py-6 bg-transparent">
-                  View Live Demo
-                  <Gamepad2 className="ml-2 w-5 h-5" />
-                </Button>
               </div>
               <div className="flex items-center justify-center space-x-8 text-sm text-muted-foreground">
                 <div className="flex items-center">
@@ -122,41 +118,6 @@ export default async function Home() {
                   </CardHeader>
                 </Card>
 
-                <Card className="border-2 hover:border-accent/50 transition-colors">
-                  <CardHeader>
-                    <div className="w-12 h-12 bg-accent/10 dark:bg-accent/20 rounded-lg flex items-center justify-center mb-4">
-                      <Database className="w-6 h-6 text-accent" />
-                    </div>
-                    <CardTitle>Automatic Backups</CardTitle>
-                    <CardDescription>
-                      Daily automated backups with one-click restore. Your world is always safe
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-
-                <Card className="border-2 hover:border-accent/50 transition-colors">
-                  <CardHeader>
-                    <div className="w-12 h-12 bg-accent/10 dark:bg-accent/20 rounded-lg flex items-center justify-center mb-4">
-                      <Gamepad2 className="w-6 h-6 text-accent" />
-                    </div>
-                    <CardTitle>Mod Support</CardTitle>
-                    <CardDescription>
-                      Full support for Forge, Fabric, Paper, Spigot, and all popular modpacks
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-
-                <Card className="border-2 hover:border-accent/50 transition-colors">
-                  <CardHeader>
-                    <div className="w-12 h-12 bg-accent/10 dark:bg-accent/20 rounded-lg flex items-center justify-center mb-4">
-                      <Headphones className="w-6 h-6 text-accent" />
-                    </div>
-                    <CardTitle>24/7 Expert Support</CardTitle>
-                    <CardDescription>
-                      Real Minecraft experts available around the clock via Discord and tickets
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
               </div>
             </div>
           </section>
