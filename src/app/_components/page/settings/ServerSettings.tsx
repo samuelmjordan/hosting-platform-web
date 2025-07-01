@@ -87,7 +87,7 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
           });
 
           let firstImageValue = prev.image;
-          if (selectedEgg.docker_images && Object.keys(selectedEgg.docker_images).length > 0) {
+          if (!firstImageValue && selectedEgg.docker_images && Object.keys(selectedEgg.docker_images).length > 0) {
             const values = Object.values(selectedEgg.docker_images);
             firstImageValue = values[values.length - 1];
           }
