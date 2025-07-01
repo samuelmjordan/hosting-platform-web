@@ -390,7 +390,7 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
                           <React.Fragment key={key}>
                             <div className="flex items-center gap-2">
                               <Input
-                                  value={variable?.name || key}
+                                  value={key}
                                   disabled
                                   className="flex-1 bg-muted"
                               />
