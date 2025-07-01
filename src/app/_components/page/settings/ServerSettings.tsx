@@ -384,8 +384,11 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
                       <Lock className="h-4 w-4 text-muted-foreground" />
                       <Label className="text-sm font-medium">Required Variables</Label>
                     </div>
-                    {requiredKeys.map(key => {
+                    {requiredKeys
+                        .filter(key => getVariableByKey(key)?.user_viewable)
+                        .map(key => {
                       const variable = getVariableByKey(key);
+                      const isEditable = variable?.user_editable ?? true;
                       return (
                           <React.Fragment key={key}>
                             <div className="flex items-center gap-2">
@@ -397,13 +400,15 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
                               <Input
                                   value={formData.environment[key] || ''}
                                   onChange={(e) => updateEnvironmentVariable(key, e.target.value)}
-                                  className="flex-1"
+                                  disabled={!isEditable}
+                                  className={`flex-1 ${!isEditable ? 'bg-muted' : ''}`}
                                   placeholder={variable?.default_value || 'null'}
                               />
                               <Button
                                   variant="outline"
                                   size="sm"
                                   onClick={() => restoreDefault(key)}
+                                  disabled={!isEditable}
                                   title="restore default"
                               >
                                 <RotateCcw className="h-4 w-4" />

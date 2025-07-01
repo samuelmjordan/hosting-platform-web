@@ -1,4 +1,4 @@
-import {EGG_OPTIONS, StartupResponse, UpdateStartupRequest} from "@/app/_components/page/settings/utils/types";
+import {StartupResponse, UpdateStartupRequest} from "@/app/_components/page/settings/utils/types";
 
 export async function getSettings(subscriptionId: string): Promise<StartupResponse> {
     const response = await fetch(`/api/user/subscription/${subscriptionId}/settings`, {
@@ -57,15 +57,10 @@ export const formDataToRequest = (
         environment: Record<string, string>;
     }
 ): UpdateStartupRequest => {
-    const selectedEgg = EGG_OPTIONS.find(egg => egg.id === formData.eggId);
-    if (!selectedEgg) {
-        throw new Error('invalid egg selection');
-    }
-
     return {
         startup_command: formData.startup,
         environment: formData.environment,
-        egg_id: selectedEgg.id,
+        egg_id: formData.eggId,
         image: formData.image,
     };
 };
