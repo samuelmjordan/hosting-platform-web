@@ -81,12 +81,8 @@ const Footer = () => {
                 </div>
                 <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
                     <p className="text-muted-foreground text-sm">
-                        &copy; 2024 AxolHost. All rights reserved. Made with ❤️ for European Minecraft players.
+                        &copy; 2025 Musdev. All rights reserved. Made with ❤️ for European Minecraft players.
                     </p>
-                    <div className="flex items-center mt-4 md:mt-0">
-                        <span className="text-muted-foreground text-sm mr-2">Powered by</span>
-                        <span className="text-muted-foreground text-sm font-medium">Musdev Limited</span>
-                    </div>
                 </div>
             </div>
         </footer>
