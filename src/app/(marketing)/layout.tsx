@@ -1,16 +1,21 @@
 import type React from "react"
 import type { Metadata } from "next"
+import Navbar from "@/app/_components/layout/navbar";
+import Footer from "@/app/_components/layout/footer";
+import {NavbarItem} from "@/app/types";
 
-export const metadata: Metadata = {
-  title: "AxolHost - Premium Minecraft Server Hosting in Europe",
-  description:
-      "Straightforward, high-performance Minecraft Java Edition server hosting with European data centers, instant setup, and 24/7 support.",
-}
+const navItems : NavbarItem[] = [
+]
 
 export default function MarketingLayout({
-                                          children,
-                                        }: Readonly<{
+    children,
+}: Readonly<{
   children: React.ReactNode
 }>) {
-  return <div className="flex min-h-screen flex-col bg-gradient-to-b from-green-50 to-white">{children}</div>
+  return (
+    <div className="flex min-h-screen flex-col">
+        <Navbar items={navItems} showAuth={true} />
+        {children}
+        <Footer />
+    </div>)
 }

@@ -2,10 +2,10 @@ import { Server } from "lucide-react"
 import Link from "next/link"
 
 const Footer = () => {
-    const footerItems = [
-        { label: "Help", href: "/help" },
-        { label: "About", href: "/about" },
-        { label: "Contact", href: "/contact" },
+    const legalItems = [
+        { label: "Privacy Policy", href: "/privacy-policy" },
+        { label: "Terms of Service", href: "/terms-of-service" },
+        { label: "GDPR Compliance", href: "/gdpr" },
     ]
 
     return (
@@ -22,60 +22,15 @@ const Footer = () => {
                         <p className="text-muted-foreground">Premium Minecraft server hosting for European players.</p>
                     </div>
                     <div>
-                        <h3 className="font-semibold mb-4">Product</h3>
+                        <h3 className="font-semibold mb-4">Legal</h3>
                         <ul className="space-y-2 text-muted-foreground">
-                            <li>
-                                <Link href="#features" className="hover:text-accent transition-colors">
-                                    Features
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="#pricing" className="hover:text-accent transition-colors">
-                                    Pricing
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="#" className="hover:text-accent transition-colors">
-                                    Server Locations
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 className="font-semibold mb-4">Support</h3>
-                        <ul className="space-y-2 text-muted-foreground">
-                            {footerItems.map((item) => (
+                            {legalItems.map((item) => (
                                 <li key={item.label}>
                                     <Link href={item.href} className="hover:text-accent transition-colors">
                                         {item.label}
                                     </Link>
                                 </li>
                             ))}
-                            <li>
-                                <Link href="#" className="hover:text-accent transition-colors">
-                                    Discord
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 className="font-semibold mb-4">Legal</h3>
-                        <ul className="space-y-2 text-muted-foreground">
-                            <li>
-                                <Link href="#" className="hover:text-accent transition-colors">
-                                    Privacy Policy
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="#" className="hover:text-accent transition-colors">
-                                    Terms of Service
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="#" className="hover:text-accent transition-colors">
-                                    GDPR
-                                </Link>
-                            </li>
                         </ul>
                     </div>
                 </div>

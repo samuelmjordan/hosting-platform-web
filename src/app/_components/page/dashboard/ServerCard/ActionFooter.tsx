@@ -38,7 +38,7 @@ export function ActionFooter({ plans, server, onUpgrade }: ActionFooterProps) {
         <div className="px-6 py-4 bg-muted/30 border-t border-border mt-auto">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <Link href={`/${server.subscription_id}/console`}>
+              <Link href={`/panel/${server.subscription_id}/console`}>
                 <Button
                     variant="outline"
                     size="sm"

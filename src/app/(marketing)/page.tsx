@@ -23,7 +23,7 @@ import {
 import Footer from "@/app/_components/layout/footer";
 import {fetchPlans} from "@/app/_services/public/planService";
 import {formatCurrency} from "@/app/_components/page/billing/utils/formatters";
-import Console from "@/app/(panel)/[subscriptionUid]/console/page";
+import Console from "@/app/(panel)/panel/[subscriptionUid]/console/page";
 
 export default async function Home() {
   const { userId } = await auth()
@@ -31,19 +31,10 @@ export default async function Home() {
   const euroPlans = plans.filter(plan => plan.price.currency == "EUR");
 
   if (userId) {
-    redirect("/store")
+    redirect("/user/store")
   }
 
-  const navItems = [
-    { label: "Features", href: "#features" },
-    { label: "Pricing", href: "#pricing" },
-    { label: "Support", href: "#support" },
-  ]
-
   return (
-      <div className="flex min-h-screen flex-col">
-        <Navbar items={navItems} showAuth={true} />
-
         <main className="flex-1">
           {/* Hero Section */}
           <section className="py-20 lg:py-32 bg-background">
@@ -251,8 +242,5 @@ export default async function Home() {
             </div>
           </section>
         </main>
-
-        <Footer />
-      </div>
   )
 }
