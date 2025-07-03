@@ -3,15 +3,15 @@ import { Server, Plan } from "@/app/types"
 import { toast } from "sonner"
 import {
   changeServerAddress,
-  changeServerTitle,
-  changeServerSpecification,
+  changeServerTitle
 } from "@/app/_services/protected/client/subscriptionClientService"
 import { FIXED_DOMAIN, MAX_SUBDOMAIN_LENGTH, MAX_TITLE_LENGTH } from "../utils/constants"
 import { validateSubdomain } from "../utils/formatters"
+import {confirmUpgrade, previewUpgrade} from "@/app/_services/protected/client/subscriptionSpecificationService";
 
 export function useServerManagement(
-  initialServers: Server[],
-  plans: Plan[]
+    initialServers: Server[],
+    plans: Plan[]
 ) {
   const [servers, setServers] = useState(initialServers)
   const [editingServer, setEditingServer] = useState<Server | null>(null)
@@ -49,16 +49,16 @@ export function useServerManagement(
       }
 
       setServers(prevServers =>
-        prevServers.map(server => {
-          if (server.subscription_id === serverId) {
-            return {
-              ...server,
-              server_name: name,
-              cname_record_name: address ? address + FIXED_DOMAIN : null,
+          prevServers.map(server => {
+            if (server.subscription_id === serverId) {
+              return {
+                ...server,
+                server_name: name,
+                cname_record_name: address ? address + FIXED_DOMAIN : null,
+              }
             }
-          }
-          return server
-        })
+            return server
+          })
       )
 
       toast("Server updated", {
@@ -72,31 +72,45 @@ export function useServerManagement(
     }
   }
 
-  const handleUpgradeServer = async (serverId: string, specificationId: string) => {
+  const handlePreviewUpgrade = async (serverId: string, specificationId: string) => {
     try {
-      await changeServerSpecification(serverId, specificationId)
+      const preview = await previewUpgrade(serverId, specificationId)
+      return preview
+    } catch (error) {
+      toast("Error", {
+        description: "Failed to get upgrade preview. Please try again."
+      })
+      throw error
+    }
+  }
+
+  const handleConfirmUpgrade = async (serverId: string, specificationId: string) => {
+    try {
+      const confirmation = await confirmUpgrade(serverId, specificationId)
 
       const newPlan = plans.find(plan => plan.specification.specification_id === specificationId)
       if (newPlan) {
         setServers(prevServers =>
-          prevServers.map(server => {
-            if (server.subscription_id === serverId) {
-              return {
-                ...server,
-                specification_title: newPlan.specification.title,
-                ram_gb: newPlan.specification.ram_gb,
-                vcpu: newPlan.specification.vcpu,
-                minor_amount: newPlan.price.minor_amount,
+            prevServers.map(server => {
+              if (server.subscription_id === serverId) {
+                return {
+                  ...server,
+                  specification_title: newPlan.specification.title,
+                  ram_gb: newPlan.specification.ram_gb,
+                  vcpu: newPlan.specification.vcpu,
+                  minor_amount: newPlan.price.minor_amount,
+                }
               }
-            }
-            return server
-          })
+              return server
+            })
         )
       }
 
       toast("Server upgraded", {
         description: "Your server specification has been updated."
       })
+
+      return confirmation
     } catch (error) {
       toast("Error", {
         description: "Failed to upgrade server. Please try again."
@@ -112,6 +126,7 @@ export function useServerManagement(
     upgradeServer,
     setUpgradeServer,
     handleEditServer,
-    handleUpgradeServer,
+    handlePreviewUpgrade,
+    handleConfirmUpgrade,
   }
 }

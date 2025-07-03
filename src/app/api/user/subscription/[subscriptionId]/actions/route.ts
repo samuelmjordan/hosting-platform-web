@@ -52,22 +52,6 @@ export async function POST(
 
         return NextResponse.json({ success: true });
 
-      case "change-specification":
-        const specificationResponse = await fetch(`${basePath}/specification`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ specification_id })
-        });
-
-        if (!specificationResponse.ok) {
-          throw new Error('failed to change subscription specification');
-        }
-
-        return NextResponse.json({ success: true });
-
       case "change-address":
         const changeAddressResponse = await fetch(`${basePath}/address`, {
           method: 'POST',

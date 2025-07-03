@@ -48,18 +48,6 @@ export async function changeServerTitle(subscriptionId: string, title: string): 
   }
 }
 
-export async function changeServerSpecification(subscriptionId: string, specificationId: string): Promise<void> {
-  const response = await fetch(`/api/user/subscription/${subscriptionId}/actions`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'change-specification', specificationId })
-  });
-
-  if (!response.ok) {
-    throw new Error('failed to change server specification');
-  }
-}
-
 export async function fetchSubscriptionProvisioningStatus(subscriptionId: string): Promise<ProvisioningStatus> {
   const response = await fetch(`/api/user/subscription/${subscriptionId}/status`, {
     method: 'GET',

@@ -35,7 +35,8 @@ export function DashboardTable({ servers: initialServers, plans, userId }: Dashb
     upgradeServer,
     setUpgradeServer,
     handleEditServer,
-    handleUpgradeServer,
+    handlePreviewUpgrade,
+    handleConfirmUpgrade,
   } = useServerManagement(initialServers, plans)
 
   const handleCopy = (text: string, id: string) => {
@@ -118,7 +119,8 @@ export function DashboardTable({ servers: initialServers, plans, userId }: Dashb
             plans={plans}
             isOpen={upgradeServer !== null}
             onClose={() => setUpgradeServer(null)}
-            onSave={handleUpgradeServer}
+            onPreview={handlePreviewUpgrade}
+            onConfirm={handleConfirmUpgrade}
         />
       </div>
   )
