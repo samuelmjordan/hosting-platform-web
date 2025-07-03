@@ -22,11 +22,9 @@ export async function POST(request: Request) {
 
     const checkoutData = {
       price_id,
-      success: `${BASE_URL}/return`,
-      cancel: `${BASE_URL}/return`
+      success: `${BASE_URL}/user/dashboard`,
+      cancel: `${BASE_URL}/user/dashboard`
     };
-
-    console.log('Sending checkout data:', checkoutData);
 
     const response = await fetch(`${API_URL}/api/user/checkout`, {
       method: 'POST',
