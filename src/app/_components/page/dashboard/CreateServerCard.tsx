@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import Link from "next/link"
+import {STORE_PATH} from "@/app/constants";
 
 export function CreateServerCard() {
   return (
@@ -18,7 +19,7 @@ export function CreateServerCard() {
 
         <div className="px-6 py-4 bg-muted/30 ring-2 ring-accent mt-auto">
           <div className="flex justify-center">
-            <Link href="/store">
+            <Link href={STORE_PATH}>
               <Button
                   size="sm"
                   className="bg-accent hover:bg-accent/90 text-accent-foreground disabled:opacity-50"

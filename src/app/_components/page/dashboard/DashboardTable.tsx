@@ -12,6 +12,7 @@ import { EditServerDialog } from "./dialogs/EditServerDialog"
 import { UpgradeServerDialog } from "./dialogs/UpgradeServerDialog"
 import { useServerStatus } from "./hooks/useServerStatus"
 import { useServerManagement } from "./hooks/useServerManagement"
+import {STORE_PATH} from "@/app/constants";
 
 interface DashboardTableProps {
   servers: Server[]
@@ -68,14 +69,14 @@ export function DashboardTable({ servers: initialServers, plans, userId }: Dashb
               />
             </div>
             <Button
-                variant="outline"
+                variant="default"
                 size="sm"
                 onClick={checkAllServerStatuses}
             >
               <RefreshCw className="h-4 w-4 mr-2" />
               Refresh
             </Button>
-            <Link href="/store">
+            <Link href={STORE_PATH}>
               <Button
                   size="sm"
                   className="bg-accent hover:bg-accent/90 text-accent-foreground disabled:opacity-50"

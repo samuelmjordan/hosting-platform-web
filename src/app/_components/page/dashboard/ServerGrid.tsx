@@ -7,6 +7,7 @@ import { ServerCard } from "./ServerCard"
 import { CreateServerCard } from "./CreateServerCard"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import {STORE_PATH} from "@/app/constants";
 
 interface ServerGridProps {
   plans: Plan[]
@@ -46,8 +47,8 @@ export function ServerGrid({
             <ServerIcon className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-foreground mb-2">No servers found</h3>
             <p className="text-muted-foreground mb-6">Create your first server to get started</p>
-            <Link href="/store">
-              <Button>
+            <Link href={STORE_PATH}>
+              <Button className="bg-accent text-accent-foreground">
                 <ServerIcon className="mr-2 h-4 w-4" />
                 Create Server
               </Button>

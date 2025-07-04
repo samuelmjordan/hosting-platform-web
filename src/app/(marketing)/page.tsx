@@ -24,6 +24,7 @@ import Footer from "@/app/_components/layout/footer";
 import {fetchPlans} from "@/app/_services/public/planService";
 import {formatCurrency} from "@/app/_components/page/billing/utils/formatters";
 import Console from "@/app/(panel)/panel/[subscriptionUid]/console/page";
+import {STORE_PATH} from "@/app/constants";
 
 export default async function Home() {
   const { userId } = await auth()
@@ -31,7 +32,7 @@ export default async function Home() {
   const euroPlans = plans.filter(plan => plan.price.currency == "EUR");
 
   if (userId) {
-    redirect("/user/store")
+    redirect(STORE_PATH)
   }
 
   return (
