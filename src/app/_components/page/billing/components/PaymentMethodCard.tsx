@@ -162,7 +162,7 @@ function PaymentMethodActions({
                 onClick={onSetDefault}
                 disabled={isLoading}
             >
-              {isLoading ? "setting..." : "set as default"}
+              {isLoading ? "Setting..." : "Set as default"}
             </Button>
         )}
 
@@ -176,14 +176,14 @@ function PaymentMethodActions({
                     className="text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 border-border"
                     disabled={isLoading}
                 >
-                  unset default
+                  Unset default
                 </Button>
               </DialogTrigger>
               <DialogContent className="bg-background border border-border">
                 <DialogHeader>
-                  <DialogTitle className="text-foreground">unset default payment method</DialogTitle>
+                  <DialogTitle className="text-foreground">Unset default payment method</DialogTitle>
                   <DialogDescription className="text-muted-foreground">
-                    are you sure you want to unset {method.display_name} as the default payment method?
+                    Are you sure you want to unset {method.display_name} as the default payment method?
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
@@ -194,7 +194,7 @@ function PaymentMethodActions({
                       disabled={isLoading}
                       className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                   >
-                    {isLoading ? "unsetting..." : "unset default"}
+                    {isLoading ? "Unsetting..." : "Unset default"}
                   </Button>
                 </DialogFooter>
               </DialogContent>

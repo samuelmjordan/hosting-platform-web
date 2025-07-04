@@ -14,9 +14,11 @@ const Footer = () => {
                 <div className="grid md:grid-cols-4 gap-8">
                     <div>
                         <div className="flex items-center space-x-2 mb-4">
-                            <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-                                <Server className="w-5 h-5 text-white" />
-                            </div>
+                            <img
+                                src={'/BucketAxolotlLight.webp'}
+                                alt="axolotl"
+                                style={{width: '40px'}}
+                            />
                             <span className="text-2xl font-bold">Axolhost</span>
                         </div>
                         <p className="text-muted-foreground">Premium Minecraft server hosting for European players.</p>

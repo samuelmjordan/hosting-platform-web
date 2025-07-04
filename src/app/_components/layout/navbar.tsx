@@ -1,4 +1,5 @@
 "use client"
+import { useTheme } from 'next-themes'
 import { Menu, Server } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs"
@@ -16,8 +17,20 @@ interface NavbarProps {
     showAuth?: boolean
 }
 
+function AxolotlImg() {
+    return (
+        <img
+            src={'/BucketAxolotlLight.webp'}
+            alt="axolotl"
+            style={{width: '80px', marginTop: '20px'}}
+        />
+    )
+}
+
 const Navbar = ({ items = [], showAuth = false }: NavbarProps) => {
     const { isLoaded, isSignedIn } = useUser()
+
+    const { theme } = useTheme()
 
     const UserButtonWithLoader = () => {
         return (
@@ -33,10 +46,8 @@ const Navbar = ({ items = [], showAuth = false }: NavbarProps) => {
                 <div className="relative flex h-16 items-center justify-between">
                     {/* Logo */}
                     <Link href="/" className="flex items-center space-x-2">
-                        <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-                            <Server className="w-5 h-5 text-white" />
-                        </div>
-                        <span className="text-2xl font-bold text-accent">Axolhost</span>
+                        {AxolotlImg()}
+                        <span className="text-2xl font-bold text-foreground">Axolhost</span>
                     </Link>
 
                     {/* Desktop menu */}

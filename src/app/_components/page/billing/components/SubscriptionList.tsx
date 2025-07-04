@@ -63,7 +63,7 @@ function EmptyState() {
                 Get started by adding your first server subscription
             </p>
             <Link href={STORE_PATH}>
-                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                <Button className="bg-accent hover:bg-accent/90 text-accent-foreground disabled:opacity-50">
                     <Package className="mr-2 h-4 w-4" />
                     Browse available plans
                 </Button>
