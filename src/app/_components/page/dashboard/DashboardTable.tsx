@@ -68,14 +68,14 @@ export function DashboardTable({ servers: initialServers, plans, userId }: Dashb
                   className="pl-10 w-64"
               />
             </div>
-            <Button
+            {/*<Button
                 variant="default"
                 size="sm"
                 onClick={checkAllServerStatuses}
             >
-              <RefreshCw className="h-4 w-4 mr-2" />
+              <RefreshCw className="h-4 w-4 mr-2"/>
               Refresh
-            </Button>
+            </Button>*/}
             <Link href={STORE_PATH}>
               <Button
                   size="sm"

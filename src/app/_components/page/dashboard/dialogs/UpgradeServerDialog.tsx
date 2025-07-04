@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
-import { Cpu, MemoryStick, HardDrive, CreditCard, Receipt, ArrowLeft } from "lucide-react"
+import {Cpu, MemoryStick, HardDrive, CreditCard, Receipt, ArrowLeft, TriangleAlert} from "lucide-react"
 import {Server, Plan, SupportedCurrency} from "@/app/types"
 import { formatCurrency } from "../utils/formatters"
 import {UpgradeConfirmation, UpgradePreview} from "@/app/_services/protected/client/subscriptionSpecificationService";
@@ -108,7 +108,7 @@ export function UpgradeServerDialog({
             <DialogHeader>
               <DialogTitle>Upgrade Server</DialogTitle>
               <DialogDescription>
-                Choose a new plan for your server. You'll see a preview of charges before confirming.
+                Choose a new plan for your server. You will see a preview of charges before confirming.
               </DialogDescription>
             </DialogHeader>
             <div className="py-4">
@@ -255,7 +255,11 @@ export function UpgradeServerDialog({
                       </div>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      You'll be charged the prorated amount for the upgrade, and your next billing cycle will be at the new rate.
+                      You will be charged the prorated amount for the upgrade, and your next billing cycle will be at the new rate.
+                    </p>
+                    <p className="text-xs text-muted-foreground flex items-center gap-1 text-rose-500">
+                      <TriangleAlert className="inline" />
+                      WARNING: Please download any backups before proceeding. Server backups will not migrate to your new plan.
                     </p>
                   </div>
               )}
