@@ -4,6 +4,7 @@ import { ArrowUpRight, MapPin, TrendingUp, DollarSign } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Plan, Server } from "@/app/types"
 import Link from "next/link"
+import {BILLING_PATH} from "@/app/constants";
 
 interface ActionFooterProps {
   plans: Plan[]
@@ -51,7 +52,7 @@ export function ActionFooter({ plans, server, onUpgrade }: ActionFooterProps) {
                   variant="outline"
                   size="sm"
                   className="text-xs"
-                  onClick={() => router.push("/billing?tab=subscription")}
+                  onClick={() => router.push(BILLING_PATH + "?tab=subscription")}
               >
                 <DollarSign className="h-3 w-3 mr-1" />
                 Billing

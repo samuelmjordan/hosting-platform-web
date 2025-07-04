@@ -10,7 +10,7 @@ export default function RootLayout({
     const menuItems = [
     { label: 'Shop', href: STORE_PATH },
     { label: 'Dashboard', href: '/user/dashboard' },
-    { label: 'Billing', href: '/user/billing' }
+    { label: 'Billing', href: 'BILLING_PATH' }
   ];
 
   return (
