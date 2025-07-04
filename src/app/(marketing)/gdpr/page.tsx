@@ -195,8 +195,8 @@ export default function GDPRCompliance() {
                                     <p className="text-muted-foreground">User authentication service with GDPR-compliant data processing</p>
                                 </div>
                                 <div>
-                                    <h4 className="font-semibold mb-2">Infrastructure - German Data Centers</h4>
-                                    <p className="text-muted-foreground">Server hosting infrastructure located exclusively in Germany</p>
+                                    <h4 className="font-semibold mb-2">Infrastructure - Hetzner & Railway</h4>
+                                    <p className="text-muted-foreground">Server hosting infrastructure located in Germany, The Netherlands, and Finland</p>
                                 </div>
                                 <p className="text-sm text-muted-foreground mt-4">
                                     All third-party processors are bound by Data Processing Agreements (DPAs) ensuring GDPR compliance.
@@ -229,7 +229,7 @@ export default function GDPRCompliance() {
 
                     <Card>
                         <CardHeader>
-                            <CardTitle>Data Protection Officer</CardTitle>
+                            <CardTitle>Contact Us</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="flex items-start gap-4">
@@ -237,82 +237,14 @@ export default function GDPRCompliance() {
                                     <Mail className="w-6 h-6 text-blue-600" />
                                 </div>
                                 <div>
-                                    <h4 className="font-semibold mb-2">Contact Our DPO</h4>
                                     <p className="text-muted-foreground mb-4">
-                                        For any data protection concerns, questions about your rights, or to exercise your GDPR rights, contact our Data Protection Officer.
+                                        For any data protection concerns, questions about your rights, or to exercise your GDPR rights, contact us.
                                     </p>
                                     <div className="space-y-2 text-sm">
-                                        <p><strong>Email:</strong> dpo@axolhost.com</p>
+                                        <p><strong>Email:</strong> data@axolhost.com</p>
                                         <p><strong>Response Time:</strong> Within 30 days as required by GDPR</p>
                                     </div>
                                 </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Exercise Your Rights</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-6">
-                                <p className="text-muted-foreground">
-                                    To exercise any of your GDPR rights, please contact us using the methods below. We will respond within 30 days.
-                                </p>
-
-                                <div className="grid md:grid-cols-2 gap-4">
-                                    <div className="p-4 border rounded-lg">
-                                        <h4 className="font-semibold mb-2">Email Request</h4>
-                                        <p className="text-sm text-muted-foreground mb-3">Send a detailed request to our DPO</p>
-                                        <Button variant="outline" className="w-full">
-                                            <Mail className="w-4 h-4 mr-2" />
-                                            Email DPO
-                                        </Button>
-                                    </div>
-
-                                    <div className="p-4 border rounded-lg">
-                                        <h4 className="font-semibold mb-2">Account Dashboard</h4>
-                                        <p className="text-sm text-muted-foreground mb-3">Access some rights directly through your account</p>
-                                        <Button variant="outline" className="w-full">
-                                            <ArrowRight className="w-4 h-4 mr-2" />
-                                            Go to Account
-                                        </Button>
-                                    </div>
-                                </div>
-
-                                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                                    <h4 className="font-semibold text-yellow-800 mb-2">Identity Verification</h4>
-                                    <p className="text-sm text-yellow-700">
-                                        To protect your privacy, we may need to verify your identity before processing certain requests.
-                                        This helps ensure your data remains secure.
-                                    </p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Supervisory Authority</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-4">
-                                <p className="text-muted-foreground">
-                                    If you're not satisfied with how we handle your data protection concerns, you have the right to lodge a complaint with a supervisory authority.
-                                </p>
-
-                                <div className="bg-muted rounded-lg p-4">
-                                    <h4 className="font-semibold mb-2">German Federal Commissioner for Data Protection</h4>
-                                    <div className="text-sm text-muted-foreground space-y-1">
-                                        <p><strong>Website:</strong> bfdi.bund.de</p>
-                                        <p><strong>Email:</strong> poststelle@bfdi.bund.de</p>
-                                        <p><strong>Phone:</strong> +49 (0)228 997799-0</p>
-                                    </div>
-                                </div>
-
-                                <p className="text-sm text-muted-foreground">
-                                    You may also contact the supervisory authority in your EU member state if different from Germany.
-                                </p>
                             </div>
                         </CardContent>
                     </Card>

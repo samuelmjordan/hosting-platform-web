@@ -35,6 +35,12 @@ const Footer = () => {
                             ))}
                         </ul>
                     </div>
+                    <div>
+                    </div>
+                    <div>
+                        <h3 className="font-semibold mb-4">Support</h3>
+                        <span className="space-y-2 text-muted-foreground">support@axolhost.com </span>
+                    </div>
                 </div>
                 <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
                     <p className="text-muted-foreground text-sm">
