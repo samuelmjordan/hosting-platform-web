@@ -17,15 +17,15 @@ export default function PrivacyPolicy() {
                         <CardContent className="space-y-4">
                             <div>
                                 <h4 className="font-semibold mb-2">Account Information</h4>
-                                <p className="text-muted-foreground">When you create an account, we collect your email address, username, and payment information through our payment processor.</p>
+                                <p className="text-muted-foreground">When you create an account, we collect your email address, username, and password through our auth provider.</p>
                             </div>
                             <div>
                                 <h4 className="font-semibold mb-2">Server Data</h4>
-                                <p className="text-muted-foreground">We store your Minecraft server files, configurations, and logs to provide our hosting service. This includes world saves, plugins, and server settings.</p>
+                                <p className="text-muted-foreground">We store your Minecraft server files, configurations, and logs to provide our hosting and backup services. This includes everything that exists on your container directory.</p>
                             </div>
                             <div>
                                 <h4 className="font-semibold mb-2">Usage Information</h4>
-                                <p className="text-muted-foreground">We collect server performance metrics, connection logs, and usage statistics to maintain service quality and security.</p>
+                                <p className="text-muted-foreground">We collect server performance metrics and usage statistics to maintain service quality and security.</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -53,7 +53,7 @@ export default function PrivacyPolicy() {
                         <CardContent className="space-y-4">
                             <div>
                                 <h4 className="font-semibold mb-2">Location</h4>
-                                <p className="text-muted-foreground">All data is stored on servers located in Germany within the European Union, ensuring GDPR compliance.</p>
+                                <p className="text-muted-foreground">All data is stored on servers within the European Union and the UK, ensuring GDPR compliance.</p>
                             </div>
                             <div>
                                 <h4 className="font-semibold mb-2">Security Measures</h4>
@@ -61,7 +61,7 @@ export default function PrivacyPolicy() {
                             </div>
                             <div>
                                 <h4 className="font-semibold mb-2">Retention</h4>
-                                <p className="text-muted-foreground">Account data is retained while your account is active. Server files are deleted 7 days after subscription cancellation unless you request earlier deletion.</p>
+                                <p className="text-muted-foreground">Account data is retained while your account is active. Server files are deleted upon subscription termination.</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -81,7 +81,6 @@ export default function PrivacyPolicy() {
                                 <li>• <strong>Objection:</strong> Object to processing of your data</li>
                                 <li>• <strong>Withdraw consent:</strong> Withdraw consent at any time</li>
                             </ul>
-                            <p className="text-muted-foreground mt-4">To exercise these rights, contact us at privacy@axolhost.com</p>
                         </CardContent>
                     </Card>
 
@@ -128,7 +127,6 @@ export default function PrivacyPolicy() {
                             <div className="space-y-2 text-muted-foreground">
                                 <p><strong>Data Controller:</strong> Axolhost</p>
                                 <p><strong>Email:</strong> privacy@axolhost.com</p>
-                                <p><strong>DPO Contact:</strong> dpo@axolhost.com</p>
                                 <p className="mt-4">For complaints about data processing, you may contact your local data protection authority.</p>
                             </div>
                         </CardContent>

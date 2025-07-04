@@ -32,7 +32,7 @@ export default function TermsOfService() {
                                 <li>• Server management dashboard and console access</li>
                                 <li>• SFTP and file management capabilities</li>
                                 <li>• DDoS protection and security measures</li>
-                                <li>• Customer support via email and ticket system</li>
+                                <li>• Customer support via email</li>
                             </ul>
                         </CardContent>
                     </Card>
@@ -42,10 +42,6 @@ export default function TermsOfService() {
                             <CardTitle>2. Account Registration</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <div>
-                                <h4 className="font-semibold mb-2">Eligibility</h4>
-                                <p className="text-muted-foreground">You must be at least 13 years old to use our services. Users under 18 require parental consent.</p>
-                            </div>
                             <div>
                                 <h4 className="font-semibold mb-2">Account Security</h4>
                                 <p className="text-muted-foreground">You are responsible for maintaining the security of your account credentials and all activities under your account.</p>
@@ -107,7 +103,7 @@ export default function TermsOfService() {
                             </div>
                             <div>
                                 <h4 className="font-semibold mb-2">Payment Methods</h4>
-                                <p className="text-muted-foreground">We accept major credit cards and payment methods supported by our payment processor (Stripe).</p>
+                                <p className="text-muted-foreground">We accept major credit cards and wallets supported by our payment processor (Stripe).</p>
                             </div>
                             <div>
                                 <h4 className="font-semibold mb-2">Failed Payments</h4>
@@ -127,11 +123,11 @@ export default function TermsOfService() {
                         <CardContent className="space-y-4">
                             <div>
                                 <h4 className="font-semibold mb-2">Your Responsibility</h4>
-                                <p className="text-muted-foreground">You are responsible for creating and maintaining backups of your server data. We recommend regular backups via SFTP.</p>
+                                <p className="text-muted-foreground">You are responsible for creating and maintaining backups of your server data.</p>
                             </div>
                             <div>
                                 <h4 className="font-semibold mb-2">Data Retention</h4>
-                                <p className="text-muted-foreground">Server files are retained for 7 days after subscription cancellation or termination, then permanently deleted.</p>
+                                <p className="text-muted-foreground">Server files are not retained after subscription cancellation or termination.</p>
                             </div>
                             <div>
                                 <h4 className="font-semibold mb-2">No Backup Guarantee</h4>
@@ -162,32 +158,7 @@ export default function TermsOfService() {
 
                     <Card>
                         <CardHeader>
-                            <CardTitle>8. Limitation of Liability</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-muted-foreground mb-4">
-                                To the maximum extent permitted by law, Axolhost's liability is limited to the amount paid for services in the 12 months preceding any claim.
-                            </p>
-                            <p className="text-muted-foreground">
-                                We are not liable for indirect, consequential, or punitive damages, including but not limited to loss of data, profits, or business interruption.
-                            </p>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>9. Governing Law</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-muted-foreground">
-                                These terms are governed by the laws of Germany and the European Union. Any disputes will be subject to the jurisdiction of German courts.
-                            </p>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>10. Changes to Terms</CardTitle>
+                            <CardTitle>8. Changes to Terms</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <p className="text-muted-foreground">
@@ -198,7 +169,7 @@ export default function TermsOfService() {
 
                     <Card>
                         <CardHeader>
-                            <CardTitle>11. Contact Information</CardTitle>
+                            <CardTitle>9. Contact Information</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-2 text-muted-foreground">
