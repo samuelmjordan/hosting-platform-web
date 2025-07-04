@@ -1,6 +1,6 @@
 import Navbar from "@/app/_components/layout/navbar"
 import Footer from "../_components/layout/footer"
-import {STORE_PATH} from "@/app/constants";
+import {BILLING_PATH, STORE_PATH} from "@/app/constants";
 
 export default function RootLayout({
   children,
@@ -10,7 +10,7 @@ export default function RootLayout({
     const menuItems = [
     { label: 'Shop', href: STORE_PATH },
     { label: 'Dashboard', href: '/user/dashboard' },
-    { label: 'Billing', href: 'BILLING_PATH' }
+    { label: 'Billing', href: BILLING_PATH }
   ];
 
   return (
