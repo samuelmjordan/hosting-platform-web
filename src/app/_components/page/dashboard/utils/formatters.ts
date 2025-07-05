@@ -18,9 +18,7 @@ export const getPlanColor = (planName: string) => {
   return PLAN_COLORS[planName] || PLAN_COLORS.default
 }
 
-export const validateSubdomain = (subdomain: string, maxLength: number): boolean => {
-  if (subdomain.length === 0 || subdomain.length > maxLength) {
-    return false
-  }
-  return /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/.test(subdomain.toLowerCase())
+export const validateSubdomain = (subdomain: string): boolean => {
+  return subdomain.length >= 3 &&
+      /^[a-z0-9]([a-z0-9-]{0,56}[a-z0-9])?$/.test(subdomain.toLowerCase())
 }
