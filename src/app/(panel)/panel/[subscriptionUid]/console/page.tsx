@@ -1,4 +1,4 @@
-import PterodactylConsole from "@/app/_components/page/console/PterodactylConsole";
+import {PterodactylConsole} from "@/app/_components/page/console/PterodactylConsole";
 
 type Params = {
   subscriptionUid: string;

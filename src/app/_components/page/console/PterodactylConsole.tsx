@@ -6,55 +6,70 @@ import { ConnectionStatus } from './ConnectionStatus';
 import { ResourceStats } from './ResourceStats';
 import { PowerControls } from './PowerControls';
 import { ConsoleOutput } from './ConsoleOutput';
+import {fetchSubscriptionResourceLimits} from "@/app/_services/protected/client/subscriptionClientService";
+import {useEffect, useState} from "react";
 
 interface PterodactylConsoleProps {
   subscriptionUid: string;
   className?: string;
 }
 
-export default function PterodactylConsole({ subscriptionUid }: PterodactylConsoleProps) {
-  const { user } = useUser();
-  const {
-    isConnected,
-    logs,
-    error,
-    serverStatus,
-    stats,
-    uptime,
-    connect,
-    disconnect,
-    sendCommand,
-    sendPowerSignal
-  } = useWebSocket(subscriptionUid);
+export function PterodactylConsole({subscriptionUid}: PterodactylConsoleProps) {
+    const {user} = useUser();
+    const [limits, setLimits] = useState({
+        subscriptionId: "null",
+        cpu: 100,
+        memory: 10 * 1024 * 1024 * 1024,
+        disk: 30 * 1024 * 1024 * 1024,
+        swap: 0,
+        io: 0,
+        threads: 0
+    });
+    const {
+        isConnected,
+        logs,
+        error,
+        serverStatus,
+        stats,
+        uptime,
+        connect,
+        disconnect,
+        sendCommand,
+        sendPowerSignal
+    } = useWebSocket(subscriptionUid);
 
-  return (
-      <div className="max-w-6xl mx-auto space-y-6">
-          <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold">Console</h1>
-          </div>
+    useEffect(() => {
+        fetchSubscriptionResourceLimits(subscriptionUid).then(setLimits);
+    }, [subscriptionUid]);
 
-        <ConnectionStatus
-            isConnected={isConnected}
-            serverStatus={serverStatus}
-            uptime={uptime}
-            onConnect={connect}
-            onDisconnect={disconnect}
-            isAuthenticated={!!user?.id}
-        />
+    return (
+        <div className="max-w-6xl mx-auto space-y-6">
+            <div className="flex items-center gap-3">
+                <h1 className="text-2xl font-bold">Console</h1>
+            </div>
 
-        {stats && <ResourceStats stats={stats} />}
+            <ConnectionStatus
+                isConnected={isConnected}
+                serverStatus={serverStatus}
+                uptime={uptime}
+                onConnect={connect}
+                onDisconnect={disconnect}
+                isAuthenticated={!!user?.id}
+            />
 
-        <PowerControls
-            isConnected={isConnected}
-            onPowerSignal={sendPowerSignal}
-        />
+            {stats && <ResourceStats stats={stats} limits={limits}/>}
 
-        <ConsoleOutput
-            logs={logs}
-            error={error}
-            isConnected={isConnected}
-            onSendCommand={sendCommand}
-        />
-      </div>
-  );
+            <PowerControls
+                isConnected={isConnected}
+                onPowerSignal={sendPowerSignal}
+            />
+
+            <ConsoleOutput
+                logs={logs}
+                error={error}
+                isConnected={isConnected}
+                onSendCommand={sendCommand}
+            />
+        </div>
+    );
 }

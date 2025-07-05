@@ -73,5 +73,5 @@ export async function fetchSubscriptionResourceLimits(subscriptionId: string): P
   }
 
   const data = await response.json();
-  return data.provisioningStatus.status;
+  return data;
 }

@@ -3,12 +3,14 @@ import { Progress } from "@/components/ui/progress";
 import { Cpu, MemoryStick, HardDrive, Network } from "lucide-react";
 import { ServerStats } from "@/app/_components/page/console/utils/types";
 import { formatBytes } from "@/app/_components/page/console/utils/utils";
+import {ResourceLimitResponse} from "@/app/types";
 
 interface ResourceStatsProps {
     stats: ServerStats;
+    limits: ResourceLimitResponse;
 }
 
-export function ResourceStats({ stats }: ResourceStatsProps) {
+export function ResourceStats({ stats, limits }: ResourceStatsProps) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
             {/* CPU */}
@@ -25,9 +27,12 @@ export function ResourceStats({ stats }: ResourceStatsProps) {
                             <span className="text-blue-400 font-bold">{stats.cpu_absolute.toFixed(1)}%</span>
                         </div>
                         <Progress
-                            value={Math.min(stats.cpu_absolute, 100)}
+                            value={stats.cpu_absolute*100/limits.cpu}
                             className="h-2"
                         />
+                        <div className="text-xs text-muted-foreground">
+                            of {limits.cpu}%
+                        </div>
                     </div>
                 </CardContent>
             </Card>
@@ -72,9 +77,12 @@ export function ResourceStats({ stats }: ResourceStatsProps) {
                             <span className="text-amber-400 font-bold text-xs">{formatBytes(stats.disk_bytes)}</span>
                         </div>
                         <Progress
-                            value={35} // you'll need to add disk limit to stats
+                            value={stats.disk_bytes/(limits.disk*1024*1024)}
                             className="h-2"
                         />
+                        <div className="text-xs text-muted-foreground">
+                            of {formatBytes(limits.disk*1024*1024)}
+                        </div>
                     </div>
                 </CardContent>
             </Card>

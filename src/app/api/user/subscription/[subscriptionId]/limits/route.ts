@@ -34,8 +34,8 @@ export async function GET(request: Request, { params }: { params: { subscription
             );
         }
 
-        const provisioningStatus = await response.json();
-        return NextResponse.json({ provisioningStatus });
+        const limits = await response.json();
+        return NextResponse.json(limits);
 
     } catch (error) {
         console.error('Fetch resource limits error:', error);
