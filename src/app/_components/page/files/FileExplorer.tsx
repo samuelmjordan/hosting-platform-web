@@ -207,11 +207,50 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
       setSelectedFiles(new Set());
       toast({
         title: 'Files compressed',
-        description: `Archive "${result.name}" created successfully`,
+        description: `Archive created successfully`,
       });
     } catch (error) {
       toast({
         title: 'Error compressing files',
+        description: error instanceof Error ? error.message : 'Unknown error',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleDecompress = async () => {
+    if (selectedFiles.size !== 1) return;
+
+    const fileName = Array.from(selectedFiles)[0];
+    const file = files.find(f => f.name === fileName);
+    if (!file || !file.is_file) return;
+
+    // check if it's a compressed file (common extensions)
+    const compressedExtensions = ['.zip', '.tar', '.gz', '.bz2', '.rar', '.7z'];
+    const isCompressed = compressedExtensions.some(ext =>
+        fileName.toLowerCase().endsWith(ext)
+    );
+
+    if (!isCompressed) {
+      toast({
+        title: 'Not a compressed file',
+        description: 'Selected file does not appear to be a compressed archive',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      await fileService.decompressFile(subscriptionId, currentPath, fileName);
+      await loadFiles();
+      setSelectedFiles(new Set());
+      toast({
+        title: 'File decompressed',
+        description: `"${fileName}" extracted successfully`,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error decompressing file',
         description: error instanceof Error ? error.message : 'Unknown error',
         variant: 'destructive',
       });
@@ -292,6 +331,7 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
               onDownload={handleDownload}
               onDelete={handleDelete}
               onCompress={handleCompress}
+              onDecompress={handleDecompress}
               onRefresh={loadFiles}
               onCopy={handleCopy}
           />

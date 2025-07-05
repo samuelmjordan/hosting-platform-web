@@ -35,6 +35,7 @@ interface FileToolbarProps {
   onDownload: () => void;
   onDelete: () => void;
   onCompress: () => void;
+  onDecompress: () => void; // add this
   onRefresh: () => void;
   onCopy: () => void;
 }
@@ -46,6 +47,7 @@ export function FileToolbar({
   onDownload,
   onDelete,
   onCompress,
+  onDecompress,
   onRefresh,
   onCopy,
 }: FileToolbarProps) {
@@ -117,6 +119,17 @@ export function FileToolbar({
                 >
                   <Archive className="h-4 w-4" />
                   <span className="hidden sm:inline">Compress</span>
+                </Button>
+
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={onDecompress}
+                    disabled={selectedCount !== 1}
+                    className="gap-2"
+                >
+                  <Archive className="h-4 w-4" />
+                  <span className="hidden sm:inline">Extract</span>
                 </Button>
 
                 <Button
