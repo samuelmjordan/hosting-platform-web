@@ -10,8 +10,9 @@ import { FileEditor } from './FileEditor';
 import { UploadDialog } from './UploadDialog';
 import { useToast } from '@/hooks/use-toast';
 import { Card } from '@/components/ui/card';
-import { Loader2 } from 'lucide-react';
+import {CheckCircle2, FileBadge, Folder, Loader2} from 'lucide-react';
 import {isEditable} from "@/app/_components/page/files/utils/helpers";
+import {Alert, AlertDescription} from "@/components/ui/alert";
 
 interface FileExplorerProps {
   userId: string;
@@ -319,6 +320,13 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
               subscriptionId={subscriptionId}
           />
         </Card>
+
+        <Alert>
+          <Folder className="h-4 w-4" />
+          <AlertDescription>
+            For uploading / downloading large files, it is recommended to use a dedicated SFTP client. <a href="./sftp" className="underline">Check your SFTP details.</a>
+          </AlertDescription>
+        </Alert>
       </div>
   );
 }
