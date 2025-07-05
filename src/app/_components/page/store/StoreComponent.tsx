@@ -9,6 +9,8 @@ import { CheckoutButton } from "./CheckoutButton"
 import { startCheckout } from "@/app/_services/protected/client/checkoutService"
 import { fetchUserCurrency } from "@/app/_services/protected/client/currencyService"
 import {CurrencyAmount, Plan, SupportedCurrency} from "@/app/types";
+import {Card, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
+import {Files, MapPin, Pencil, Shield, Terminal, Zap} from "lucide-react";
 
 interface StoreComponentProps {
     plans: Plan[];
@@ -113,33 +115,124 @@ export function StoreComponent({ plans }: StoreComponentProps) {
 
     return (
         <div className="min-h-screen bg-background">
-            <main className="container mx-auto px-4 py-8">
-                <div className="max-w-4xl mx-auto">
-                    <StoreHeader
-                        currency={currency}
-                        isLockedCurrency={isLockedCurrency}
-                        onCurrencyChange={handleCurrencyChange}
-                    />
-
-                    <div className="space-y-8">
-                        <PlansGrid
-                            plans={plans}
+            <main className="flex-1">
+                <section className="mb-6  py-8">
+                    <div className="max-w-4xl mx-auto">
+                        <StoreHeader
                             currency={currency}
-                            selectedPlan={selectedPlan}
-                            onPlanSelect={handlePlanSelect}
-                            formatCurrency={formatCurrency}
+                            isLockedCurrency={isLockedCurrency}
+                            onCurrencyChange={handleCurrencyChange}
                         />
 
-                        <section className="flex justify-end">
-                            <CheckoutButton
-                                isLoading={isLoading}
-                                error={error}
-                                disabled={!selectedPlan || !userId}
-                                onCheckout={handleCheckout}
+                        <div className="space-y-8">
+                            <PlansGrid
+                                plans={plans}
+                                currency={currency}
+                                selectedPlan={selectedPlan}
+                                onPlanSelect={handlePlanSelect}
+                                formatCurrency={formatCurrency}
                             />
-                        </section>
+
+                            <section className="flex justify-end">
+                                <CheckoutButton
+                                    isLoading={isLoading}
+                                    error={error}
+                                    disabled={!selectedPlan || !userId}
+                                    onCheckout={handleCheckout}
+                                />
+                            </section>
+                        </div>
                     </div>
-                </div>
+                </section>
+                <section className="py-20 bg-muted">
+                    <div className="max-w-6xl mx-auto px-4">
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <Card className="border hover:border-primary/50 transition-colors">
+                                <CardHeader>
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                                            <MapPin className="w-6 h-6 text-primary" />
+                                        </div>
+                                        <CardTitle>European Data Centers</CardTitle>
+                                    </div>
+                                    <CardDescription>
+                                        Servers located in Germany for low latency anywhere in Europe
+                                    </CardDescription>
+                                </CardHeader>
+                            </Card>
+
+                            <Card className="border hover:border-primary/50 transition-colors">
+                                <CardHeader>
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                                            <Zap className="w-6 h-6 text-primary" />
+                                        </div>
+                                        <CardTitle>Instant Setup</CardTitle>
+                                    </div>
+                                    <CardDescription>
+                                        Your Minecraft server is ready in under 2 minutes with our one-click deployment
+                                    </CardDescription>
+                                </CardHeader>
+                            </Card>
+
+                            <Card className="border hover:border-primary/50 transition-colors">
+                                <CardHeader>
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                                            <Shield className="w-6 h-6 text-primary" />
+                                        </div>
+                                        <CardTitle>DDoS Protection</CardTitle>
+                                    </div>
+                                    <CardDescription>
+                                        Enterprise-grade DDoS protection keeps your server online even during attacks
+                                    </CardDescription>
+                                </CardHeader>
+                            </Card>
+
+                            <Card className="border hover:border-primary/50 transition-colors">
+                                <CardHeader>
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                                            <Terminal className="w-6 h-6 text-primary" />
+                                        </div>
+                                        <CardTitle>Server Console</CardTitle>
+                                    </div>
+                                    <CardDescription>
+                                        Monitor your server and run commands remotely via our in-browser console terminal
+                                    </CardDescription>
+                                </CardHeader>
+                            </Card>
+
+                            <Card className="border hover:border-primary/50 transition-colors">
+                                <CardHeader>
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                                            <Pencil className="w-6 h-6 text-primary" />
+                                        </div>
+                                        <CardTitle>Mod Support</CardTitle>
+                                    </div>
+                                    <CardDescription>
+                                        Choose one of our preset minecraft installations, or upload your own custom setups
+                                    </CardDescription>
+                                </CardHeader>
+                            </Card>
+
+                            <Card className="border hover:border-primary/50 transition-colors">
+                                <CardHeader>
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                                            <Files className="w-6 h-6 text-primary" />
+                                        </div>
+                                        <CardTitle>SFTP</CardTitle>
+                                    </div>
+                                    <CardDescription>
+                                        Access your server via SFTP; or modify your files via our in-browser file explorer
+                                    </CardDescription>
+                                </CardHeader>
+                            </Card>
+                        </div>
+                    </div>
+                </section>
             </main>
         </div>
     );

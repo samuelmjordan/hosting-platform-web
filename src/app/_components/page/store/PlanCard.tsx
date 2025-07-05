@@ -48,10 +48,6 @@ export const PlanCard: React.FC<PlanCardProps> = ({
                         <span className="text-sm text-foreground">{specification.ram_gb} GB RAM</span>
                     </li>
                     <li className="flex items-center gap-2">
-                        <Server className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm text-foreground">{specification.vcpu} vCPU</span>
-                    </li>
-                    <li className="flex items-center gap-2">
                         <HardDrive className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm text-foreground">{specification.ssd_gb} GB SSD</span>
                     </li>
