@@ -41,7 +41,7 @@ export function EditServerDialog({ server, isOpen, onClose, onSave }: EditServer
   const isFormValid = () => {
     if (!server || !serverName.trim()) return false
     if (serverName.trim().length > MAX_TITLE_LENGTH) return false
-    if (serverAddress.trim() && !validateSubdomain(serverAddress.trim(), MAX_SUBDOMAIN_LENGTH)) return false
+    if (serverAddress.trim() && !validateSubdomain(serverAddress.trim())) return false
 
     const nameChanged = serverName.trim() !== server.server_name
     const addressChanged =
@@ -93,16 +93,16 @@ export function EditServerDialog({ server, isOpen, onClose, onSave }: EditServer
                 ({serverAddress.length}/{MAX_SUBDOMAIN_LENGTH})
               </span>
               </Label>
-              <div className="flex items-center">
+              <div className="flex items-center overflow-hidden">
                 <Input
                     id="server-address"
                     value={serverAddress}
                     onChange={(e) => setServerAddress(e.target.value.toLowerCase())}
                     placeholder="subdomain"
                     maxLength={MAX_SUBDOMAIN_LENGTH}
-                    className="rounded-r-none"
+                    className="rounded-r-none flex-shrink min-w-0"
                 />
-                <div className="bg-muted border border-l-0 border-input px-3 py-2 text-sm text-muted-foreground rounded-r-md">
+                <div className="bg-muted border border-l-0 border-input px-3 py-2 text-sm text-muted-foreground rounded-r-md whitespace-nowrap overflow-hidden">
                   {FIXED_DOMAIN}
                 </div>
               </div>

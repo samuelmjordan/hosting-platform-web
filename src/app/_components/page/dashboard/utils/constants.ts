@@ -1,5 +1,5 @@
 // Domain and validation constants
-export const FIXED_DOMAIN = ".node.samuelmjordan.dev"
+export const FIXED_DOMAIN = "-node.samuelmjordan.dev"
 export const MAX_SUBDOMAIN_LENGTH = 58
 export const MAX_TITLE_LENGTH = 32
 export const STATUS_CHECK_INTERVAL = 1000 * 10 // 10 seconds
