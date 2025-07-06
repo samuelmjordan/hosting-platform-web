@@ -10,7 +10,7 @@ export async function GET(
     params: { params: Promise<{ subscriptionId: string }> }
 ) {
     try {
-        const subscriptionId = await params;
+        const { subscriptionId } = await params.params;
         const { getToken } = await auth();
         const token = await getToken();
 
