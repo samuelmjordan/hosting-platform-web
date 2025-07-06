@@ -95,7 +95,9 @@ export function UpgradeServerDialog({
   }
 
   const filteredPlans = server
-      ? plans.filter((plan) => plan.price.currency === server.currency)
+      ? plans
+          .filter((plan) => plan.price.currency === server.currency)
+          .filter((plan) => plan.price.minor_amount >= (server?.minor_amount || 0))
       : []
 
   const selectedPlan = plans.find(plan => plan.specification.specification_id === selectedSpecification)
@@ -115,9 +117,7 @@ export function UpgradeServerDialog({
               <RadioGroup value={selectedSpecification} onValueChange={setSelectedSpecification}>
                 {filteredPlans.map((plan) => {
                   const isPlanCurrent = plan.specification.title === server?.specification_title
-                  const currentPrice = server?.minor_amount || 0
                   const newPrice = plan.price.minor_amount
-                  const isDowngrade = newPrice < currentPrice
 
                   return (
                       <div
@@ -139,11 +139,6 @@ export function UpgradeServerDialog({
                                 {isPlanCurrent && (
                                     <Badge variant="secondary" className="text-xs">
                                       Current Plan
-                                    </Badge>
-                                )}
-                                {isDowngrade && !isPlanCurrent && (
-                                    <Badge variant="outline" className="text-xs text-orange-600 border-orange-600">
-                                      Downgrade
                                     </Badge>
                                 )}
                               </div>
