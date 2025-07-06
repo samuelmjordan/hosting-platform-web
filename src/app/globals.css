@@ -100,3 +100,15 @@
 .terminal-scroll::-webkit-scrollbar-thumb:hover {
   background: rgba(100, 116, 139, 0.9);
 }
+
+:root {
+  /* your existing vars */
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
+}
+
+.dark {
+  /* your existing dark vars */
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 210 40% 98%;
+}
