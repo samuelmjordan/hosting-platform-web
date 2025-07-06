@@ -36,7 +36,7 @@ const pingMachine = async (address: string | null): Promise<boolean> => {
     const response = await fetch(`/api/ping?address=${encodeURIComponent(address)}`)
     const data = await response.json()
     return data.status === "up"
-  } catch (error) {
+  } catch {
     return false
   }
 }
@@ -81,7 +81,7 @@ const checkMinecraftServer = async (address: string | null): Promise<MinecraftSt
         lastUpdated: new Date(data.retrieved_at).toISOString(),
         duration: `${Date.now() - data.retrieved_at}ms`,
         players:
-            data.players?.list?.map((player: any) => ({
+            data.players?.list?.map((player: { name_clean?: string; name_raw?: string; uuid?: string }) => ({
               name: player.name_clean || player.name_raw,
               id: player.uuid || "",
             })) || [],
@@ -101,7 +101,7 @@ const checkMinecraftServer = async (address: string | null): Promise<MinecraftSt
   }
 }
 
-const checkProvisioningStatus = async (subscriptionId: string | null, userId: string): Promise<ProvisioningStatus> => {
+const checkProvisioningStatus = async (subscriptionId: string | null): Promise<ProvisioningStatus> => {
   if (!subscriptionId) {
     return ProvisioningStatus.ERROR;
   }
@@ -117,7 +117,7 @@ const checkProvisioningStatus = async (subscriptionId: string | null, userId: st
   }
 };
 
-export const useServerStatus = (servers: Server[], userId: string) => {
+export const useServerStatus = (servers: Server[]) => {
   const [serverStatuses, setServerStatuses] = useState<Record<string, ServerStatus>>(() => {
     const initialStatuses: Record<string, ServerStatus> = {}
     servers.forEach(server => {
@@ -144,7 +144,7 @@ export const useServerStatus = (servers: Server[], userId: string) => {
       const [machineOnline, minecraftStatus, provisioningStatus] = await Promise.all([
         pingMachine(server.cname_record_name),
         checkMinecraftServer(server.cname_record_name),
-        checkProvisioningStatus(server.subscription_id, userId)
+        checkProvisioningStatus(server.subscription_id)
       ])
 
       setServerStatuses((prev) => ({

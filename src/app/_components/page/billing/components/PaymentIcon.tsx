@@ -9,19 +9,13 @@ interface PaymentIconProps {
   className?: string
 }
 
-const sizeClasses = {
-  sm: "w-6 h-4",
-  md: "w-10 h-6",
-  lg: "w-12 h-8"
-}
-
 const containerSizes = {
   sm: "w-8 h-6",
   md: "w-10 h-10",
   lg: "w-12 h-12"
 }
 
-export function PaymentIcon({ type, brand, size = "md", className = "" }: PaymentIconProps) {
+export function PaymentIcon({ type, size = "md", className = "" }: PaymentIconProps) {
   // for cards, always show the generic card icon (not brand specific)
   if (type === "card") {
     return (

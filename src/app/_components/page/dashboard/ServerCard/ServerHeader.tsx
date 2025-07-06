@@ -1,12 +1,7 @@
-import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import {
   Edit2,
-  ServerIcon,
-  Clock,
-  CheckCircle2,
-  XCircle,
-  Loader2,
+  ServerIcon
 } from "lucide-react"
 import { Server } from "@/app/types"
 import { ServerStatus } from "../hooks/useServerStatus"
@@ -27,10 +22,7 @@ interface ServerHeaderProps {
 export function ServerHeader({
    server,
    status,
-   isOnline,
-   isProvisioning,
-   onEdit,
-   onRefresh,
+   onEdit
 }: ServerHeaderProps) {
   return (
       <div className="flex items-start justify-between mb-4">

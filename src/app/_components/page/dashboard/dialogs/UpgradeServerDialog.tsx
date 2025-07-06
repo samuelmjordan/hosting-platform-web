@@ -23,7 +23,7 @@ interface UpgradeServerDialogProps {
   isOpen: boolean
   onClose: () => void
   onPreview: (serverId: string, specificationId: string) => Promise<UpgradePreview>
-  onConfirm: (serverId: string, specificationId: string) => Promise<UpgradeConfirmation>
+  onConfirm: (serverId: string, specificationId: string, currency: SupportedCurrency) => Promise<UpgradeConfirmation>
 }
 
 type DialogStep = "select" | "preview" | "success"
@@ -77,7 +77,7 @@ export function UpgradeServerDialog({
 
     setIsSubmitting(true)
     try {
-      const confirmation = await onConfirm(server.subscription_id, selectedSpecification)
+      const confirmation = await onConfirm(server.subscription_id, selectedSpecification, server.currency)
       setUpgradeConfirmation(confirmation)
       setStep("success")
     } catch (error) {

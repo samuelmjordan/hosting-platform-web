@@ -17,20 +17,15 @@ export function FileEditor({ filePath, initialContent, onSave, onClose }: FileEd
   const [isDirty, setIsDirty] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const adjustHeight = () => {
+  useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
-      // calculate rows needed based on content
       const lines = content.split('\n').length;
-      const lineHeight = 20; // approximate line height for text-sm
-      const padding = 32; // p-4 = 16px top + 16px bottom
+      const lineHeight = 20;
+      const padding = 32;
       const newHeight = Math.max(lines * lineHeight + padding, 120);
       textarea.style.height = `${newHeight}px`;
     }
-  };
-
-  useEffect(() => {
-    adjustHeight();
   }, [content]);
 
   const handleSave = () => {

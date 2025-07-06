@@ -40,8 +40,9 @@ export async function GET(
         return new Response(contents, {
             headers: { 'Content-Type': 'text/plain' }
         });
-    } catch (error: any) {
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error('get file contents error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: message }, { status: 500 });
     }
 }

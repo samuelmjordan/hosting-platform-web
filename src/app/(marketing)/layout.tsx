@@ -1,5 +1,4 @@
 import type React from "react"
-import type { Metadata } from "next"
 import Navbar from "@/app/_components/layout/navbar";
 import Footer from "@/app/_components/layout/footer";
 import {NavbarItem} from "@/app/types";

@@ -5,9 +5,12 @@ import { NextResponse } from 'next/server';
 
 const API_URL = process.env.API_URL;
 
-export async function GET(request: Request, { params }: { params: { subscriptionId: string } }) {
+export async function GET(
+    request: Request,
+    params: { params: Promise<{ subscriptionId: string }> }
+) {
     try {
-        const { subscriptionId } = await params;
+        const subscriptionId = await params;
         const { getToken } = await auth();
         const token = await getToken();
 

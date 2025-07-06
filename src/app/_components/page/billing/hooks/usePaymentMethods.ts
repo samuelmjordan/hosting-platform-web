@@ -47,7 +47,7 @@ export function usePaymentMethods(initialMethods: PaymentMethod[]): UsePaymentMe
         window.location.href
       )
       window.location.href = checkoutUrl
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to create payment method. Please try again.",
@@ -72,7 +72,7 @@ export function usePaymentMethods(initialMethods: PaymentMethod[]): UsePaymentMe
         title: "Default payment method updated",
         description: `${displayName} is now your default payment method.`,
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to set default payment method. Please try again.",
@@ -98,7 +98,7 @@ export function usePaymentMethods(initialMethods: PaymentMethod[]): UsePaymentMe
         title: "Default payment method unset",
         description: `${displayName} has been unset as default payment method.`,
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to remove default payment method. Please try again.",
@@ -121,7 +121,7 @@ export function usePaymentMethods(initialMethods: PaymentMethod[]): UsePaymentMe
         title: "Payment method removed",
         description: `${displayName} has been removed from your account.`,
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to remove payment method. Please try again.",

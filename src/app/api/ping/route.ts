@@ -23,10 +23,11 @@ export async function GET(request: NextRequest) {
       status: isAlive ? 'up' : 'down',
       method: 'ping'
     })
-  } catch (error: any) {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json({ 
       status: 'down', 
-      error: error.message,
+      error: message,
       method: 'ping'
     })
   }

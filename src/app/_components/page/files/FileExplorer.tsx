@@ -10,7 +10,7 @@ import { FileEditor } from './FileEditor';
 import { UploadDialog } from './UploadDialog';
 import { useToast } from '@/hooks/use-toast';
 import { Card } from '@/components/ui/card';
-import {CheckCircle2, FileBadge, Folder, Loader2} from 'lucide-react';
+import { Folder, Loader2} from 'lucide-react';
 import {isEditable} from "@/app/_components/page/files/utils/helpers";
 import {Alert, AlertDescription} from "@/components/ui/alert";
 
@@ -19,7 +19,7 @@ interface FileExplorerProps {
   subscriptionId: string;
 }
 
-export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
+export function FileExplorer({ subscriptionId }: FileExplorerProps) {
   const [currentPath, setCurrentPath] = useState('/');
   const [files, setFiles] = useState<FileObject[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
@@ -202,7 +202,7 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
     if (selectedFiles.size === 0) return;
 
     try {
-      const result = await fileService.compressFiles(subscriptionId, currentPath, Array.from(selectedFiles));
+      await fileService.compressFiles(subscriptionId, currentPath, Array.from(selectedFiles));
       await loadFiles();
       setSelectedFiles(new Set());
       toast({
@@ -353,7 +353,7 @@ export function FileExplorer({ userId, subscriptionId }: FileExplorerProps) {
           <UploadDialog
               open={isUploading}
               onClose={() => setIsUploading(false)}
-              onUpload={async (files) => {
+              onUpload={async () => {
                 setIsUploading(false);
                 await loadFiles();
               }}

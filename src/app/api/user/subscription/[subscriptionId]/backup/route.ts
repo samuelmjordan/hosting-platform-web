@@ -34,9 +34,10 @@ export async function GET(
 
         const backups = await backupResponse.json();
         return NextResponse.json(backups);
-    } catch (error: any) {
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error('list backups error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: message }, { status: 500 });
     }
 }
 
@@ -75,8 +76,9 @@ export async function POST(
 
         const backup = await backupResponse.json();
         return NextResponse.json(backup);
-    } catch (error: any) {
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error('create backup error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: message }, { status: 500 });
     }
 }

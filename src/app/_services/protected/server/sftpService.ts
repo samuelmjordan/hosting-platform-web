@@ -1,6 +1,7 @@
 'use server'
 
 import { auth } from "@clerk/nextjs/server";
+import crypto from 'crypto';
 
 interface SftpCredentials {
     connectionString: string;
@@ -10,8 +11,6 @@ interface SftpCredentials {
 }
 
 function decryptPassword(encryptedPassword: string): string {
-    const crypto = require('crypto');
-
     if (!process.env.PASSWORD_KEY) {
         throw new Error('encryption key not configured');
     }
@@ -29,8 +28,10 @@ function decryptPassword(encryptedPassword: string): string {
 
         return decrypted;
     } catch (error) {
-        // @ts-ignore
-        throw new Error(`decryption failed: ${error.message}`);
+        if (error instanceof Error) {
+            throw new Error(`decryption failed: ${error.message}`);
+        }
+        throw new Error(`decryption failed: ${String(error)}`);
     }
 }
 

@@ -25,13 +25,13 @@ interface PaymentMethodCardProps {
 }
 
 export function PaymentMethodCard({
-                                    method,
-                                    isLoading,
-                                    onSetDefault,
-                                    onRemoveDefault,
-                                    onRemove,
-                                    canUnsetDefault
-                                  }: PaymentMethodCardProps) {
+    method,
+    isLoading,
+    onSetDefault,
+    onRemoveDefault,
+    onRemove,
+    canUnsetDefault
+}: PaymentMethodCardProps) {
   const cardClasses = `transition-all hover:shadow-md dark:hover:shadow-xl ${
       method.is_default ? "ring-2 ring-blue-500 ring-opacity-20 bg-blue-50/50 dark:bg-blue-950/20" : ""
   } ${!method.is_active ? "opacity-60" : ""}`
@@ -41,7 +41,7 @@ export function PaymentMethodCard({
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <PaymentIcon type={method.type as any} brand={method.fields.brand?.value} />
+              <PaymentIcon type={method.type} brand={method.fields.brand?.value} />
 
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">

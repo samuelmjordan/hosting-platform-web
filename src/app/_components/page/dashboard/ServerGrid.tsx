@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { ServerIcon, Search } from "lucide-react"
 import { Plan, Server } from "@/app/types"

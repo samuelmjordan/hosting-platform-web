@@ -182,7 +182,7 @@ export default function BackupsPage({ subscriptionId }: BackupsScreenProps) {
 
     useEffect(() => {
         loadBackups();
-    }, []);
+    });
 
     if (loading) {
         return (
@@ -366,7 +366,7 @@ export default function BackupsPage({ subscriptionId }: BackupsScreenProps) {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Delete backup</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Are you sure you want to delete "{deleteDialog.backup?.name}"?
+                            {`Are you sure you want to delete \"${deleteDialog.backup?.name}\"`}?
                             <br />
                             This action cannot be undone.
                         </AlertDialogDescription>
@@ -391,7 +391,7 @@ export default function BackupsPage({ subscriptionId }: BackupsScreenProps) {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Restore backup</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Restore backup "{restoreDialog.backup?.name}"?
+                            {`Restore backup \"${restoreDialog.backup?.name}\"?`}
                             <br />
                             This will overwrite all current server data and cannot be undone.
                         </AlertDialogDescription>

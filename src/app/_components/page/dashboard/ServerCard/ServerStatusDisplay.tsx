@@ -1,5 +1,5 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Globe, Copy, Users, User, XCircle, Loader2 } from "lucide-react"
+import { Globe, Copy, Users, User, Loader2 } from "lucide-react"
 import { Server } from "@/app/types"
 import { ServerStatus } from "../hooks/useServerStatus"
 

@@ -54,7 +54,7 @@ export function useSubscriptions(initialSubscriptions: Server[]): UseSubscriptio
       
       // Refresh the page to show updated subscription status
       router.refresh()
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to cancel subscription. Please try again.",
@@ -85,7 +85,7 @@ export function useSubscriptions(initialSubscriptions: Server[]): UseSubscriptio
       
       // Refresh the page to show updated subscription status
       router.refresh()
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to resume subscription. Please try again.",

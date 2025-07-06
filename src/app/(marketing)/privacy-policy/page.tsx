@@ -91,11 +91,11 @@ export default function PrivacyPolicy() {
                         <CardContent className="space-y-4">
                             <div>
                                 <h4 className="font-semibold mb-2">Payment Processing</h4>
-                                <p className="text-muted-foreground">We use Stripe for payment processing. Your payment information is handled according to Stripe's privacy policy.</p>
+                                <p className="text-muted-foreground">{"We use Stripe for payment processing. Your payment information is handled according to Stripe's privacy policy."}</p>
                             </div>
                             <div>
                                 <h4 className="font-semibold mb-2">Authentication</h4>
-                                <p className="text-muted-foreground">We use Clerk for user authentication. Account creation and login data is processed according to Clerk's privacy policy.</p>
+                                <p className="text-muted-foreground">{"We use Clerk for user authentication. Account creation and login data is processed according to Clerk's privacy policy."}</p>
                             </div>
                             <div>
                                 <h4 className="font-semibold mb-2">Analytics</h4>

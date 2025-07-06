@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition, useEffect } from 'react';
-import { Eye, EyeOff, Copy, Server, RefreshCw, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Eye, EyeOff, Copy, RefreshCw, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -37,7 +37,7 @@ export default function SftpPage({ subscriptionId }: SftpPageProps) {
 
     useEffect(() => {
         loadCredentials();
-    }, []);
+    });
 
     const getErrorType = (err: unknown): { type: ErrorType; message: string } => {
         if (err instanceof Error) {
@@ -85,7 +85,7 @@ export default function SftpPage({ subscriptionId }: SftpPageProps) {
                 description: `${fieldName} copied to clipboard`,
                 duration: 2000,
             });
-        } catch (err) {
+        } catch {
             toast({
                 variant: "destructive",
                 description: "failed to copy - try selecting manually",

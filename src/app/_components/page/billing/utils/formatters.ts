@@ -1,4 +1,4 @@
-import type { CurrencyAmount, Server, SupportedCurrency } from "@/app/types"
+import type { CurrencyAmount } from "@/app/types"
 
 /**
  * Format currency amounts properly

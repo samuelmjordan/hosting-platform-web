@@ -39,21 +39,22 @@ export async function POST(
 
         const data = await response.json();
         return NextResponse.json(data);
-    } catch (error: any) {
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error('update subscription specification error:', error);
 
-        if (error.message.includes('Cannot find subscription') ||
-            error.message.includes('Cannot find price') ||
-            error.message.includes('Cannot find a plan')) {
-            return NextResponse.json({ error: error.message }, { status: 404 });
+        if (message.includes('Cannot find subscription') ||
+            message.includes('Cannot find price') ||
+            message.includes('Cannot find a plan')) {
+            return NextResponse.json({ error: message }, { status: 404 });
         }
 
-        if (error.message.includes('not an upgrade')) {
+        if (message.includes('not an upgrade')) {
             return NextResponse.json({ error: 'downgrades not supported' }, { status: 400 });
         }
 
         // stripe errors
-        if (error.message.includes('stripe') || error.message.includes('payment')) {
+        if (message.includes('stripe') || message.includes('payment')) {
             return NextResponse.json({ error: 'payment processing failed' }, { status: 402 });
         }
 

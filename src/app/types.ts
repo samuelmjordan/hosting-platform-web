@@ -64,7 +64,7 @@ export interface PaymentMethodField {
 
 export interface PaymentMethod {
   id: string;
-  type: 'card' | 'google_pay' | 'apple_pay' | 'samsung_pay' | 'sepa';
+  type: 'card' | 'google_pay' | 'apple_pay' | 'samsung_pay';
   display_name: string;
   is_default: boolean;
   is_active: boolean;

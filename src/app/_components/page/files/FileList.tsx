@@ -109,7 +109,7 @@ export function FileList({
                 <td className="p-3">
                   <Checkbox
                       checked={selectedFiles.has(file.name)}
-                      onCheckedChange={(checked) => {
+                      onCheckedChange={() => {
                         // this gets called without shift info, so we ignore it
                       }}
                       onClick={(e) => {

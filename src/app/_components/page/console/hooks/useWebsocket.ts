@@ -67,7 +67,7 @@ export function useWebSocket(subscriptionUid: string) {
                     } else if (data.event === "token expired") {
                         setError("authentication expired");
                     }
-                } catch (e) {
+                } catch {
                     setLogs(prev => [...prev, event.data]);
                 }
             };

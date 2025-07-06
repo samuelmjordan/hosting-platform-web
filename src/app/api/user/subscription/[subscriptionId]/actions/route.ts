@@ -17,7 +17,7 @@ export async function POST(
     }
 
     const { subscriptionId } = await params;
-    const { title, address, action, specificationId: specification_id } = await request.json();
+    const { title, address, action} = await request.json();
     const basePath = `${process.env.API_URL}/api/user/subscription/${subscriptionId}`;
 
     switch (action) {
@@ -89,8 +89,9 @@ export async function POST(
       default:
         return NextResponse.json({ error: "invalid action" }, { status: 400 });
     }
-  } catch (error: any) {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
     console.error('subscription action error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

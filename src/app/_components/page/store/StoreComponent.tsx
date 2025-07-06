@@ -111,7 +111,7 @@ export function StoreComponent({ plans }: StoreComponentProps) {
         } finally {
             setIsLoading(false);
         }
-    }, [selectedPlan, userId, router]);
+    }, [selectedPlan, userId, router, currency]);
 
     return (
         <div className="min-h-screen bg-background">

@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
     Shield,
@@ -8,7 +7,6 @@ import {
     Trash2,
     Edit,
     Eye,
-    ArrowRight,
     MapPin,
     Lock,
     Mail
@@ -24,7 +22,7 @@ export default function GDPRCompliance() {
                     </Badge>
                     <h1 className="text-4xl font-bold mb-4 text-foreground">GDPR Compliance</h1>
                     <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                        Your data rights matter. Here's how we protect your privacy and comply with GDPR regulations.
+                        {"Your data rights matter. Here's how we protect your privacy and comply with GDPR regulations."}
                     </p>
                 </div>
 
@@ -132,7 +130,7 @@ export default function GDPRCompliance() {
                             <div className="space-y-4">
                                 <div>
                                     <h4 className="font-semibold mb-2">Contract Performance (Art. 6(1)(b))</h4>
-                                    <p className="text-muted-foreground">Processing necessary to provide Minecraft hosting services you've subscribed to</p>
+                                    <p className="text-muted-foreground">{"Processing necessary to provide Minecraft hosting services you've subscribed to"}</p>
                                 </div>
                                 <div>
                                     <h4 className="font-semibold mb-2">Legitimate Interest (Art. 6(1)(f))</h4>

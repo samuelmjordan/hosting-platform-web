@@ -1,11 +1,9 @@
 import { CalendarIcon, CheckCircle2, XCircle } from "lucide-react"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import type { Server } from "@/app/types"
 import { formatCurrency, formatDate } from "../utils/formatters"
-import { REGIONS } from "../utils/constants"
 import PlanTierBadge from "@/app/_components/common/PlanTierBadge";
 import {StatusBadge} from "@/app/_components/common/StatusBadge";
 import {RegionBadge} from "@/app/_components/common/RegionBadge";
@@ -19,8 +17,6 @@ interface SubscriptionCardProps {
 }
 
 export function SubscriptionCard({ server, onCancelClick, onUncancelClick, isLoading = false }: SubscriptionCardProps) {
-  const region = REGIONS[server.region_code as keyof typeof REGIONS] || REGIONS.default
-
   return (
       <Card className="overflow-hidden shadow-sm hover:shadow dark:shadow-xl dark:hover:shadow-2xl transition-all">
         <CardHeader className="pb-4">

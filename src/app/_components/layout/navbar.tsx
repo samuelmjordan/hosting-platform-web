@@ -1,6 +1,6 @@
 "use client"
-import { useTheme } from 'next-themes'
-import { Menu, Server } from "lucide-react"
+
+import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -29,8 +29,6 @@ function AxolotlImg() {
 
 const Navbar = ({ items = [], showAuth = false }: NavbarProps) => {
     const { isLoaded, isSignedIn } = useUser()
-
-    const { theme } = useTheme()
 
     const UserButtonWithLoader = () => {
         return (

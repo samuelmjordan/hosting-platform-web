@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
@@ -38,7 +38,7 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
   const [status, setStatus] = useState<ProvisioningStatus>(ProvisioningStatus.PENDING);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [reinstalling, setReinstalling] = useState(false);
+  const [reinstalling] = useState(false);
   const [previousEggId, setPreviousEggId] = useState<number>(0);
   const { toast } = useToast();
 
@@ -105,7 +105,7 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
     }
   }, [formData.eggId, settings, previousEggId, eggs]);
 
-  const loadSettings = async () => {
+  const loadSettings = useCallback(async () => {
     try {
       setLoading(true);
       const data = await settingsClient.getSettings(subscriptionId);
@@ -119,7 +119,7 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
       });
 
       setPreviousEggId(data.egg_id);
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Could not load server settings',
@@ -128,16 +128,16 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
     } finally {
       setLoading(false);
     }
-  };
+  }, [subscriptionId]);
 
-  const loadStatus = async () => {
+  const loadStatus = useCallback(async () => {
     try {
       const provisioningStatus = await fetchSubscriptionProvisioningStatus(subscriptionId);
       setStatus(provisioningStatus);
-    } catch (error) {
+    } catch {
       setStatus(ProvisioningStatus.ERROR);
     }
-  };
+  }, [subscriptionId, loadSettings]);
 
   const saveSettings = async () => {
     try {
@@ -153,7 +153,7 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
 
       await loadSettings();
       await loadStatus();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Could not save settings',
@@ -175,7 +175,7 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
 
       await loadSettings();
       await loadStatus();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Reinstall failed',
@@ -195,7 +195,7 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
 
       await loadSettings();
       await loadStatus();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Re-create failed',
@@ -249,10 +249,6 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
   const getOptionalKeys = (): string[] => {
     const requiredKeys = getRequiredKeys();
     return Object.keys(formData.environment).filter(key => !requiredKeys.includes(key));
-  };
-
-  const isRequired = (key: string): boolean => {
-    return getRequiredKeys().includes(key);
   };
 
   const getdefault_value = (key: string): string => {

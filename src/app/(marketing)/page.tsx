@@ -1,5 +1,3 @@
-import Navbar from "@/app/_components/layout/navbar";
-
 export const dynamic = "force-dynamic"
 
 import { Button } from "@/components/ui/button"
@@ -12,25 +10,18 @@ import {
   Zap,
   Shield,
   CheckCircle,
-  Star,
   ArrowRight,
   MapPin,
-  FileTerminal,
-  SquareTerminal,
   Terminal,
   Pencil, Files
 } from "lucide-react"
-import Footer from "@/app/_components/layout/footer";
 import {fetchPlans} from "@/app/_services/public/planService";
 import {formatCurrency} from "@/app/_components/page/billing/utils/formatters";
-import Console from "@/app/(panel)/panel/[subscriptionUid]/console/page";
 import {STORE_PATH} from "@/app/constants";
 
 export default async function Home() {
   const { userId } = await auth()
   const plans = await fetchPlans('GAME_SERVER');
-  const euroPlans = plans.filter(plan => plan.price.currency == "EUR");
-
   if (userId) {
     redirect(STORE_PATH)
   }
@@ -184,8 +175,8 @@ export default async function Home() {
                 <p className="text-xl text-muted-foreground">No hidden fees. What you see, is what you get</p>
               </div>
               <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                {euroPlans.map((plan, index) => (
-                    <Card className={`border ${index === 1 ? 'border-primary shadow-lg scale-105' : ''} relative`}>
+                {plans.map((plan, index) => (
+                    <Card className={`border ${index === 1 ? 'border-primary shadow-lg scale-105' : ''} relative`} key={index}>
                       {index === 1 && (
                           <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                 <span className="bg-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-semibold">
@@ -196,7 +187,7 @@ export default async function Home() {
                       <CardHeader className="text-center">
                         <CardTitle className="text-2xl">{plan.specification.title}</CardTitle>
                         <div className={`text-4xl font-bold mt-4 ${index === 1 ? 'text-primary' : 'text-primary'}`}>
-                          {formatCurrency({type: plan.price.currency, value: plan.price.minor_amount})}
+                          {formatCurrency({type: "EUR", value: plan.price.minor_amounts["EUR"]})}
                         </div>
                         <CardDescription className="text-base">per month</CardDescription>
                       </CardHeader>

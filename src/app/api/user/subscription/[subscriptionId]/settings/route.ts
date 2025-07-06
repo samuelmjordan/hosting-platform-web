@@ -34,9 +34,10 @@ export async function GET(
 
         const settings = await settingsResponse.json();
         return NextResponse.json(settings);
-    } catch (error: any) {
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error('get settings error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: message }, { status: 500 });
     }
 }
 
@@ -76,8 +77,9 @@ export async function PATCH(
 
         const settings = await settingsResponse.json();
         return NextResponse.json(settings);
-    } catch (error: any) {
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error('update settings error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: message }, { status: 500 });
     }
 }

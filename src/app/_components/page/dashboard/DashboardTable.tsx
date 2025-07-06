@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Server, Plan } from "@/app/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { RefreshCw, Search, ServerIcon } from "lucide-react"
+import { Search, ServerIcon } from "lucide-react"
 import Link from "next/link"
 import { StatsCards } from "./StatsCards"
 import { ServerGrid } from "./ServerGrid"
@@ -17,18 +17,16 @@ import {STORE_PATH} from "@/app/constants";
 interface DashboardTableProps {
   servers: Server[]
   plans: Plan[]
-  userId: string
 }
 
-export function DashboardTable({ servers: initialServers, plans, userId }: DashboardTableProps) {
+export function DashboardTable({ servers: initialServers, plans }: DashboardTableProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [copiedId, setCopiedId] = useState<string | null>(null)
 
   const {
     serverStatuses,
-    refreshStatus,
-    checkAllServerStatuses
-  } = useServerStatus(initialServers, userId)
+    refreshStatus
+  } = useServerStatus(initialServers)
   const {
     servers,
     editingServer,
@@ -46,12 +44,6 @@ export function DashboardTable({ servers: initialServers, plans, userId }: Dashb
     setTimeout(() => setCopiedId(null), 2000)
   }
 
-  const activeServers = servers.filter((server) => server.subscription_status === "active")
-  const totalPlayers = activeServers.reduce((sum, server) => {
-    const status = serverStatuses[server.subscription_id]
-    return sum + (status?.minecraftStatus.playerCount || 0)
-  }, 0)
-
   return (
       <div className="max-w-6xl mx-auto space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -68,14 +60,6 @@ export function DashboardTable({ servers: initialServers, plans, userId }: Dashb
                   className="pl-10 w-64"
               />
             </div>
-            {/*<Button
-                variant="default"
-                size="sm"
-                onClick={checkAllServerStatuses}
-            >
-              <RefreshCw className="h-4 w-4 mr-2"/>
-              Refresh
-            </Button>*/}
             <Link href={STORE_PATH}>
               <Button
                   size="sm"

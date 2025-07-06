@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge"
 import { CreditCard, CheckCircle2, XCircle, CalendarIcon } from "lucide-react"
 import { Server } from "@/app/types"
 import { formatCurrency, formatDate } from "../utils/formatters"

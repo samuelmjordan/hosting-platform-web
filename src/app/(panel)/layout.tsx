@@ -1,10 +1,7 @@
 import Navbar from "@/app/_components/layout/navbar"
 import Footer from "@/app/_components/layout/footer"
-import { Params } from "next/dist/server/request/params";
 
-export default async function RootLayout({ children, params }: { children: React.ReactNode; params: Promise<Params>; }) {
-    const { subscriptionUid } = await params;
-    
+export default async function RootLayout({ children }: { children: React.ReactNode; }) {
     const menuItems = [
         { label: 'Dashboard', href: `/user/dashboard` },
         { label: 'Console', href: `console` },

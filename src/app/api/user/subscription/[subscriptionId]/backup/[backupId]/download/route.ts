@@ -34,8 +34,9 @@ export async function GET(
 
         const downloadLink = await downloadResponse.text();
         return NextResponse.json({ url: downloadLink });
-    } catch (error: any) {
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error('get backup download link error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: message }, { status: 500 });
     }
 }

@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader } from "@/components/ui/card";
 import { Wifi, WifiOff, Clock } from "lucide-react";
 import { getStatusBadgeVariant } from "@/app/_components/page/console/utils/utils";
 

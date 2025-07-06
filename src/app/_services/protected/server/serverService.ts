@@ -1,6 +1,5 @@
 import { Server } from "@/app/types";
 import { auth } from "@clerk/nextjs/server";
-import {NextResponse} from "next/server";
 
 export async function fetchServers(): Promise<Server[]> {
   const { getToken } = await auth();

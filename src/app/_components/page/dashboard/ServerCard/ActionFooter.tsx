@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { ArrowUpRight, MapPin, TrendingUp, DollarSign } from "lucide-react"
+import { ArrowUpRight, TrendingUp, DollarSign } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Plan, Server } from "@/app/types"
 import Link from "next/link"

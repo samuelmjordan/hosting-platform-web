@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Server, Plan } from "@/app/types"
+import {Server, Plan, SupportedCurrency} from "@/app/types"
 import { toast } from "sonner"
 import {
   changeServerAddress,
@@ -28,7 +28,7 @@ export function useServerManagement(
       throw new Error("Invalid server name")
     }
 
-    if (address && !validateSubdomain(address, MAX_SUBDOMAIN_LENGTH)) {
+    if (address && !validateSubdomain(address)) {
       toast("Error", {
         description: `Subdomain must be 1-${MAX_SUBDOMAIN_LENGTH} characters, contain only letters, numbers, and hyphens, and cannot start or end with a hyphen.`
       })
@@ -84,7 +84,7 @@ export function useServerManagement(
     }
   }
 
-  const handleConfirmUpgrade = async (serverId: string, specificationId: string) => {
+  const handleConfirmUpgrade = async (serverId: string, specificationId: string, currency: SupportedCurrency) => {
     try {
       const confirmation = await confirmUpgrade(serverId, specificationId)
 
@@ -98,7 +98,7 @@ export function useServerManagement(
                   specification_title: newPlan.specification.title,
                   ram_gb: newPlan.specification.ram_gb,
                   vcpu: newPlan.specification.vcpu,
-                  minor_amount: newPlan.price.minor_amount,
+                  minor_amount: newPlan.price.minor_amounts[currency],
                 }
               }
               return server
