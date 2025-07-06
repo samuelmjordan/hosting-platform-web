@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import {CurrencyAmount, Plan} from "@/app/types";
+import {CurrencyAmount, Plan, SupportedCurrency} from "@/app/types";
 
 export interface PlanCardProps {
     plan: Plan;
@@ -12,6 +12,7 @@ export interface PlanCardProps {
     isPopular?: boolean;
     onSelect: (plan: Plan) => void;
     formatCurrency: (amount: CurrencyAmount) => string;
+    currency: SupportedCurrency;
 }
 
 export const PlanCard: React.FC<PlanCardProps> = ({
@@ -20,6 +21,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
     isPopular = false,
     onSelect,
     formatCurrency,
+    currency
 }) => {
     const { specification, price } = plan;
 
@@ -55,7 +57,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
 
                 <div className="pt-2 border-t border-border">
                     <p className="text-2xl font-bold text-foreground">
-                        {formatCurrency({ type: price.currency, value: price.minor_amount })}
+                        {formatCurrency({ type: currency, value: price.minor_amounts[currency] })}
                     </p>
                     <p className="text-sm text-muted-foreground">per month</p>
                 </div>

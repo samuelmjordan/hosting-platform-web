@@ -96,8 +96,7 @@ export function UpgradeServerDialog({
 
   const filteredPlans = server
       ? plans
-          .filter((plan) => plan.price.currency === server.currency)
-          .filter((plan) => plan.price.minor_amount >= (server?.minor_amount || 0))
+          .filter((plan) => plan.price.minor_amounts[server.currency] >= (server?.minor_amount || 0))
       : []
 
   const selectedPlan = plans.find(plan => plan.specification.specification_id === selectedSpecification)
@@ -117,7 +116,7 @@ export function UpgradeServerDialog({
               <RadioGroup value={selectedSpecification} onValueChange={setSelectedSpecification}>
                 {filteredPlans.map((plan) => {
                   const isPlanCurrent = plan.specification.title === server?.specification_title
-                  const newPrice = plan.price.minor_amount
+                  const newPrice = plan.price.minor_amounts[server?.currency || "EUR"]
 
                   return (
                       <div

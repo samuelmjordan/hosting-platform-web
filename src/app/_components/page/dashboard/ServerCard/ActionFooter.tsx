@@ -15,9 +15,7 @@ interface ActionFooterProps {
 export function ActionFooter({ plans, server, onUpgrade }: ActionFooterProps) {
   const router = useRouter()
   const planUpgrades: Plan[] = server
-      ? plans.filter((plan) =>
-          plan.price.currency === server.currency
-          && plan.price.minor_amount > server.minor_amount)
+      ? plans.filter((plan) => plan.price.minor_amounts[server.currency] > server.minor_amount)
       : []
 
   const hasUpgrades = planUpgrades.length > 0

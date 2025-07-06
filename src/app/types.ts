@@ -14,20 +14,15 @@ export interface NavbarItem {
 }
 
 export interface Price {
-  price_id: string;
-  product_id: string;
-  active: boolean;
-  currency: SupportedCurrency;
-  minor_amount: number;
+    price_id: string;
+    product_id: string;
+    active: boolean;
+    minor_amounts: Record<SupportedCurrency, number>;
 }
 
 export interface Plan {
   price: Price,
   specification: Specification
-}
-
-export interface StoreSelection {
-  price: Price | null;
 }
 
 export interface Server {

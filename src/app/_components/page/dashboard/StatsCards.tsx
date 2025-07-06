@@ -75,7 +75,7 @@ export function StatsCards({ servers, serverStatuses }: StatsCardsProps) {
                 <p className="text-sm font-medium text-muted-foreground">Monthly cost</p>
                 <p className="text-2xl font-bold text-foreground">
                   {formatCurrency({
-                    type: servers[0]?.currency || "USD",
+                    type: servers[0]?.currency || "EUR",
                     value: monthlyCost,
                   })}
                 </p>

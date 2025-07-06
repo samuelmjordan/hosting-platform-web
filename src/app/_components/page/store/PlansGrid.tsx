@@ -17,19 +17,18 @@ export const PlansGrid: React.FC<PlansGridProps> = ({
     onPlanSelect,
     formatCurrency,
 }) => {
-    const filteredPlans = plans.filter(plan => plan.price.currency === currency);
-
     return (
         <section className="space-y-4">
             <div className="grid md:grid-cols-3 gap-4">
-                {filteredPlans.map((plan) => (
+                {plans.map((plan) => (
                     <PlanCard
-                        key={`${plan.specification.title}_${plan.price.currency}`}
+                        key={`${plan.specification.title}_${currency}`}
                         plan={plan}
                         isSelected={selectedPlan?.price.price_id === plan.price.price_id}
                         isPopular={plan.specification.title === "Iron"}
                         onSelect={onPlanSelect}
                         formatCurrency={formatCurrency}
+                        currency={currency}
                     />
                 ))}
             </div>

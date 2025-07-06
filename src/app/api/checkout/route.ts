@@ -18,10 +18,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const { price_id } = await request.json();
+    const { price_id, currency } = await request.json();
 
     const checkoutData = {
       price_id,
+      currency,
       success: `${BASE_URL}/user/dashboard`,
       cancel: `${BASE_URL}/user/dashboard`
     };

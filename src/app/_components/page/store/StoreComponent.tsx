@@ -103,7 +103,7 @@ export function StoreComponent({ plans }: StoreComponentProps) {
         setError(null);
 
         try {
-            const checkoutUrl = await startCheckout(selectedPlan.price.price_id);
+            const checkoutUrl = await startCheckout(selectedPlan.price.price_id, currency);
             router.push(checkoutUrl);
         } catch (error) {
             console.error('Checkout error:', error);
