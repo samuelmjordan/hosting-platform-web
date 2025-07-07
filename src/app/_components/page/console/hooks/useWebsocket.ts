@@ -24,8 +24,7 @@ export function useWebSocket(subscriptionUid: string) {
                 return;
             }
 
-            const wsUrl = process.env.NEXT_PUBLIC_API_URL?.replace('http', 'ws') || 'ws://localhost:8080';
-
+            const wsUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/^https?/, (match) => match === 'https' ? 'wss' : 'ws') || 'ws://localhost:8080';
             const ws = new WebSocket(`${wsUrl}/ws/user/subscription/${subscriptionUid}?token=${encodeURIComponent(token)}`);
             wsRef.current = ws;
 
