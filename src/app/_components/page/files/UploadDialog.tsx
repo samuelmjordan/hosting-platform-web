@@ -62,8 +62,13 @@ export function UploadDialog({ open, onClose, onUpload, subscriptionId }: Upload
   };
 
   const uploadFiles = async () => {
+    const abortController = new AbortController();
+    const xhrRefs = []; // track all xhr objects
+
     try {
       for (let i = 0; i < files.length; i++) {
+        if (abortController.signal.aborted) break;
+
         const uploadFile = files[i];
         if (uploadFile.status !== 'pending') continue;
 
@@ -76,27 +81,54 @@ export function UploadDialog({ open, onClose, onUpload, subscriptionId }: Upload
           formData.append('files', uploadFile.file);
 
           const xhr = new XMLHttpRequest();
+          xhrRefs.push(xhr); // track it
 
-          xhr.upload.addEventListener('progress', (e) => {
+          const progressHandler = (e: { lengthComputable: any; loaded: number; total: number; }) => {
             if (e.lengthComputable) {
               const progress = (e.loaded / e.total) * 100;
               setFiles(prev => prev.map((f, idx) =>
                   idx === i ? { ...f, progress } : f
               ));
             }
-          });
+          };
+
+          xhr.upload.addEventListener('progress', progressHandler);
 
           await new Promise<void>((resolve, reject) => {
-            xhr.addEventListener('load', () => {
+            const loadHandler = () => {
               if (xhr.status >= 200 && xhr.status < 300) {
                 resolve();
               } else {
                 reject(new Error(`Upload failed: ${xhr.status}`));
               }
-            });
-            xhr.addEventListener('error', () => reject(new Error('Upload failed')));
+            };
 
-            // hit your server route instead
+            const errorHandler = () => reject(new Error('Upload failed'));
+
+            // cleanup function
+            const cleanup = () => {
+              xhr.upload.removeEventListener('progress', progressHandler);
+              xhr.removeEventListener('load', loadHandler);
+              xhr.removeEventListener('error', errorHandler);
+            };
+
+            xhr.addEventListener('load', () => {
+              cleanup();
+              loadHandler();
+            });
+
+            xhr.addEventListener('error', () => {
+              cleanup();
+              errorHandler();
+            });
+
+            // abort on signal
+            abortController.signal.addEventListener('abort', () => {
+              cleanup();
+              xhr.abort();
+              reject(new Error('Upload cancelled'));
+            });
+
             xhr.open('POST', `/api/user/subscription/${subscriptionId}/file/upload`);
             xhr.send(formData);
           });
@@ -125,6 +157,12 @@ export function UploadDialog({ open, onClose, onUpload, subscriptionId }: Upload
         setFiles([]);
       }, 1000);
     } catch (error) {
+      xhrRefs.forEach(xhr => {
+        if (xhr.readyState !== XMLHttpRequest.DONE) {
+          xhr.abort();
+        }
+      });
+
       toast({
         title: 'Upload failed',
         description: error instanceof Error ? error.message : 'Unknown error',
