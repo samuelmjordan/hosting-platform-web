@@ -9,7 +9,7 @@ export async function fetchServers(): Promise<Server[]> {
     return [];
   }
 
-  const response = await fetch(`${process.env.API_URL}/api/user/subscription`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/subscription`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`

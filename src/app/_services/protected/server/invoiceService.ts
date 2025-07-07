@@ -9,7 +9,7 @@ export async function fetchInvoices(): Promise<Invoice[]> {
     return [];
   }
 
-  const response = await fetch(`${process.env.API_URL}/api/user/invoice`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/invoice`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`

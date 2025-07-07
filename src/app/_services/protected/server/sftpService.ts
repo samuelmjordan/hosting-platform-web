@@ -43,13 +43,13 @@ export async function getSftpCredentials(subscriptionId: string): Promise<SftpCr
         throw new Error('forbidden');
     }
 
-    if (!process.env.API_URL) {
+    if (!process.env.NEXT_PUBLIC_API_URL) {
         throw new Error('api url not configured');
     }
 
     try {
         const response = await fetch(
-            `${process.env.API_URL}/api/panel/user/subscription/${subscriptionId}/sftp/credentials`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/panel/user/subscription/${subscriptionId}/sftp/credentials`,
             {
                 headers: {
                     'Content-Type': 'application/json',

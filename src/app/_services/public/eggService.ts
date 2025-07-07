@@ -1,7 +1,7 @@
 import {Egg} from "@/app/types";
 
 export async function fetchEggs(): Promise<Egg[]> {
-    const response = await fetch(`${process.env.API_URL}/egg`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/egg`, {
         headers: {
             'Content-Type': 'application/json',
         }

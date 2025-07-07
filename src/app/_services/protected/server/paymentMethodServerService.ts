@@ -9,7 +9,7 @@ export async function fetchPaymentMethods(): Promise<PaymentMethod[]> {
     return [];
   }
 
-  const response = await fetch(`${process.env.API_URL}/api/user/payment-method`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/payment-method`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
