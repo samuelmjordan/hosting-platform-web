@@ -182,7 +182,7 @@ export default function BackupsPage({ subscriptionId }: BackupsScreenProps) {
 
     useEffect(() => {
         loadBackups();
-    });
+    }, []);
 
     if (loading) {
         return (
