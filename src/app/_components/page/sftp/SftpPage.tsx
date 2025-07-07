@@ -37,7 +37,7 @@ export default function SftpPage({ subscriptionId }: SftpPageProps) {
 
     useEffect(() => {
         loadCredentials();
-    });
+    }, []);
 
     const getErrorType = (err: unknown): { type: ErrorType; message: string } => {
         if (err instanceof Error) {
