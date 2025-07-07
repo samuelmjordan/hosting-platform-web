@@ -83,7 +83,7 @@ export function UploadDialog({ open, onClose, onUpload, subscriptionId }: Upload
           const xhr = new XMLHttpRequest();
           xhrRefs.push(xhr); // track it
 
-          const progressHandler = (e: { lengthComputable: any; loaded: number; total: number; }) => {
+          const progressHandler = (e: ProgressEvent) => {
             if (e.lengthComputable) {
               const progress = (e.loaded / e.total) * 100;
               setFiles(prev => prev.map((f, idx) =>
