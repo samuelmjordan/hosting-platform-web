@@ -3,7 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from 'next/server';
 
-const API_URL = process.env.API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const BASE_URL = process.env.BASE_URL;
 
 export async function POST(request: Request) {
