@@ -60,7 +60,7 @@ export default function ServerSettings({ eggs, subscriptionId}: ServerSettingsPr
   useEffect(() => {
     const interval = setInterval(() => {
       loadStatus();
-    }, 5000);
+    }, 10000);
 
     return () => clearInterval(interval);
   }, [subscriptionId]);
