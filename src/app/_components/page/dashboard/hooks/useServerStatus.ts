@@ -66,8 +66,10 @@ const checkMinecraftServer = async (address: string | null): Promise<MinecraftSt
 
     clearTimeout(timeoutId)
 
+    console.log(response)
     if (response.ok) {
       const data = await response.json()
+      console.log(data)
 
       const motdText = data.motd?.clean || data.motd?.raw || "a minecraft server"
       const versionName = data.version?.name_clean || data.version?.name_raw || "Unknown"
@@ -109,7 +111,6 @@ const checkProvisioningStatus = async (subscriptionId: string | null): Promise<P
   try {
 
     const provisioningStatus = await fetchSubscriptionProvisioningStatus(subscriptionId);
-    console.log("provisioningStatus: ", provisioningStatus);
     return provisioningStatus;
   } catch (error) {
     console.error('failed to fetch provisioning status:', error);
@@ -152,16 +153,7 @@ export const useServerStatus = (servers: Server[]) => {
         [server.subscription_id]: {
           provisioningStatus,
           machineOnline,
-          minecraftStatus: {
-            minecraftOnline: minecraftStatus.minecraftOnline,
-            playerCount: minecraftStatus.playerCount,
-            maxPlayers: minecraftStatus.maxPlayers,
-            version: minecraftStatus.version,
-            motd: minecraftStatus.motd,
-            lastUpdated: minecraftStatus.lastUpdated,
-            duration: minecraftStatus.duration,
-            players: minecraftStatus.players
-          },
+          minecraftStatus,
           isChecking: false,
           lastChecked: Date.now()
         },
