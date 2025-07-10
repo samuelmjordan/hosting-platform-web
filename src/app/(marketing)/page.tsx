@@ -226,15 +226,17 @@ export default async function Home() {
                           <span className="font-medium">DDoS protection</span>
                         </li>
                       </ul>
-                      <Button className={`
+                      <SignUpButton mode="modal">
+                        <Button className={`
                           w-full font-semibold transition-all duration-300 
                           ${index === 1
-                          ? 'bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent text-accent-foreground shadow-lg hover:shadow-xl'
-                          : 'bg-secondary hover:bg-secondary/80 text-secondary-foreground border border-border hover:border-accent/50'
-                      }
+                            ? 'bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent text-accent-foreground shadow-lg hover:shadow-xl'
+                            : 'bg-secondary hover:bg-secondary/80 text-secondary-foreground border border-border hover:border-accent/50'
+                        }
                         `}>
-                        Choose {plan.specification.title}
-                      </Button>
+                          Choose {plan.specification.title}
+                        </Button>
+                      </SignUpButton>
                     </CardContent>
                   </Card>
               ))}
