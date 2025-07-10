@@ -1,11 +1,7 @@
 import type React from "react"
 import Navbar from "@/app/_components/layout/navbar";
 import Footer from "@/app/_components/layout/footer";
-import {NavbarItem} from "@/app/types";
 import {CORE_ITEMS} from "@/app/constants";
-
-const navItems : NavbarItem[] = [
-]
 
 export default function MarketingLayout({
     children,
