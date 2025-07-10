@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     default: 'Axolhost',
   },
   icons: {
-    icon: '/BucketAxolotlLight.webp'
+    icon: '/favicon.ico'
   },
   description: "Minecraft Hosting",
 }
@@ -23,8 +23,11 @@ export default function RootLayout({
 }) {
   return (
       <ClerkProvider signInForceRedirectUrl={STORE_PATH} signUpForceRedirectUrl={STORE_PATH}>
-        <html>
-            <head />
+        <html lang="en">
+            <head>
+                <link rel="icon" href="/favicon.ico" sizes="any" />
+                <link rel="icon" href="/BucketAxolotlLight.webp" type="image/webp" />
+            </head>
             <body>
                 <ThemeProvider
                     attribute="class"
