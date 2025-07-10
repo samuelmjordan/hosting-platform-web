@@ -50,7 +50,7 @@ const Navbar = ({ items = [], showAuth = false }: NavbarProps) => {
 
                     {/* Desktop menu */}
                     <div className="hidden md:flex md:items-center md:space-x-6">
-                        {items.map((item) => (
+                        {isSignedIn ? items.map((item) => (
                             <Link
                                 key={item.label}
                                 href={item.href}
@@ -58,7 +58,7 @@ const Navbar = ({ items = [], showAuth = false }: NavbarProps) => {
                             >
                                 {item.label}
                             </Link>
-                        ))}
+                        )) : []}
                         <ThemeToggle />
                         {showAuth && isLoaded && (
                             <>
