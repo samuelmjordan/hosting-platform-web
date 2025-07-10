@@ -5,14 +5,12 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - [] give a return path, not a whole url
 
 ## TODO
-- [] payment methods
-    - [] default
-    - [] edit
-    - [] remove
-    - [] add
-- [] subscriptions
-    - [] cancel
-- [] servers
-    - [] name limit (32?)
-    - [] actions
-    - [] console
+- [] Launch and pray
+
+## IDEA
+- Tutorial series (shorts)?
+  - Change motd
+  - Update whitelists
+  - Update server details / cname
+  - Use filezilla
+  - Setup a forge modded server
