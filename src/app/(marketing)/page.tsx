@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export const dynamic = "force-dynamic"
 
 import { Button } from "@/components/ui/button"
@@ -18,6 +20,7 @@ import {
 import {fetchPlans} from "@/app/_services/public/planService";
 import {formatCurrency} from "@/app/_components/page/billing/utils/formatters";
 import {STORE_PATH} from "@/app/constants";
+import React from "react";
 
 export default async function Home() {
   const { userId } = await auth()
@@ -168,45 +171,65 @@ export default async function Home() {
           </section>
 
           {/* Pricing Section */}
-          <section id="pricing" className="py-20 bg-background">
+          <section id="pricing" className="py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
             <div className="container mx-auto px-4">
               <div className="text-center mb-16">
-                <h2 className="text-4xl font-bold mb-4 text-foreground">Simple, Transparent Pricing</h2>
-                <p className="text-xl text-muted-foreground">No hidden fees. What you see, is what you get</p>
+                <h2 className="text-4xl font-bold mb-4 text-white">Simple, Transparent Pricing</h2>
+                <p className="text-xl text-slate-300">No hidden fees. What you see, is what you get</p>
               </div>
-              <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                 {plans.map((plan, index) => (
-                    <Card className={`border ${index === 1 ? 'border-primary shadow-lg scale-105' : ''} relative`} key={index}>
+                    <Card className={`
+            border-slate-700 bg-slate-800/50 backdrop-blur-sm hover:bg-slate-800/70 transition-all duration-300
+            ${index === 1 ? 'border-amber-400 shadow-2xl shadow-amber-400/20 scale-105 hover:scale-110' : 'hover:scale-105'} 
+            relative group
+          `} key={index}>
                       {index === 1 && (
                           <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <span className="bg-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-semibold">
-                  Most Popular
-                </span>
+                  <span className="bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+                    Most Popular
+                  </span>
                           </div>
                       )}
-                      <CardHeader className="text-center">
-                        <CardTitle className="text-2xl">{plan.specification.title}</CardTitle>
-                        <div className={`text-4xl font-bold mt-4 ${index === 1 ? 'text-primary' : 'text-primary'}`}>
+                      <CardHeader className="text-center pb-4">
+                        <div className="flex items-center justify-center gap-4 mb-6">
+                          <div className="relative w-12 h-12 rounded-lg overflow-hidden group-hover:scale-110 transition-transform duration-300">
+                            <Image
+                                src={`/${plan.specification.title}.webp`}
+                                alt={plan.specification.title}
+                                fill
+                                className="object-cover pixelated"
+                            />
+                          </div>
+                          <CardTitle className="text-2xl font-bold text-white">{plan.specification.title}</CardTitle>
+                        </div>
+                        <div className={`text-5xl font-bold mb-2 ${index === 1 ? 'text-amber-400' : 'text-slate-100'}`}>
                           {formatCurrency({type: "EUR", value: plan.price.minor_amounts["EUR"]})}
                         </div>
-                        <CardDescription className="text-base">per month</CardDescription>
+                        <CardDescription className="text-slate-400 font-medium">per month</CardDescription>
                       </CardHeader>
-                      <CardContent>
-                        <ul className="space-y-3">
-                          <li className="flex items-center">
-                            <CheckCircle className={`w-5 h-5 mr-3 ${index === 1 ? 'text-primary' : 'text-primary'}`} />
-                            {plan.specification.ram_gb}GB RAM
+                      <CardContent className="pt-0">
+                        <ul className="space-y-4 mb-8">
+                          <li className="flex items-center text-slate-200">
+                            <CheckCircle className={`w-5 h-5 mr-3 ${index === 1 ? 'text-amber-400' : 'text-emerald-400'}`} />
+                            <span className="font-medium">{plan.specification.ram_gb}GB RAM</span>
                           </li>
-                          <li className="flex items-center">
-                            <CheckCircle className={`w-5 h-5 mr-3 ${index === 1 ? 'text-primary' : 'text-primary'}`} />
-                            {plan.specification.ssd_gb}GB SSD storage
+                          <li className="flex items-center text-slate-200">
+                            <CheckCircle className={`w-5 h-5 mr-3 ${index === 1 ? 'text-amber-400' : 'text-emerald-400'}`} />
+                            <span className="font-medium">{plan.specification.ssd_gb}GB SSD storage</span>
                           </li>
-                          <li className="flex items-center">
-                            <CheckCircle className={`w-5 h-5 mr-3 ${index === 1 ? 'text-primary' : 'text-primary'}`} />
-                            DDoS protection
+                          <li className="flex items-center text-slate-200">
+                            <CheckCircle className={`w-5 h-5 mr-3 ${index === 1 ? 'text-amber-400' : 'text-emerald-400'}`} />
+                            <span className="font-medium">DDoS protection</span>
                           </li>
                         </ul>
-                        <Button className={`w-full mt-6 ${index === 1 ? 'bg-primary hover:bg-primary/90' : ''}`}>
+                        <Button className={`
+                w-full font-semibold transition-all duration-300 
+                ${index === 1
+                            ? 'bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-900 shadow-lg hover:shadow-xl'
+                            : 'bg-slate-700 hover:bg-slate-600 text-white border border-slate-600 hover:border-slate-500'
+                        }
+              `}>
                           Choose {plan.specification.title}
                         </Button>
                       </CardContent>

@@ -25,7 +25,7 @@ export const PlansGrid: React.FC<PlansGridProps> = ({
                         key={`${plan.specification.title}_${currency}`}
                         plan={plan}
                         isSelected={selectedPlan?.price.price_id === plan.price.price_id}
-                        isPopular={plan.specification.title === "Iron"}
+                        isPopular={plan.specification.title === "Gold"}
                         onSelect={onPlanSelect}
                         formatCurrency={formatCurrency}
                         currency={currency}
