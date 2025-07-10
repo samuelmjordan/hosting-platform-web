@@ -146,7 +146,7 @@ export const useServerStatus = (servers: Server[]) => {
         checkProvisioningStatus(server.subscription_id)
       ])
 
-      console.log(minecraftStatus)
+      console.log(machineOnline)
 
       setServerStatuses((prev) => ({
         ...prev,

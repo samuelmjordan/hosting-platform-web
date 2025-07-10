@@ -14,7 +14,6 @@ interface ServerCardProps {
   copiedId: string | null
   onCopy: (text: string, id: string) => void
   onEdit: (server: Server) => void
-  onRefresh: (server: Server) => void
   onUpgrade: (server: Server) => void
 }
 
@@ -25,11 +24,8 @@ export function ServerCard({
    copiedId,
    onCopy,
    onEdit,
-   onRefresh,
    onUpgrade,
 }: ServerCardProps) {
-  const isOnline = status.machineOnline && status.minecraftStatus.minecraftOnline
-  const isProvisioning = !server.cname_record_name
 
   return (
       <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 bg-card border-border flex flex-col h-full">
@@ -38,16 +34,13 @@ export function ServerCard({
             <ServerHeader
                 server={server}
                 status={status}
-                isOnline={isOnline}
-                isProvisioning={isProvisioning}
                 onEdit={() => onEdit(server)}
-                onRefresh={() => onRefresh(server)}
             />
 
             <ServerStatusDisplay
                 server={server}
                 status={status}
-                isOnline={isOnline}
+                isOnline={status.minecraftStatus.minecraftOnline}
                 statusReady={!status.isChecking}
                 copiedId={copiedId}
                 onCopy={onCopy}

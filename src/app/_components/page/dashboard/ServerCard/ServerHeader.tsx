@@ -13,10 +13,7 @@ import {ProvisioningStatusBadge} from "@/app/_components/page/dashboard/ServerCa
 interface ServerHeaderProps {
   server: Server
   status: ServerStatus
-  isOnline: boolean
-  isProvisioning: boolean
   onEdit: () => void
-  onRefresh: () => void
 }
 
 export function ServerHeader({

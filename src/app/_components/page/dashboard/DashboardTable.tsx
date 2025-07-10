@@ -23,10 +23,7 @@ export function DashboardTable({ servers: initialServers, plans }: DashboardTabl
   const [searchQuery, setSearchQuery] = useState("")
   const [copiedId, setCopiedId] = useState<string | null>(null)
 
-  const {
-    serverStatuses,
-    refreshStatus
-  } = useServerStatus(initialServers)
+  const { serverStatuses } = useServerStatus(initialServers)
   const {
     servers,
     editingServer,
@@ -87,7 +84,6 @@ export function DashboardTable({ servers: initialServers, plans }: DashboardTabl
             onCopyAddress={handleCopy}
             copiedId={copiedId}
             onEditServer={setEditingServer}
-            onRefreshStatus={refreshStatus}
             onUpgradeServer={setUpgradeServer}
         />
 
