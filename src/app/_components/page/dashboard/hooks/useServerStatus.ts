@@ -66,10 +66,8 @@ const checkMinecraftServer = async (address: string | null): Promise<MinecraftSt
 
     clearTimeout(timeoutId)
 
-    console.log(response)
     if (response.ok) {
       const data = await response.json()
-      console.log(data)
 
       const motdText = data.motd?.clean || data.motd?.raw || "a minecraft server"
       const versionName = data.version?.name_clean || data.version?.name_raw || "Unknown"
@@ -147,6 +145,8 @@ export const useServerStatus = (servers: Server[]) => {
         checkMinecraftServer(server.cname_record_name),
         checkProvisioningStatus(server.subscription_id)
       ])
+
+      console.log(minecraftStatus)
 
       setServerStatuses((prev) => ({
         ...prev,
