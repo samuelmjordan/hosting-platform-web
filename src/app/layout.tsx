@@ -3,13 +3,17 @@ import { ClerkProvider } from '@clerk/nextjs'
 import { Toaster } from "@/components/ui/toaster"
 import './globals.css'
 import {ThemeProvider} from "next-themes";
+import {STORE_PATH} from "@/app/constants";
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Your Brand',
-    default: 'Your Brand',
+    template: '%s | Axolhost',
+    default: 'Axolhost',
   },
-  description: "Modern web application",
+  icons: {
+    icon: '/BucketAxolotlLight.webp'
+  },
+  description: "Minecraft Hosting",
 }
 
 export default function RootLayout({
@@ -18,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-      <ClerkProvider>
+      <ClerkProvider signInForceRedirectUrl={STORE_PATH} signUpForceRedirectUrl={STORE_PATH}>
         <html>
             <head />
             <body>
