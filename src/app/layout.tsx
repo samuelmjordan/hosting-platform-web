@@ -25,7 +25,7 @@ export default function RootLayout({
       <ClerkProvider signInForceRedirectUrl={STORE_PATH} signUpForceRedirectUrl={STORE_PATH}>
         <html lang="en">
             <head>
-                <link rel="icon" href="/favicon.ico" sizes="any" />
+                <link rel="icon" href="/src/app/favicon.ico" sizes="any" />
                 <link rel="icon" href="/BucketAxolotlLight.webp" type="image/webp" />
             </head>
             <body>
