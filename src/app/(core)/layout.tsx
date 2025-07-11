@@ -1,6 +1,6 @@
 import Navbar from "@/app/_components/layout/navbar"
 import Footer from "../_components/layout/footer"
-import {BILLING_PATH, CORE_ITEMS, STORE_PATH} from "@/app/constants";
+import { CORE_ITEMS } from "@/app/constants";
 import type React from "react";
 
 export default function RootLayout({
