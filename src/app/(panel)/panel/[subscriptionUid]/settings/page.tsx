@@ -10,7 +10,7 @@ export default async function Settings({ params }: { params: Promise<Params> }) 
     const eggs = await fetchEggs();
 
   return (
-    <main className="flex-1">
+    <main className="flex-1 p-6">
         <ServerSettings
             eggs={eggs}
             subscriptionId={subscriptionUid}

@@ -153,7 +153,7 @@ export default function SftpPage({ subscriptionId }: SftpPageProps) {
     );
 
     return (
-        <div className="space-y-6">
+        <div className="max-w-6xl mx-auto space-y-6">
             <div className="flex items-center gap-3">
                 <h1 className="text-2xl font-bold">SFTP Credentials</h1>
             </div>

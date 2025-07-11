@@ -15,7 +15,6 @@ import {isEditable} from "@/app/_components/page/files/utils/helpers";
 import {Alert, AlertDescription} from "@/components/ui/alert";
 
 interface FileExplorerProps {
-  userId: string;
   subscriptionId: string;
 }
 
