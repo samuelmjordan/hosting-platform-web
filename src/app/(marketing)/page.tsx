@@ -151,7 +151,7 @@ export default async function Home() {
                     <CardTitle className="text-foreground">Mod Support</CardTitle>
                   </div>
                   <CardDescription>
-                    Choose one of our preset minecraft installations, or upload your own custom setups
+                    Choose from preset server installations including forge, sponge, paper and bungeecord, and build your own custom setups from this base
                   </CardDescription>
                 </CardHeader>
               </Card>
