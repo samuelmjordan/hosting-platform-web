@@ -62,6 +62,8 @@ export async function POST(
           body: JSON.stringify({ address })
         });
 
+        console.log(changeAddressResponse);
+
         if (!changeAddressResponse.ok) {
           throw new Error('failed to change server address');
         }
