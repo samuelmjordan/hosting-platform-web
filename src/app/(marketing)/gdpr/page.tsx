@@ -239,7 +239,7 @@ export default function GDPRCompliance() {
                                         For any data protection concerns, questions about your rights, or to exercise your GDPR rights, contact us.
                                     </p>
                                     <div className="space-y-2 text-sm">
-                                        <p><strong>Email:</strong> data@axolhost.com</p>
+                                        <p><strong>Email:</strong> samuelmjordandev@gmail.com</p>
                                         <p><strong>Response Time:</strong> Within 30 days as required by GDPR</p>
                                     </div>
                                 </div>

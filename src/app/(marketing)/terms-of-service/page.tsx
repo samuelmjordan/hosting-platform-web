@@ -174,8 +174,8 @@ export default function TermsOfService() {
                         <CardContent>
                             <div className="space-y-2 text-muted-foreground">
                                 <p><strong>Company:</strong> Axolhost</p>
-                                <p><strong>Support Email:</strong> support@axolhost.com</p>
-                                <p><strong>Legal Email:</strong> legal@axolhost.com</p>
+                                <p><strong>Support Email:</strong> samuelmjordandev@gmail.com</p>
+                                <p><strong>Legal Email:</strong> samuelmjordandev@gmail.com</p>
                             </div>
                         </CardContent>
                     </Card>

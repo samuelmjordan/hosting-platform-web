@@ -126,7 +126,7 @@ export default function PrivacyPolicy() {
                         <CardContent>
                             <div className="space-y-2 text-muted-foreground">
                                 <p><strong>Data Controller:</strong> Axolhost</p>
-                                <p><strong>Email:</strong> privacy@axolhost.com</p>
+                                <p><strong>Email:</strong> samuelmjordandev@gmail.com</p>
                                 <p className="mt-4">For complaints about data processing, you may contact your local data protection authority.</p>
                             </div>
                         </CardContent>

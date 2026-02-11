@@ -38,7 +38,7 @@ const Footer = () => {
                     </div>
                     <div>
                         <h3 className="font-semibold mb-4">Support</h3>
-                        <span className="space-y-2 text-muted-foreground">support@axolhost.com </span>
+                        <span className="space-y-2 text-muted-foreground">samuelmjordandev@gmail.com </span>
                     </div>
                 </div>
                 <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
